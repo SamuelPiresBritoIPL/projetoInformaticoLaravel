@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class pedidosucs extends Model
 {
+    use SoftDeletes;
     /**
      * Indicates if the IDs are auto-incrementing.
      * 

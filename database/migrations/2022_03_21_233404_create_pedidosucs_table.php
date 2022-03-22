@@ -18,6 +18,8 @@ class CreatePedidosucsTable extends Migration {
 			$table->integer('id')->primary();
 			$table->integer('idCadeira')->index('idCadeira___idx');
 			$table->integer('idPedidos')->index('idPedidos_idx');
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

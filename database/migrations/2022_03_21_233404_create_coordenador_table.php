@@ -19,6 +19,7 @@ class CreateCoordenadorTable extends Migration {
 			$table->integer('idUtilizador')->index('idUtilizador_idx');
 			$table->string('tipo', 45)->default('0');
 			$table->integer('idCurso')->index('idCurso_idx');
+			$table->timestamps();
 		});
 	}
 

@@ -18,6 +18,8 @@ class CreateInscricaoTable extends Migration {
 			$table->integer('id')->primary();
 			$table->integer('idUtilizador')->index('idUtilizadorr_idx');
 			$table->integer('idTurno')->index('idTurnoo_idx');
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

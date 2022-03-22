@@ -18,6 +18,8 @@ class CreatePedidosTable extends Migration {
 			$table->integer('id')->primary();
 			$table->integer('idUtilizador')->index('idUtilizado_idx');
 			$table->string('descricao', 200)->nullable();
+			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

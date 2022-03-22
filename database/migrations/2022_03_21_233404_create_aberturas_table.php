@@ -22,6 +22,7 @@ class CreateAberturasTable extends Migration {
 			$table->smallInteger('tipoAbertura')->default(1);
 			$table->integer('idUtilizador')->index('idUtilizador_idx');
 			$table->integer('idCurso')->index('idcursoo_idx');
+			$table->timestamps();
 		});
 	}
 

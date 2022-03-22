@@ -24,7 +24,7 @@ class logs extends Model
     /**
      * @var array
      */
-    protected $fillable = ['descricao', 'data', 'tabela', 'idUtilizador'];
+    protected $fillable = ['descricao', 'tabela', 'idUtilizador'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

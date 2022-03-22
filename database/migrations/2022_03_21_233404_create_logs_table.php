@@ -17,9 +17,9 @@ class CreateLogsTable extends Migration {
 		{
 			$table->integer('id')->primary();
 			$table->string('descricao', 200);
-			$table->dateTime('data');
 			$table->string('tabela', 30);
 			$table->integer('idUtilizador')->index('idUtilizador_3_idx');
+			$table->timestamps();
 		});
 	}
 
