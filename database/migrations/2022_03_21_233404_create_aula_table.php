@@ -20,6 +20,7 @@ class CreateAulaTable extends Migration {
 			$table->time('horaInicio');
 			$table->time('horaFim');
 			$table->integer('idTurno')->index('idTurno_idx');
+			$table->engine = 'InnoDB';
 		});
 	}
 

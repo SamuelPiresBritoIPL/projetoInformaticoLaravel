@@ -21,6 +21,7 @@ class CreateUtilizadorTable extends Migration {
 			$table->string('nome', 100);
 			$table->smallInteger('tipo')->default(0);
 			$table->integer('idCurso')->index('idCurso_idx');
+			$table->engine = 'InnoDB';
 		});
 	}
 

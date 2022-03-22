@@ -23,6 +23,7 @@ class CreateAberturasTable extends Migration {
 			$table->integer('idUtilizador')->index('idUtilizador_idx');
 			$table->integer('idCurso')->index('idcursoo_idx');
 			$table->timestamps();
+			$table->engine = 'InnoDB';
 		});
 	}
 

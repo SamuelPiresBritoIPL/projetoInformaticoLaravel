@@ -20,6 +20,7 @@ class CreatePedidosTable extends Migration {
 			$table->string('descricao', 200)->nullable();
 			$table->timestamps();
 			$table->softDeletes();
+			$table->engine = 'InnoDB';
 		});
 	}
 

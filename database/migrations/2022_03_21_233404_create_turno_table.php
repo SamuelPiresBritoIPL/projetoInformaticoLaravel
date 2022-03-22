@@ -18,6 +18,7 @@ class CreateTurnoTable extends Migration {
 			$table->integer('id')->primary();
 			$table->string('nome', 15);
 			$table->integer('idCadeira')->index('idCadeira_idx');
+			$table->engine = 'InnoDB';
 		});
 	}
 

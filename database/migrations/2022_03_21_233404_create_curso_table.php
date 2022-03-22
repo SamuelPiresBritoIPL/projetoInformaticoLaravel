@@ -19,6 +19,7 @@ class CreateCursoTable extends Migration {
 			$table->string('codigo', 45)->nullable();
 			$table->string('nome', 100)->nullable();
 			$table->string('abreviatura', 7)->nullable();
+			$table->engine = 'InnoDB';
 		});
 	}
 

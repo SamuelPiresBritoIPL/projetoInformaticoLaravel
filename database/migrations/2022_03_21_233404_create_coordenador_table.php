@@ -20,6 +20,7 @@ class CreateCoordenadorTable extends Migration {
 			$table->string('tipo', 45)->default('0');
 			$table->integer('idCurso')->index('idCurso_idx');
 			$table->timestamps();
+			$table->engine = 'InnoDB';
 		});
 	}
 

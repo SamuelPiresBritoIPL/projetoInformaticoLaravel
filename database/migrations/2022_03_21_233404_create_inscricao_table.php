@@ -20,6 +20,7 @@ class CreateInscricaoTable extends Migration {
 			$table->integer('idTurno')->index('idTurnoo_idx');
 			$table->timestamps();
 			$table->softDeletes();
+			$table->engine = 'InnoDB';
 		});
 	}
 

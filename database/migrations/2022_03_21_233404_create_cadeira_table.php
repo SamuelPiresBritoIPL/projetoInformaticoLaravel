@@ -20,6 +20,7 @@ class CreateCadeiraTable extends Migration {
 			$table->string('nome', 60);
 			$table->string('abreviatura', 10)->nullable();
 			$table->integer('idPlanoCurricular')->index('idPlanoCurricular_idx');
+			$table->engine = 'InnoDB';
 		});
 	}
 
