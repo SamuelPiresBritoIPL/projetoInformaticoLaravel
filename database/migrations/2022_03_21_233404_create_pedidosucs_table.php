@@ -15,9 +15,9 @@ class CreatePedidosucsTable extends Migration {
 	{
 		Schema::create('pedidosucs', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
-			$table->integer('idCadeira')->index('idCadeira___idx');
-			$table->integer('idPedidos')->index('idPedidos_idx');
+			$table->unsignedInteger('id',true);
+			$table->unsignedInteger('idCadeira')->index('idCadeira___idx');
+			$table->unsignedInteger('idPedidos')->index('idPedidos_idx');
 			$table->timestamps();
 			$table->softDeletes();
 			$table->engine = 'InnoDB';

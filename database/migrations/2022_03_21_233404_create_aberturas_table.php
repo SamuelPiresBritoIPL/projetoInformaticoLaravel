@@ -15,13 +15,13 @@ class CreateAberturasTable extends Migration {
 	{
 		Schema::create('aberturas', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
+			$table->unsignedInteger('id',true);
 			$table->dateTime('dataAbertura');
 			$table->dateTime('dataEncerar');
 			$table->smallInteger('ano')->default(1);
 			$table->smallInteger('tipoAbertura')->default(1);
-			$table->integer('idUtilizador')->index('idUtilizador_idx');
-			$table->integer('idCurso')->index('idcursoo_idx');
+			$table->unsignedInteger('idUtilizador')->index('idUtilizador_idx');
+			$table->unsignedInteger('idCurso')->index('idcursoo_idx');
 			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});

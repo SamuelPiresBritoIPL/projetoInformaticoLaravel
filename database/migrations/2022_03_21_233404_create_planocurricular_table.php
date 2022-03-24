@@ -15,9 +15,9 @@ class CreatePlanocurricularTable extends Migration {
 	{
 		Schema::create('planocurricular', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
+			$table->unsignedInteger('id',true);
 			$table->string('codigo', 45)->nullable();
-			$table->integer('idCurso')->index('idCurso_idx');
+			$table->unsignedInteger('idCurso')->index('idCurso_idx');
 			$table->engine = 'InnoDB';
 		});
 	}

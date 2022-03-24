@@ -15,9 +15,9 @@ class CreateInscricaoTable extends Migration {
 	{
 		Schema::create('inscricao', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
-			$table->integer('idUtilizador')->index('idUtilizadorr_idx');
-			$table->integer('idTurno')->index('idTurnoo_idx');
+			$table->unsignedInteger('id',true);
+			$table->unsignedInteger('idUtilizador')->index('idUtilizadorr_idx');
+			$table->unsignedInteger('idTurno')->index('idTurnoo_idx');
 			$table->timestamps();
 			$table->softDeletes();
 			$table->engine = 'InnoDB';
