@@ -15,10 +15,10 @@ class CreateCoordenadorTable extends Migration {
 	{
 		Schema::create('coordenador', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
-			$table->integer('idUtilizador')->index('idUtilizador_idx');
+			$table->unsignedInteger('id',true);
+			$table->unsignedInteger('idUtilizador')->index('idUtilizador_idx');
 			$table->string('tipo', 45)->default('0');
-			$table->integer('idCurso')->index('idCurso_idx');
+			$table->unsignedInteger('idCurso')->index('idCurso_idx');
 			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});

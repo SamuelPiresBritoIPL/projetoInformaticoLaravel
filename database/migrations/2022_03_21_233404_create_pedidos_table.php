@@ -15,8 +15,8 @@ class CreatePedidosTable extends Migration {
 	{
 		Schema::create('pedidos', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
-			$table->integer('idUtilizador')->index('idUtilizado_idx');
+			$table->unsignedInteger('id',true);
+			$table->unsignedInteger('idUtilizador')->index('idUtilizado_idx');
 			$table->string('descricao', 200)->nullable();
 			$table->timestamps();
 			$table->softDeletes();

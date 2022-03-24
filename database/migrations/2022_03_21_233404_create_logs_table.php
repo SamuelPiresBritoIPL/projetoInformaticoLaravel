@@ -15,10 +15,10 @@ class CreateLogsTable extends Migration {
 	{
 		Schema::create('logs', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
+			$table->unsignedInteger('id',true);
 			$table->string('descricao', 200);
 			$table->string('tabela', 30);
-			$table->integer('idUtilizador')->index('idUtilizador_3_idx');
+			$table->unsignedInteger('idUtilizador')->index('idUtilizador_3_idx');
 			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});

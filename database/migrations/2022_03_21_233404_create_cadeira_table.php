@@ -15,11 +15,11 @@ class CreateCadeiraTable extends Migration {
 	{
 		Schema::create('cadeira', function(Blueprint $table)
 		{
-			$table->integer('id')->primary();
+			$table->unsignedInteger('id',true);
 			$table->string('codigo', 45)->nullable();
 			$table->string('nome', 60);
 			$table->string('abreviatura', 10)->nullable();
-			$table->integer('idPlanoCurricular')->index('idPlanoCurricular_idx');
+			$table->unsignedInteger('idPlanoCurricular')->index('idPlanoCurricular_idx');
 			$table->engine = 'InnoDB';
 		});
 	}
