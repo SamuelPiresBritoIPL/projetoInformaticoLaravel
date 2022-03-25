@@ -14,7 +14,7 @@ class PlanoCurricularSeeder extends Seeder
         $anos = ["2015/2017","2017/2018","2019/2020","2014/2015"];
 
         return [
-            'codigo' => $anos[$i-1],
+            'ano' => $anos[$i-1],
             'idCurso' => $faker->numberBetween(1, 5), 
         ];
 
