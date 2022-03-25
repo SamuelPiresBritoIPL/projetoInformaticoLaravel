@@ -15,7 +15,7 @@ class CreateTurnoTable extends Migration {
 	{
 		Schema::create('turno', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->string('nome', 15);
 			$table->integer('idCadeira')->unsigned()->index('idCadeira_idx');
 		});

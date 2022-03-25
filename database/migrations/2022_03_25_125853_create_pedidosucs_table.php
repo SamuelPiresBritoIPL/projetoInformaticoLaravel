@@ -15,7 +15,7 @@ class CreatePedidosucsTable extends Migration {
 	{
 		Schema::create('pedidosucs', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->integer('idCadeira')->unsigned()->index('idCadeira___idx');
 			$table->integer('idPedidos')->unsigned()->index('idPedidos_idx');
 			$table->timestamps(10);

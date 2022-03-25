@@ -15,7 +15,7 @@ class CreateLogsTable extends Migration {
 	{
 		Schema::create('logs', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->string('descricao', 200);
 			$table->string('tabela', 30);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_3_idx');

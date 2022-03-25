@@ -15,7 +15,7 @@ class CreateAberturasTable extends Migration {
 	{
 		Schema::create('aberturas', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->dateTime('dataAbertura');
 			$table->dateTime('dataEncerar');
 			$table->smallInteger('ano')->default(1);

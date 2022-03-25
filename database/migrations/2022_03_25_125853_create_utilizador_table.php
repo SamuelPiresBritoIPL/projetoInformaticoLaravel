@@ -15,7 +15,7 @@ class CreateUtilizadorTable extends Migration {
 	{
 		Schema::create('utilizador', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->integer('numero')->unique('numero_UNIQUE');
 			$table->string('email', 70);
 			$table->string('nome', 100);

@@ -15,7 +15,7 @@ class CreateInscricaoucsTable extends Migration {
 	{
 		Schema::create('inscricaoucs', function(Blueprint $table)
 		{
-			$table->integer('id')->unsigned()->primary();
+			$table->unsignedInteger('id',true);
 			$table->integer('idCadeira')->unsigned()->index('idCadeira_3_idx');
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_4_idx');
 		});

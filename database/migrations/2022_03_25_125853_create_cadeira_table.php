@@ -15,7 +15,7 @@ class CreateCadeiraTable extends Migration {
 	{
 		Schema::create('cadeira', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->string('codigo', 45)->nullable();
 			$table->string('nome', 60);
 			$table->string('abreviatura', 10)->nullable();

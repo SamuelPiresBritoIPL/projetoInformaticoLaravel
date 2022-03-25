@@ -15,7 +15,7 @@ class CreateCoordenadorTable extends Migration {
 	{
 		Schema::create('coordenador', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_idx');
 			$table->string('tipo', 45)->default('0');
 			$table->integer('idCurso')->unsigned()->index('idCurso_idx');

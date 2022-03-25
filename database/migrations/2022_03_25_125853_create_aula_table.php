@@ -15,7 +15,7 @@ class CreateAulaTable extends Migration {
 	{
 		Schema::create('aula', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->smallInteger('diaSemana')->default(0);
 			$table->time('horaInicio');
 			$table->time('horaFim');

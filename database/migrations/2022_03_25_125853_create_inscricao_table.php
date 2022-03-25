@@ -15,7 +15,7 @@ class CreateInscricaoTable extends Migration {
 	{
 		Schema::create('inscricao', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->unsignedInteger('id',true);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizadorr_idx');
 			$table->integer('idTurno')->unsigned()->index('idTurnoo_idx');
 			$table->timestamps(10);
