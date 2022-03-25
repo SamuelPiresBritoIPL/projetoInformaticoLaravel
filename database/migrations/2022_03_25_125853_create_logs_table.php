@@ -19,7 +19,7 @@ class CreateLogsTable extends Migration {
 			$table->string('descricao', 200);
 			$table->string('tabela', 30);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_3_idx');
-			$table->timestamps(10);
+			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}

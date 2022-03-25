@@ -18,7 +18,7 @@ class CreatePedidosTable extends Migration {
 			$table->unsignedInteger('id',true);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizado_idx');
 			$table->string('descricao', 200)->nullable();
-			$table->timestamps(10);
+			$table->timestamps();
 			$table->softDeletes();
 			$table->engine = 'InnoDB';
 		});

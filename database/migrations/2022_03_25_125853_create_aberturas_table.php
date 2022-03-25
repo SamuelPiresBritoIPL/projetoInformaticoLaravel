@@ -22,7 +22,7 @@ class CreateAberturasTable extends Migration {
 			$table->smallInteger('tipoAbertura')->default(1);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_idx');
 			$table->integer('idCurso')->unsigned()->index('idcursoo_idx');
-			$table->timestamps(10);
+			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}
