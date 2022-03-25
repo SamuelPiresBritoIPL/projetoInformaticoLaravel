@@ -20,6 +20,7 @@ class CreatePedidosucsTable extends Migration {
 			$table->integer('idPedidos')->unsigned()->index('idPedidos_idx');
 			$table->timestamps(10);
 			$table->softDeletes();
+			$table->engine = 'InnoDB';
 		});
 	}
 

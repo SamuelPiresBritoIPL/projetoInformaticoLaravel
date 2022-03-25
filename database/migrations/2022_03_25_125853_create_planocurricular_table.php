@@ -18,6 +18,7 @@ class CreatePlanocurricularTable extends Migration {
 			$table->unsignedInteger('id',true);
 			$table->string('ano', 45)->nullable();
 			$table->integer('idCurso')->unsigned()->index('idCurso_idx');
+			$table->engine = 'InnoDB';
 		});
 	}
 
