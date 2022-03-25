@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCursoTable extends Migration {
+class CreateCadeiraTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,13 +13,13 @@ class CreateCursoTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('curso', function(Blueprint $table)
+		Schema::create('cadeira', function(Blueprint $table)
 		{
-			$table->unsignedInteger('id',true);
+			$table->increments('id');
 			$table->string('codigo', 45)->nullable();
-			$table->string('nome', 100)->nullable();
-			$table->string('abreviatura', 7)->nullable();
-			$table->engine = 'InnoDB';
+			$table->string('nome', 60);
+			$table->string('abreviatura', 10)->nullable();
+			$table->integer('idPlanoCurricular')->unsigned()->index('idPlanoCurricular_idx');
 		});
 	}
 
@@ -31,7 +31,7 @@ class CreateCursoTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('curso');
+		Schema::drop('cadeira');
 	}
 
 }

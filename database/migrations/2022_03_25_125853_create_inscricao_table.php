@@ -15,12 +15,11 @@ class CreateInscricaoTable extends Migration {
 	{
 		Schema::create('inscricao', function(Blueprint $table)
 		{
-			$table->unsignedInteger('id',true);
-			$table->unsignedInteger('idUtilizador')->index('idUtilizadorr_idx');
-			$table->unsignedInteger('idTurno')->index('idTurnoo_idx');
-			$table->timestamps();
+			$table->increments('id');
+			$table->integer('idUtilizador')->unsigned()->index('idUtilizadorr_idx');
+			$table->integer('idTurno')->unsigned()->index('idTurnoo_idx');
+			$table->timestamps(10);
 			$table->softDeletes();
-			$table->engine = 'InnoDB';
 		});
 	}
 

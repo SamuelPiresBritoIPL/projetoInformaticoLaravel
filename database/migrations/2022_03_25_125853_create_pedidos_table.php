@@ -15,12 +15,11 @@ class CreatePedidosTable extends Migration {
 	{
 		Schema::create('pedidos', function(Blueprint $table)
 		{
-			$table->unsignedInteger('id',true);
-			$table->unsignedInteger('idUtilizador')->index('idUtilizado_idx');
+			$table->increments('id');
+			$table->integer('idUtilizador')->unsigned()->index('idUtilizado_idx');
 			$table->string('descricao', 200)->nullable();
-			$table->timestamps();
+			$table->timestamps(10);
 			$table->softDeletes();
-			$table->engine = 'InnoDB';
 		});
 	}
 
