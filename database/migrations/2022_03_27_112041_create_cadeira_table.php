@@ -19,11 +19,11 @@ class CreateCadeiraTable extends Migration {
 			$table->integer('codigo');
 			$table->smallInteger('ano')->default(1);
 			$table->smallInteger('semestre')->default(1);
-			$table->string('tipo', 4);
-			$table->string('nome', 60);
+			$table->string('nome', 150);
 			$table->string('abreviatura', 10)->nullable();
 			$table->integer('idCurso')->unsigned()->index('idPlanoCurricular_idx');
 			$table->string('anoletivo', 10)->nullable();
+			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}

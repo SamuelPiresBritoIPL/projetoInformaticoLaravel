@@ -16,12 +16,13 @@ class CreateUtilizadorTable extends Migration {
 		Schema::create('utilizador', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->integer('numero')->unique('numero_UNIQUE');
+			$table->integer('numero')->nullable();
 			$table->string('email', 70)->nullable();
 			$table->string('nome', 100);
 			$table->string('login', 60)->nullable()->unique('login_UNIQUE');
 			$table->smallInteger('tipo')->default(0);
 			$table->integer('idCurso')->unsigned()->index('idCurso_idx');
+			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}

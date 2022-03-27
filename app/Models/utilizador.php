@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $email
  * @property string $nome
  * @property string $login
- * @property integer $tipo
+ * @property integer $tipo => 0 - estudante | 1 - professor | 2 - coordenador
  * @property int $idCurso
  * @property Curso $curso
  * @property Abertura[] $aberturas
@@ -88,5 +88,13 @@ class utilizador extends Model
     public function pedidos()
     {
         return $this->hasMany(pedido::class, 'idUtilizador');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function turnos()
+    {
+        return $this->hasMany(turno::class, 'idProfessor');
     }
 }

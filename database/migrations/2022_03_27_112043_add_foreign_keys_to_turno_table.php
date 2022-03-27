@@ -16,6 +16,7 @@ class AddForeignKeysToTurnoTable extends Migration {
 		Schema::table('turno', function(Blueprint $table)
 		{
 			$table->foreign('idCadeira', 'idCadeira_2')->references('id')->on('cadeira')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idProfessor', 'idUtilizador7')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
@@ -30,6 +31,7 @@ class AddForeignKeysToTurnoTable extends Migration {
 		Schema::table('turno', function(Blueprint $table)
 		{
 			$table->dropForeign('idCadeira_2');
+			$table->dropForeign('idUtilizador7');
 		});
 	}
 

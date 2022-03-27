@@ -31,7 +31,7 @@ class cadeira extends Model
     /**
      * @var array
      */
-    protected $fillable = ['codigo', 'ano', 'semestre', 'tipo', 'nome', 'abreviatura', 'idCurso', 'anoletivo'];
+    protected $fillable = ['codigo', 'ano', 'semestre', 'nome', 'abreviatura', 'idCurso', 'anoletivo'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -17,8 +17,9 @@ class CreateCursoTable extends Migration {
 		{
 			$table->unsignedInteger('id',true);
 			$table->integer('codigo')->unique('codigo_UNIQUE');
-			$table->string('nome', 100)->nullable();
+			$table->string('nome', 150)->nullable();
 			$table->string('abreviatura', 7)->nullable();
+			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}
