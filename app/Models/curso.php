@@ -6,24 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
- * @property string $codigo
+ * @property int $codigo
  * @property string $nome
  * @property string $abreviatura
  * @property Abertura[] $aberturas
+ * @property Cadeira[] $cadeiras
  * @property Coordenador[] $coordenadors
- * @property Planocurricular[] $planocurriculars
  * @property Utilizador[] $utilizadors
  */
 class curso extends Model
 {
-	protected $table = 'curso';
-
     /**
-     * Indicates if the IDs are auto-incrementing.
+     * The table associated with the model.
      * 
-     * @var bool
+     * @var string
      */
-    public $incrementing = false;
+    protected $table = 'curso';
 
     /**
      * @var array
@@ -41,17 +39,17 @@ class curso extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function coordenadors()
+    public function cadeiras()
     {
-        return $this->hasMany(coordenador::class, 'idCurso');
+        return $this->hasMany(cadeira::class, 'idCurso');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function planocurriculars()
+    public function coordenadors()
     {
-        return $this->hasMany(planocurricular::class, 'idCurso');
+        return $this->hasMany(coordenador::class, 'idCurso');
     }
 
     /**

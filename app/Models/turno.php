@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $nome
  * @property int $idCadeira
+ * @property int $vagastotal
+ * @property integer $visivel
  * @property Cadeira $cadeira
  * @property Aula[] $aulas
  * @property Inscricao[] $inscricaos
@@ -22,16 +24,9 @@ class turno extends Model
     protected $table = 'turno';
 
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
-    protected $fillable = ['nome', 'idCadeira'];
+    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

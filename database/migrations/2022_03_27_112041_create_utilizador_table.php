@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePlanocurricularTable extends Migration {
+class CreateUtilizadorTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,10 +13,14 @@ class CreatePlanocurricularTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('planocurricular', function(Blueprint $table)
+		Schema::create('utilizador', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->string('ano', 45)->nullable();
+			$table->integer('numero')->unique('numero_UNIQUE');
+			$table->string('email', 70)->nullable();
+			$table->string('nome', 100);
+			$table->string('login', 60)->nullable()->unique('login_UNIQUE');
+			$table->smallInteger('tipo')->default(0);
 			$table->integer('idCurso')->unsigned()->index('idCurso_idx');
 			$table->engine = 'InnoDB';
 		});
@@ -30,7 +34,7 @@ class CreatePlanocurricularTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('planocurricular');
+		Schema::drop('utilizador');
 	}
 
 }

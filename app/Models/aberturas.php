@@ -12,29 +12,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $tipoAbertura
  * @property int $idUtilizador
  * @property int $idCurso
+ * @property string $created_at
+ * @property string $updated_at
  * @property Utilizador $utilizador
  * @property Curso $curso
  */
 class aberturas extends Model
 {
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
-    protected $fillable = ['dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura', 'idUtilizador', 'idCurso'];
+    protected $fillable = ['dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura', 'idUtilizador', 'idCurso', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function utilizador()
     {
-        return $this->belongsTo(Utilizador::class, 'idUtilizador');
+        return $this->belongsTo(utilizador::class, 'idUtilizador');
     }
 
     /**

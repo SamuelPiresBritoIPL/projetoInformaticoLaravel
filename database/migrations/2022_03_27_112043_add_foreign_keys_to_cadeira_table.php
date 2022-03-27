@@ -15,7 +15,7 @@ class AddForeignKeysToCadeiraTable extends Migration {
 	{
 		Schema::table('cadeira', function(Blueprint $table)
 		{
-			$table->foreign('idPlanoCurricular', 'idPlanoCurricular')->references('id')->on('planocurricular')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idCurso', 'idPlanoCurricular')->references('id')->on('curso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

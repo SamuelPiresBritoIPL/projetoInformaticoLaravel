@@ -16,10 +16,14 @@ class CreateCadeiraTable extends Migration {
 		Schema::create('cadeira', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->string('codigo', 45)->nullable();
+			$table->integer('codigo');
+			$table->smallInteger('ano')->default(1);
+			$table->smallInteger('semestre')->default(1);
+			$table->string('tipo', 4);
 			$table->string('nome', 60);
 			$table->string('abreviatura', 10)->nullable();
-			$table->integer('idPlanoCurricular')->unsigned()->index('idPlanoCurricular_idx');
+			$table->integer('idCurso')->unsigned()->index('idPlanoCurricular_idx');
+			$table->string('anoletivo', 10)->nullable();
 			$table->engine = 'InnoDB';
 		});
 	}

@@ -22,13 +22,6 @@ class aula extends Model
     protected $table = 'aula';
 
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
     protected $fillable = ['diaSemana', 'horaInicio', 'horaFim', 'idTurno'];

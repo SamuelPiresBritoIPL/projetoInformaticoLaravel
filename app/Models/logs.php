@@ -7,24 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $descricao
- * @property string $data
  * @property string $tabela
  * @property int $idUtilizador
+ * @property string $created_at
+ * @property string $updated_at
  * @property Utilizador $utilizador
  */
 class logs extends Model
 {
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
-    protected $fillable = ['descricao', 'tabela', 'idUtilizador'];
+    protected $fillable = ['descricao', 'tabela', 'idUtilizador', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

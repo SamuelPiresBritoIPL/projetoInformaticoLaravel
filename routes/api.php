@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\WebserviceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('curso', [CursoController::class, 'index']);
+
+Route::get('webservicecurso', [WebserviceController::class, 'getCursos']);

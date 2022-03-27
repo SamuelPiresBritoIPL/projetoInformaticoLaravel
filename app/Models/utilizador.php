@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $numero
  * @property string $email
  * @property string $nome
+ * @property string $login
  * @property integer $tipo
  * @property int $idCurso
  * @property Curso $curso
  * @property Abertura[] $aberturas
  * @property Coordenador[] $coordenadors
  * @property Inscricao[] $inscricaos
+ * @property Inscricaouc[] $inscricaoucs
  * @property Log[] $logs
  * @property Pedido[] $pedidos
  */
@@ -28,23 +30,16 @@ class utilizador extends Model
     protected $table = 'utilizador';
 
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
-    protected $fillable = ['numero', 'email', 'nome', 'tipo', 'idCurso'];
+    protected $fillable = ['numero', 'email', 'nome', 'login', 'tipo', 'idCurso'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function curso()
     {
-        return $this->belongsTo('App\Curso', 'idCurso');
+        return $this->belongsTo(curso::class, 'idCurso');
     }
 
     /**
@@ -52,7 +47,7 @@ class utilizador extends Model
      */
     public function aberturas()
     {
-        return $this->hasMany('App\Abertura', 'idUtilizador');
+        return $this->hasMany(aberturas::class, 'idUtilizador');
     }
 
     /**
@@ -60,7 +55,7 @@ class utilizador extends Model
      */
     public function coordenadors()
     {
-        return $this->hasMany('App\Coordenador', 'idUtilizador');
+        return $this->hasMany(coordenador::class, 'idUtilizador');
     }
 
     /**
@@ -68,7 +63,15 @@ class utilizador extends Model
      */
     public function inscricaos()
     {
-        return $this->hasMany('App\Inscricao', 'idUtilizador');
+        return $this->hasMany(inscricao::class, 'idUtilizador');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inscricaoucs()
+    {
+        return $this->hasMany(inscricaoucs::class, 'idUtilizador');
     }
 
     /**
@@ -76,7 +79,7 @@ class utilizador extends Model
      */
     public function logs()
     {
-        return $this->hasMany('App\Log', 'idUtilizador');
+        return $this->hasMany(logs::class, 'idUtilizador');
     }
 
     /**
@@ -84,6 +87,6 @@ class utilizador extends Model
      */
     public function pedidos()
     {
-        return $this->hasMany('App\Pedido', 'idUtilizador');
+        return $this->hasMany(pedido::class, 'idUtilizador');
     }
 }

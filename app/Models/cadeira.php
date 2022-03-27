@@ -6,36 +6,47 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
- * @property string $codigo
+ * @property int $codigo
+ * @property integer $ano
+ * @property integer $semestre
+ * @property string $tipo
  * @property string $nome
  * @property string $abreviatura
- * @property int $idPlanoCurricular
- * @property Planocurricular $planocurricular
+ * @property int $idCurso
+ * @property string $anoletivo
+ * @property Curso $curso
+ * @property Inscricaouc[] $inscricaoucs
  * @property Pedidosuc[] $pedidosucs
  * @property Turno[] $turnos
  */
 class cadeira extends Model
 {
-    protected $table = 'cadeira';
-
     /**
-     * Indicates if the IDs are auto-incrementing.
+     * The table associated with the model.
      * 
-     * @var bool
+     * @var string
      */
-    public $incrementing = false;
+    protected $table = 'cadeira';
 
     /**
      * @var array
      */
-    protected $fillable = ['codigo', 'nome', 'abreviatura', 'idPlanoCurricular'];
+    protected $fillable = ['codigo', 'ano', 'semestre', 'tipo', 'nome', 'abreviatura', 'idCurso', 'anoletivo'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function planocurricular()
+    public function curso()
     {
-        return $this->belongsTo(planocurricular::class, 'idPlanoCurricular');
+        return $this->belongsTo(curso::class, 'idCurso');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inscricaoucs()
+    {
+        return $this->hasMany(inscricaoucs::class, 'idCadeira');
     }
 
     /**
@@ -43,7 +54,7 @@ class cadeira extends Model
      */
     public function pedidosucs()
     {
-        return $this->hasMany(pedidosucs::class, 'idCadeira');
+        return $this->hasMany(~pedidosucs::class, 'idCadeira');
     }
 
     /**

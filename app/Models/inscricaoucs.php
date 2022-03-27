@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,13 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 class inscricaoucs extends Model
 {
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
     protected $fillable = ['idCadeira', 'idUtilizador'];
@@ -30,7 +23,7 @@ class inscricaoucs extends Model
      */
     public function cadeira()
     {
-        return $this->belongsTo('App\Cadeira', 'idCadeira');
+        return $this->belongsTo(cadeira::class, 'idCadeira');
     }
 
     /**
@@ -38,6 +31,6 @@ class inscricaoucs extends Model
      */
     public function utilizador()
     {
-        return $this->belongsTo('App\Utilizador', 'idUtilizador');
+        return $this->belongsTo(utilizador::class, 'idUtilizador');
     }
 }

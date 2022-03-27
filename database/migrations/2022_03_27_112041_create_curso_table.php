@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTurnoTable extends Migration {
+class CreateCursoTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,11 +13,12 @@ class CreateTurnoTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('turno', function(Blueprint $table)
+		Schema::create('curso', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->string('nome', 15);
-			$table->integer('idCadeira')->unsigned()->index('idCadeira_idx');
+			$table->integer('codigo')->unique('codigo_UNIQUE');
+			$table->string('nome', 100)->nullable();
+			$table->string('abreviatura', 7)->nullable();
 			$table->engine = 'InnoDB';
 		});
 	}
@@ -30,7 +31,7 @@ class CreateTurnoTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('turno');
+		Schema::drop('curso');
 	}
 
 }
