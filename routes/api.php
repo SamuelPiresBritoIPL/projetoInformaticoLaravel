@@ -19,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('curso', [CursoController::class, 'index']);
 
 Route::get('webservicecurso', [WebserviceController::class, 'getCursos']);
+Route::get('webserviceinscricao', [WebserviceController::class, 'getInscricoesturnos']);

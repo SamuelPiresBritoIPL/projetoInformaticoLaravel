@@ -16,7 +16,7 @@ class inscricaoucs extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idCadeira', 'idUtilizador'];
+    protected $fillable = ['idCadeira', 'idUtilizador','nrinscricoes'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
