@@ -27,7 +27,7 @@ class CursoResource extends JsonResource
 					'codigo' => $this->codigo,
 					'nome' => $this->nome,
 					'abreviatura' => $this->abreviatura,
-					'planoscurriculares' => $this->planocurriculars,
+					'cadeiras' => $this->cadeiras
 				];
 		}
         return parent::toArray($request);

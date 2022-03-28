@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\curso;
 use Illuminate\Http\Request;
+use App\Http\Resources\CursoResource;
 
 class CursoController extends Controller
 {
@@ -14,7 +15,13 @@ class CursoController extends Controller
      */
     public function index()
     {
-    	return curso::all();
+    	return response(CursoResource::collection(curso::all()),200);
+    }
+
+    public function getCursoComCadeiras()
+    {
+        CursoResource::$format = "detailed";
+    	return response(CursoResource::collection(curso::all()),200);
     }
     
 }
