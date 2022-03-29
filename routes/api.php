@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CoordenadorController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\WebserviceController;
 use Illuminate\Http\Request;
@@ -18,7 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('curso', [CursoController::class, 'index']);
 Route::get('cursocadeiras', [CursoController::class, 'getCursoComCadeiras']);
+Route::get('cursocoordenadores',[CursoController::class, 'getCoordenadores']);
+Route::get('cursocoordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
 
+
+Route::post('addcoordenador',[CoordenadorController::class, 'store']);
+Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);
 
 
 Route::get('webservicecurso', [WebserviceController::class, 'getCursos']);

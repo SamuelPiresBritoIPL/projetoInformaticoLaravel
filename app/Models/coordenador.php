@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $idUtilizador
- * @property string $tipo
+ * @property string $tipo 0 -> coordenador | 1 -> subcoordenador
  * @property int $idCurso
  * @property string $created_at
  * @property string $updated_at

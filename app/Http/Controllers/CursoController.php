@@ -15,13 +15,24 @@ class CursoController extends Controller
      */
     public function index()
     {
+        CursoResource::$format = 'default';
     	return response(CursoResource::collection(curso::all()),200);
     }
 
     public function getCursoComCadeiras()
     {
-        CursoResource::$format = "detailed";
+        CursoResource::$format = 'cadeira';
     	return response(CursoResource::collection(curso::all()),200);
+    }
+
+    public function getCoordenadores(){
+        CursoResource::$format = 'coordenador';
+        return response(CursoResource::collection(curso::all()),200);
+    }
+
+    public function getCoordenadoresByCurso(Curso $curso){
+        CursoResource::$format = 'coordenador';
+        return response(new CursoResource($curso),200);
     }
     
 }
