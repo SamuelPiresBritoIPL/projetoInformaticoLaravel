@@ -33,6 +33,14 @@ class CursoResource extends JsonResource
             'abreviatura' => $this->abreviatura,
             'coordenadores' => CoordenadorResource::collection($this->coordenadors)
           ];
+        case 'aberturas':
+          return [
+            'id' => $this->id,
+            'codigo' => $this->codigo,
+            'nome' => $this->nome,
+            'abreviatura' => $this->abreviatura,
+            'aberturas' => AberturaResource::collection($this->aberturas)
+          ];
         default:
         return [
           'id' => $this->id,

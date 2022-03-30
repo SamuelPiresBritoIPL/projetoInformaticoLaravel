@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class CoordenadorPostRequest extends FormRequest
+class AberturaPostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,11 @@ class CoordenadorPostRequest extends FormRequest
     public function rules()
     {
         $rules = [
+			'dataAbertura' => ['required', 'date'],
+			'dataEncerar' => ['required', 'date','after_or_equal:dataAbertura'],
+			'ano' => ['required', 'in:0,1,2,3,4,5'],
+			'tipoAbertura' => ['required', 'in:0,1'],
 			'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
-			'tipo' => ['required', 'in:1,0'],
-			'idCurso' => ['required', 'numeric', Rule::exists('curso', 'id')->where('id', $this->request->get('idCurso'))],
 		];
         return $rules;
     }

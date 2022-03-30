@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $dataAbertura
  * @property string $dataEncerar
- * @property integer $ano
- * @property integer $tipoAbertura
+ * @property integer $ano  0 => para todos os anos | 1,2,3,4,5 => anos do curso
+ * @property integer $tipoAbertura  0 => confirmacaoucs | 1 => inscricaoTurnos
  * @property int $idUtilizador
  * @property int $idCurso
  * @property string $created_at

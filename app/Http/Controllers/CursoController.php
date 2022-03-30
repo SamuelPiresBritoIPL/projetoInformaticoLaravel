@@ -30,6 +30,11 @@ class CursoController extends Controller
         return response(CursoResource::collection(Curso::all()),200);
     }
 
+    public function getAberturas(){
+        CursoResource::$format = 'aberturas';
+        return response(CursoResource::collection(Curso::all()),200);
+    }
+
     public function getCoordenadoresByCurso(Curso $curso){
         CursoResource::$format = 'coordenador';
         return response(new CursoResource($curso),200);
