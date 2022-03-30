@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $idTurno
  * @property Turno $turno
  */
-class aula extends Model
+class Aula extends Model
 {
     /**
      * The table associated with the model.

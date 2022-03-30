@@ -16,13 +16,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+//free use
 Route::get('curso', [CursoController::class, 'index']);
+
+//admin / coordenador
 Route::get('cursocadeiras', [CursoController::class, 'getCursoComCadeiras']);
 Route::get('cursocoordenadores',[CursoController::class, 'getCoordenadores']);
 Route::get('cursocoordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
-
-
 Route::post('addcoordenador',[CoordenadorController::class, 'store']);
 Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);
 

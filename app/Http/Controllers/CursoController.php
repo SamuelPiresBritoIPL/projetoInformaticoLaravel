@@ -16,18 +16,18 @@ class CursoController extends Controller
     public function index()
     {
         CursoResource::$format = 'default';
-    	return response(CursoResource::collection(curso::all()),200);
+    	return response(CursoResource::collection(Curso::all()),200);
     }
 
     public function getCursoComCadeiras()
     {
         CursoResource::$format = 'cadeira';
-    	return response(CursoResource::collection(curso::all()),200);
+    	return response(CursoResource::collection(Curso::all()),200);
     }
 
     public function getCoordenadores(){
         CursoResource::$format = 'coordenador';
-        return response(CursoResource::collection(curso::all()),200);
+        return response(CursoResource::collection(Curso::all()),200);
     }
 
     public function getCoordenadoresByCurso(Curso $curso){

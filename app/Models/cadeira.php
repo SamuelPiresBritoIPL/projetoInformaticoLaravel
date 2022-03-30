@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Pedidosuc[] $pedidosucs
  * @property Turno[] $turnos
  */
-class cadeira extends Model
+class Cadeira extends Model
 {
     /**
      * The table associated with the model.

@@ -20,18 +20,18 @@ class WebserviceController extends Controller
         }
         $newDataAdded = 0;
         foreach ($json as $turno) {
-            $curso = curso::where('codigo',$turno->CD_Curso)->first();
+            $curso = Curso::where('codigo',$turno->CD_Curso)->first();
             if(empty($curso)){
-                $curso = new curso();
+                $curso = new Curso();
                 $curso->codigo = $turno->CD_Curso;
                 $curso->nome = $turno->NM_CURSO;
                 $curso->save();
                 $newDataAdded += 1;
             }
 
-            $utilizador = utilizador::where('login', $turno->LOGIN)->first();
+            $utilizador = Utilizador::where('login', $turno->LOGIN)->first();
             if(empty($utilizador)){
-                $utilizador = new utilizador();
+                $utilizador = new Utilizador();
                 $utilizador->nome = $turno->NM_FUNCIONARIO;
                 $utilizador->login = $turno->LOGIN;
                 $utilizador->idCurso = $curso->id;
@@ -40,9 +40,9 @@ class WebserviceController extends Controller
                 $newDataAdded += 1;
             }
             
-            $cadeira = cadeira::where('codigo',$turno->CD_Discip)->first();
+            $cadeira = Cadeira::where('codigo',$turno->CD_Discip)->first();
             if(empty($cadeira)){
-                $cadeira = new cadeira();
+                $cadeira = new Cadeira();
                 $cadeira->codigo = $turno->CD_Discip;
                 $cadeira->ano = $turno->AnoCurricular;
                 $cadeira->semestre = str_split($turno->Periodo)[1];
@@ -57,9 +57,9 @@ class WebserviceController extends Controller
                 $newDataAdded += 1;
             }
 
-            $newturno = turno::where('idCadeira',$cadeira->id)->where('idProfessor',$utilizador->id)->where('tipo',$turno->CodDiscipTipo)->where('numero',$turno->CDTurno)->first();
+            $newturno = Turno::where('idCadeira',$cadeira->id)->where('idProfessor',$utilizador->id)->where('tipo',$turno->CodDiscipTipo)->where('numero',$turno->CDTurno)->first();
             if(empty($newturno)){
-                $newturno = new turno();
+                $newturno = new Turno();
                 $newturno->idCadeira = $cadeira->id;
                 $newturno->idProfessor = $utilizador->id;
                 $newturno->tipo = $turno->CodDiscipTipo;
@@ -82,21 +82,21 @@ class WebserviceController extends Controller
         $cadeiranotfound = 0;
         $newDataAdded = 0;
         foreach ($json as $inscricao) {
-            $curso = curso::where('codigo',$inscricao->CD_CURSO)->first();
+            $curso = Curso::where('codigo',$inscricao->CD_CURSO)->first();
             if(empty($curso)){
                 $cursonotfound += 1;
                 continue;
             }
 
-            $cadeira = cadeira::where('codigo',$inscricao->CD_DISCIP)->first();
+            $cadeira = Cadeira::where('codigo',$inscricao->CD_DISCIP)->first();
             if(empty($cadeira)){
                 $cadeiranotfound += 1;
                 continue;
             }
 
-            $utilizador = utilizador::where('login', $inscricao->LOGIN)->first();
+            $utilizador = Utilizador::where('login', $inscricao->LOGIN)->first();
             if(empty($utilizador)){
-                $utilizador = new utilizador();
+                $utilizador = new Utilizador();
                 $utilizador->nome = $inscricao->NM_ALUNO;
                 $utilizador->login = $inscricao->LOGIN;
                 $utilizador->idCurso = $curso->id;
@@ -105,10 +105,10 @@ class WebserviceController extends Controller
                 $newStudentAdded += 1;
             }
             
-            $inscricaoucs = inscricaoucs::where('idCadeira', $curso->id)->where('idUtilizador', $utilizador->id)->first();
+            $inscricaoucs = Inscricaoucs::where('idCadeira', $curso->id)->where('idUtilizador', $utilizador->id)->first();
             if(empty($inscricaoucs)){
                 $newDataAdded += 1;
-                $inscricaoucs = new inscricaoucs();
+                $inscricaoucs = new Inscricaoucs();
                 $inscricaoucs->idCadeira = $curso->id;
                 $inscricaoucs->idUtilizador = $utilizador->id;
                 $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;

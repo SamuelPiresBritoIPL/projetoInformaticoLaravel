@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Utilizador $utilizador
  * @property Curso $curso
  */
-class aberturas extends Model
+class Aberturas extends Model
 {
     /**
      * @var array

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $updated_at
  * @property Utilizador $utilizador
  */
-class logs extends Model
+class Logs extends Model
 {
     /**
      * @var array

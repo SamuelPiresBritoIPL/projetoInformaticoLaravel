@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Utilizador $utilizador
  * @property Pedidosuc[] $pedidosucs
  */
-class pedidos extends Model
+class Pedidos extends Model
 {
     /**
      * @var array

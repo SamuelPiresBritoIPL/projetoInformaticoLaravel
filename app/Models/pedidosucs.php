@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Cadeira $cadeira
  * @property Pedido $pedido
  */
-class pedidosucs extends Model
+class Pedidosucs extends Model
 {
     /**
      * @var array

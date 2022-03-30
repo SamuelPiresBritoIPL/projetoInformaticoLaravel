@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Turno $turno
  * @property Utilizador $utilizador
  */
-class inscricao extends Model
+class Inscricao extends Model
 {
     /**
      * The table associated with the model.

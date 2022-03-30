@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Log[] $logs
  * @property Pedido[] $pedidos
  */
-class utilizador extends Model
+class Utilizador extends Model
 {
     /**
      * The table associated with the model.

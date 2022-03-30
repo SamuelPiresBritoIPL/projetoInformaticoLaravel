@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Curso $curso
  * @property Utilizador $utilizador
  */
-class coordenador extends Model
+class Coordenador extends Model
 {
     /**
      * The table associated with the model.

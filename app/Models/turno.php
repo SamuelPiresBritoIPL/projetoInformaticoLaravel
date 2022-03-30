@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Aula[] $aulas
  * @property Inscricao[] $inscricaos
  */
-class turno extends Model
+class Turno extends Model
 {
     /**
      * The table associated with the model.

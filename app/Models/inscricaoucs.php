@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Cadeira $cadeira
  * @property Utilizador $utilizador
  */
-class inscricaoucs extends Model
+class Inscricaoucs extends Model
 {
     /**
      * @var array
