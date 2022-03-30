@@ -105,11 +105,11 @@ class WebserviceController extends Controller
                 $newStudentAdded += 1;
             }
             
-            $inscricaoucs = Inscricaoucs::where('idCadeira', $curso->id)->where('idUtilizador', $utilizador->id)->first();
+            $inscricaoucs = Inscricaoucs::where('idCadeira', $cadeira->id)->where('idUtilizador', $utilizador->id)->first();
             if(empty($inscricaoucs)){
                 $newDataAdded += 1;
                 $inscricaoucs = new Inscricaoucs();
-                $inscricaoucs->idCadeira = $curso->id;
+                $inscricaoucs->idCadeira = $cadeira->id;
                 $inscricaoucs->idUtilizador = $utilizador->id;
                 $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
             }
