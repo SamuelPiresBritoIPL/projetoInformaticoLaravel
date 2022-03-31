@@ -32,7 +32,7 @@ Route::group(['prefix' => 'curso'], function () {
     Route::post('addabertura/{curso}',[AberturasController::class, 'addAberturas']);
     Route::post('removeabertura/{idabertura}',[AberturasController::class, 'removeAberturas']);
 });
-Route::post('addcoordenador',[CoordenadorController::class, 'store']);
+Route::post('coordenador',[CoordenadorController::class, 'store']);
 Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);
 
 

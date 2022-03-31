@@ -27,7 +27,7 @@ class CoordenadorPostRequest extends FormRequest
     public function rules()
     {
         $rules = [
-			'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
+			'login' => ['required', Rule::exists('utilizador', 'login')->where('login', $this->request->get('login'))],
 			'tipo' => ['required', 'in:1,0'],
 			'idCurso' => ['required', 'numeric', Rule::exists('curso', 'id')->where('id', $this->request->get('idCurso'))],
 		];
