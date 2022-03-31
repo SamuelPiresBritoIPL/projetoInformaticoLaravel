@@ -62,4 +62,8 @@ class AberturaService
         $abertura->save();
         return $abertura;
     }
+
+    public function remove($abertura){
+        return $abertura->delete();
+    }
 }

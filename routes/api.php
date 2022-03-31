@@ -25,9 +25,11 @@ Route::group(['prefix' => 'curso'], function () {
 	Route::get('/cadeiras', [CursoController::class, 'getCursoComCadeiras']);
     Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']);
     Route::get('/aberturas',[CursoController::class, 'getAberturas']);
+    Route::get('/aberturas/{curso}',[CursoController::class, 'getAberturasByCurso']);
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
 
     Route::post('addabertura/{curso}',[AberturasController::class, 'addAberturas']);
+    Route::post('removeabertura/{idabertura}',[AberturasController::class, 'removeAberturas']);
 });
 Route::post('addcoordenador',[CoordenadorController::class, 'store']);
 Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);

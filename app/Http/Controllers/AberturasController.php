@@ -28,15 +28,13 @@ class AberturasController extends Controller
 
         
         //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
-        if(count($curso->aberturas) == 0){
-            if($data->get('tipoAbertura') == 1){
-                return response("Tem de ser aberta o periodo de confirmação de ucs antes de abrir o periodo de inscrição aos turnos.",401);
-            }
-        }else{
-            
-        }
-
         $abertura = (new AberturaService)->save($curso,$data);
         return response($abertura, 200);
+    }
+
+    public function removeAberturas(Aberturas $abertura){
+        if((new AberturaService)->remove($abertura))
+            return response(200);
+        return response(401);
     }
 }
