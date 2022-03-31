@@ -25,6 +25,7 @@ Route::group(['prefix' => 'curso'], function () {
 	Route::get('/cadeiras', [CursoController::class, 'getCursoComCadeiras']);
     Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']);
     Route::get('/aberturas',[CursoController::class, 'getAberturas']);
+    Route::get('/cadeiras/{curso}', [CursoController::class, 'getCadeirasByCurso']);
     Route::get('/aberturas/{curso}',[CursoController::class, 'getAberturasByCurso']);
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
 

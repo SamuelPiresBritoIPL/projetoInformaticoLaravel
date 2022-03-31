@@ -44,5 +44,10 @@ class CursoController extends Controller
         CursoResource::$format = 'aberturas';
         return response(new CursoResource($curso),200);
     }
+
+    public function getCadeirasByCurso(Curso $curso){
+        CursoResource::$format = 'cadeira';
+        return response(new CursoResource($curso),200);
+    }
     
 }
