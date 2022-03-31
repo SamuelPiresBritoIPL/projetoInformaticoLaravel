@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $email
  * @property string $nome
  * @property string $login
- * @property integer $tipo => 0 - estudante | 1 - professor | 2 - coordenador
+ * @property integer $tipo => 0 - estudante | 1 - professor | 2 - coordenador | 3 - admin
  * @property int $idCurso
  * @property Curso $curso
  * @property Abertura[] $aberturas
