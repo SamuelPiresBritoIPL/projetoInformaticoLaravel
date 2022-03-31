@@ -18,12 +18,13 @@ class CursoResource extends JsonResource
     {
       switch (CursoResource::$format) {
         case 'cadeira':
+          CadeiraResource::$format = 'paracurso';
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
-            'cadeiras' => $this->cadeiras
+            'cadeiras' => CadeiraResource::collection($this->cadeiras)
           ];
         case 'coordenador':
           return [
