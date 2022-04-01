@@ -37,7 +37,6 @@ class TurnoResource extends JsonResource
           'tipo' => $this->tipo,
           'numero' => $this->numero,
           'cadeira' => $this->cadeira,
-          'professor' => $this->professor,
         ];
       }  
     }

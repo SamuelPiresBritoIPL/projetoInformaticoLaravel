@@ -16,10 +16,11 @@ class CreateAulaTable extends Migration {
 		Schema::create('aula', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->smallInteger('diaSemana')->default(0);
-			$table->time('horaInicio');
-			$table->time('horaFim');
+			$table->smallInteger('diaSemana')->nullable();
+			$table->time('horaInicio')->nullable();
+			$table->time('horaFim')->nullable();
 			$table->integer('idTurno')->unsigned()->index('idTurno_idx');
+			$table->integer('idProfessor')->unsigned()->nullable()->index('idUtilizador7_idx');
 			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});

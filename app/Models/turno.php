@@ -26,7 +26,7 @@ class Turno extends Model
     /**
      * @var array
      */
-    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel', 'idProfessor', 'tipo','numero'];
+    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel', 'tipo','numero'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -50,13 +50,5 @@ class Turno extends Model
     public function inscricaos()
     {
         return $this->hasMany(inscricao::class, 'idTurno');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function professor()
-    {
-        return $this->belongsTo(utilizador::class, 'idProfessor');
     }
 }

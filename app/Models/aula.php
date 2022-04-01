@@ -24,7 +24,7 @@ class Aula extends Model
     /**
      * @var array
      */
-    protected $fillable = ['diaSemana', 'horaInicio', 'horaFim', 'idTurno'];
+    protected $fillable = ['diaSemana', 'horaInicio', 'horaFim', 'idTurno', 'idProfessor',];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -32,5 +32,13 @@ class Aula extends Model
     public function turno()
     {
         return $this->belongsTo(turno::class, 'idTurno');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function professor()
+    {
+        return $this->belongsTo(utilizador::class, 'idProfessor');
     }
 }

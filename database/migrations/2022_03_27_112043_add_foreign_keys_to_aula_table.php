@@ -16,6 +16,7 @@ class AddForeignKeysToAulaTable extends Migration {
 		Schema::table('aula', function(Blueprint $table)
 		{
 			$table->foreign('idTurno', 'idTurno')->references('id')->on('turno')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idProfessor', 'idUtilizador7')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 

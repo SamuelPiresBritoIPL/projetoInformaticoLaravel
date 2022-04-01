@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Aula;
 use Exception;
 use App\Models\Logs;
 use App\Models\Curso;
@@ -35,6 +36,7 @@ class WebserviceService
 
     public function getCursos($json){
         $newDataAdded = 0;
+        Aula::truncate();
         foreach ($json as $turno) {
             $curso = Curso::where('codigo',$turno->CD_Curso)->first();
             if(empty($curso)){
@@ -72,17 +74,22 @@ class WebserviceService
                 $cadeira->save();
                 $newDataAdded += 1;
             }
-
-            $newturno = Turno::where('idCadeira',$cadeira->id)->where('idProfessor',$utilizador->id)->where('tipo',$turno->CodDiscipTipo)->where('numero',$turno->CDTurno)->first();
+            //->where('idProfessor',$utilizador->id)
+            $newturno = Turno::where('idCadeira',$cadeira->id)->where('tipo',$turno->CodDiscipTipo)->where('numero',$turno->CDTurno)->first();
             if(empty($newturno)){
                 $newturno = new Turno();
                 $newturno->idCadeira = $cadeira->id;
-                $newturno->idProfessor = $utilizador->id;
                 $newturno->tipo = $turno->CodDiscipTipo;
                 $newturno->numero = $turno->CDTurno;
                 $newturno->save();
                 $newDataAdded += 1;
             }
+
+            $aula = new Aula();
+            $aula->idTurno = $newturno->id;
+            $aula->idProfessor = $utilizador->id;
+            $aula->save();
+            $newDataAdded += 1;
         }
         return $newDataAdded;
     }
