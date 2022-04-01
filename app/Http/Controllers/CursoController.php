@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Resources\CursoResource;
+use App\Models\Anoletivo;
 
 class CursoController extends Controller
 {
@@ -30,9 +31,15 @@ class CursoController extends Controller
         return response(CursoResource::collection(Curso::all()),200);
     }
 
-    public function getAberturas(){
+    public function getAberturas(Anoletivo $anoletivo,$semestre){
+        if($semestre != 1 && $semestre != 2){
+            return response("O semestre não é válido");
+        }
         CursoResource::$format = 'aberturas';
-        return response(CursoResource::collection(Curso::all()),200);
+        $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
+            $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
+        }])->get();
+        return response(CursoResource::collection($cursos),200);
     }
 
     public function getCoordenadoresByCurso(Curso $curso){
@@ -40,9 +47,12 @@ class CursoController extends Controller
         return response(new CursoResource($curso),200);
     }
 
-    public function getAberturasByCurso(Curso $curso){
+    public function getAberturasByCurso(Curso $curso,Anoletivo $anoletivo,$semestre){
         CursoResource::$format = 'aberturas';
-        return response(new CursoResource($curso),200);
+        $curso1 = Curso::where('id',$curso->id)->with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
+            $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
+        }])->first();
+        return response(new CursoResource($curso1),200);
     }
 
     public function getCadeirasByCurso(Curso $curso){

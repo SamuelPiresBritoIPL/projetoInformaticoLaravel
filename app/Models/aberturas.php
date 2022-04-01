@@ -41,4 +41,12 @@ class Aberturas extends Model
     {
         return $this->belongsTo(Curso::class, 'idCurso');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function anoletivo()
+    {
+        return $this->belongsTo(Anoletivo::class, 'idAnoletivo');
+    }
 }

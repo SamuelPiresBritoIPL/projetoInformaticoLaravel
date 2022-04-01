@@ -21,6 +21,8 @@ class AberturaResource extends JsonResource
             'dataEncerar' => $this->dataEncerar,
             'ano' => $this->ano,
             'tipoAbertura' => $this->tipoAbertura,
+            'anoletivo' => $this->anoletivo,
+            'semestre' => $this->semestre,
             'utilizador' => new UtilizadorResource($this->utilizador)
         ];
     }

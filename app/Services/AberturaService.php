@@ -56,8 +56,10 @@ class AberturaService
         $abertura->dataAbertura = $data->get('dataAbertura');
         $abertura->dataEncerar = $data->get('dataEncerar');
         $abertura->ano = $data->get('ano');
+        $abertura->semestre = $data->get('semestre');
         $abertura->tipoAbertura = $data->get('tipoAbertura');
         $abertura->idUtilizador = $data->get('idUtilizador');
+        $abertura->idAnoletivo = $data->get('idAnoletivo');
         $abertura->idCurso = $curso->id;
         $abertura->save();
         return $abertura;

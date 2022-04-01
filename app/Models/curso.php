@@ -23,10 +23,12 @@ class Curso extends Model
      */
     protected $table = 'curso';
 
+    protected $primaryKey = 'id';
+
     /**
      * @var array
      */
-    protected $fillable = ['codigo', 'nome', 'abreviatura'];
+    protected $fillable = ['id','codigo', 'nome', 'abreviatura'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
