@@ -16,14 +16,14 @@ class Inscricaoucs extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idCadeira', 'idUtilizador','nrinscricoes'];
+    protected $fillable = ['idCadeira', 'idUtilizador','idAnoletivo','nrinscricoes'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function cadeira()
     {
-        return $this->belongsTo(cadeira::class, 'idCadeira');
+        return $this->belongsTo(Cadeira::class, 'idCadeira');
     }
 
     /**
@@ -31,6 +31,14 @@ class Inscricaoucs extends Model
      */
     public function utilizador()
     {
-        return $this->belongsTo(utilizador::class, 'idUtilizador');
+        return $this->belongsTo(Utilizador::class, 'idUtilizador');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function anoletivo()
+    {
+        return $this->belongsTo(Anoletivo::class, 'idUtilizador');
     }
 }

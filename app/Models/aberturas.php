@@ -24,7 +24,7 @@ class Aberturas extends Model
     /**
      * @var array
      */
-    protected $fillable = ['dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura', 'idUtilizador', 'idCurso', 'created_at', 'updated_at'];
+    protected $fillable = ['dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura', 'idAnoletivo', 'semestre', 'idUtilizador', 'idCurso', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

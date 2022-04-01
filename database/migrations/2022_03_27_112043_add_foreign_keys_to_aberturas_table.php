@@ -17,6 +17,7 @@ class AddForeignKeysToAberturasTable extends Migration {
 		{
 			$table->foreign('idUtilizador', 'idUtilizador')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 			$table->foreign('idCurso', 'idcursoo')->references('id')->on('curso')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idAnoletivo', 'idAnoletivo_1')->references('id')->on('anoletivo')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
@@ -32,6 +33,7 @@ class AddForeignKeysToAberturasTable extends Migration {
 		{
 			$table->dropForeign('idUtilizador');
 			$table->dropForeign('idcursoo');
+			$table->dropForeign('idAnoletivo_1');
 		});
 	}
 

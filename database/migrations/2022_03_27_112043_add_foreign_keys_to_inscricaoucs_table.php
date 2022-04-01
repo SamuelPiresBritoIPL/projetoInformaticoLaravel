@@ -17,6 +17,7 @@ class AddForeignKeysToInscricaoucsTable extends Migration {
 		{
 			$table->foreign('idCadeira', 'idCadeira_3')->references('id')->on('cadeira')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 			$table->foreign('idUtilizador', 'idUtilizador_4')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idAnoletivo', 'idAnoletivo_3')->references('id')->on('anoletivo')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
@@ -32,6 +33,7 @@ class AddForeignKeysToInscricaoucsTable extends Migration {
 		{
 			$table->dropForeign('idCadeira_3');
 			$table->dropForeign('idUtilizador_4');
+			$table->dropForeign('idAnoletivo_3');
 		});
 	}
 

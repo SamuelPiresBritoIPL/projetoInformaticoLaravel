@@ -26,14 +26,14 @@ class Turno extends Model
     /**
      * @var array
      */
-    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel', 'tipo','numero'];
+    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel', 'tipo','numero','idanoletivo'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function cadeira()
     {
-        return $this->belongsTo(cadeira::class, 'idCadeira');
+        return $this->belongsTo(Cadeira::class, 'idCadeira');
     }
 
     /**
@@ -41,7 +41,7 @@ class Turno extends Model
      */
     public function aulas()
     {
-        return $this->hasMany(aula::class, 'idTurno');
+        return $this->hasMany(Aula::class, 'idTurno');
     }
 
     /**
@@ -49,6 +49,14 @@ class Turno extends Model
      */
     public function inscricaos()
     {
-        return $this->hasMany(inscricao::class, 'idTurno');
+        return $this->hasMany(Inscricao::class, 'idTurno');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function anoletivo()
+    {
+        return $this->belongsTo(Anoletivo::class, 'idAnoletivo');
     }
 }

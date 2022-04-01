@@ -18,6 +18,7 @@ class CreateInscricaoucsTable extends Migration {
 			$table->unsignedInteger('id',true);
 			$table->integer('idCadeira')->unsigned()->index('idCadeira_3_idx');
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizador_4_idx');
+			$table->integer('idAnoletivo')->unsigned()->index('idAnoletivo_2_idx');
 			$table->smallInteger('nrinscricoes')->default(1);
 			$table->timestamps();
 			$table->engine = 'InnoDB';

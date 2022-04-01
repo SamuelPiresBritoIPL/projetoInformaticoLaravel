@@ -28,7 +28,6 @@ class CadeiraResource extends JsonResource
             'semestre' => $this->semestre,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
-            'anoletivo' => $this->anoletivo,
             'turnos' => TurnoResource::collection($this->turnos),
           ];
         default:
@@ -39,7 +38,6 @@ class CadeiraResource extends JsonResource
             'semestre' => $this->semestre,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
-            'anoletivo' => $this->anoletivo,
             'turnos' => TurnoResource::collection($this->turnos),
             'curso' => CursoResource::collection($this->curso),
         ];

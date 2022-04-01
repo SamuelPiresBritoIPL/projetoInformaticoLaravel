@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\CursoResource;
 use App\Models\Aberturas;
 use App\Services\AberturaService;
+use App\Services\LogsService;
 
 class AberturasController extends Controller
 {
@@ -29,6 +30,7 @@ class AberturasController extends Controller
         
         //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
         $abertura = (new AberturaService)->save($curso,$data);
+        (new LogsService)->save("Abertura criada do tipo ".$data->get('tipoAbertura')." do curso ".$abertura->curso->nome,"Aberturas",$data->get('idUtilizador'));
         return response($abertura, 200);
     }
 

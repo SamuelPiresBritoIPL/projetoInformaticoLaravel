@@ -31,7 +31,7 @@ class Cadeira extends Model
     /**
      * @var array
      */
-    protected $fillable = ['codigo', 'ano', 'semestre', 'nome', 'abreviatura', 'idCurso', 'anoletivo'];
+    protected $fillable = ['codigo', 'ano', 'semestre', 'nome', 'abreviatura', 'idCurso'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -54,7 +54,7 @@ class Cadeira extends Model
      */
     public function pedidosucs()
     {
-        return $this->hasMany(~pedidosucs::class, 'idCadeira');
+        return $this->hasMany(pedidosucs::class, 'idCadeira');
     }
 
     /**
