@@ -16,6 +16,7 @@ class AddForeignKeysToPedidosTable extends Migration {
 		Schema::table('pedidos', function(Blueprint $table)
 		{
 			$table->foreign('idUtilizador', 'idUtilizador_')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+			$table->foreign('idAnoletivo', 'idAnoletivo_5')->references('id')->on('anoletivo')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
@@ -30,6 +31,7 @@ class AddForeignKeysToPedidosTable extends Migration {
 		Schema::table('pedidos', function(Blueprint $table)
 		{
 			$table->dropForeign('idUtilizador_');
+			$table->dropForeign('idAnoletivo_5');
 		});
 	}
 

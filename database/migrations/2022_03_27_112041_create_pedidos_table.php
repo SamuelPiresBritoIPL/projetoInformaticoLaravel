@@ -17,6 +17,8 @@ class CreatePedidosTable extends Migration {
 		{
 			$table->unsignedInteger('id',true);
 			$table->integer('idUtilizador')->unsigned()->index('idUtilizado_idx');
+			$table->integer('idAnoletivo')->unsigned()->index('idAnoletivo_idx');
+			$table->smallInteger('estado')->default(0);
 			$table->string('descricao', 200)->nullable();
 			$table->timestamps();
 			$table->softDeletes();

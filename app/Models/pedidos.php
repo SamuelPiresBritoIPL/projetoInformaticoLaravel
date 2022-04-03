@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Hamcrest\Util;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
  * @property int $idUtilizador
+ * @property int $idAnoLetivo
+ * @property int $estado   0 => sem alteracoes para se fazer || 1 => pedido de ucs pendente || 2 => pedido aceite por coordenador || 3 => pedido rejeitado pelo coordenador
  * @property string $descricao
  * @property string $created_at
  * @property string $updated_at
@@ -19,14 +22,22 @@ class Pedidos extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idUtilizador', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['idUtilizador', 'idAnoletivo', 'estado', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function utilizador()
     {
-        return $this->belongsTo(utilizador::class, 'idUtilizador');
+        return $this->belongsTo(Utilizador::class, 'idUtilizador');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function anoletivo()
+    {
+        return $this->belongsTo(Anoletivo::class, 'idAnoLetivo');
     }
 
     /**
@@ -34,6 +45,6 @@ class Pedidos extends Model
      */
     public function pedidosucs()
     {
-        return $this->hasMany(pedidosucs::class, 'idPedidos');
+        return $this->hasMany(Pedidosucs::class, 'idPedidos');
     }
 }
