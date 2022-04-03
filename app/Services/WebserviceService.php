@@ -162,6 +162,7 @@ class WebserviceService
                 $inscricaoucs->idAnoletivo = $anoletivo->id;
                 $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
             }
+            $inscricaoucs->estado = $inscricao->CD_STATUS;
             $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
             $inscricaoucs->save();
         }

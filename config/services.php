@@ -32,15 +32,7 @@ return [
 
     'webapiurls' => [
         'cursos' => 'http://www.dei.estg.ipleiria.pt/intranet/horarios/ws/inscricoes/turnos.php?',
-        'cursokeys' => [
-            'anoletivo' => '202122',
-            'periodo' => 'S2'
-        ],
         'turnos' => 'http://www.dei.estg.ipleiria.pt/intranet/horarios/ws/inscricoes/inscricoes_cursos.php?',
-        'turnokeys' => [
-            'anoletivo' => '202122',
-            'estado' => '1'
-        ],
     ],
 
 ];

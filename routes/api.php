@@ -32,13 +32,14 @@ Route::group(['prefix' => 'curso'], function () {
     Route::post('addabertura/{curso}',[AberturasController::class, 'addAberturas']);
     Route::post('removeabertura/{idabertura}',[AberturasController::class, 'removeAberturas']);
 });
-Route::post('coordenador',[CoordenadorController::class, 'store']);
+Route::post('coordenador',[CoordenadorController::class, 'stinscricaoore']);
 Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);
 
 
 
 Route::group(['prefix' => 'webservice'], function () {
-    Route::get('curso', [WebserviceController::class, 'getCursos']);
-    Route::get('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
+    Route::post('curso', [WebserviceController::class, 'getCursos']);
+    Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
+    Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);
 });
 
