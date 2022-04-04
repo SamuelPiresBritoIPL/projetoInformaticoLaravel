@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AberturasController;
-use App\Http\Controllers\CoordenadorController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\WebserviceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\AberturasController;
+use App\Http\Controllers\AnoletivoController;
+use App\Http\Controllers\WebserviceController;
+use App\Http\Controllers\CoordenadorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 //free use
 Route::get('curso', [CursoController::class, 'index']);
+Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
@@ -29,12 +31,19 @@ Route::group(['prefix' => 'curso'], function () {
     Route::get('/aberturas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'getAberturasByCurso']);
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
 
-    Route::post('addabertura/{curso}',[AberturasController::class, 'addAberturas']);
-    Route::post('removeabertura/{idabertura}',[AberturasController::class, 'removeAberturas']);
 });
-Route::post('coordenador',[CoordenadorController::class, 'stinscricaoore']);
-Route::delete('removecoordenador/{coordenador}',[CoordenadorController::class, 'remove']);
 
+Route::group(['prefix' => 'abertura'], function () {
+    Route::post('/{curso}',[AberturasController::class, 'create']);
+    Route::delete('/{abertura}',[AberturasController::class, 'remove']);
+    Route::put('/{abertura}',[AberturasController::class, 'update']);
+});
+
+//admin / coordenador
+Route::group(['prefix' => 'coordenador'], function () {
+	Route::post('/',[CoordenadorController::class, 'store']);
+    Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
+});
 
 
 Route::group(['prefix' => 'webservice'], function () {

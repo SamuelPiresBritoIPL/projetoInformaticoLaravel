@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use DateTime;
+use Carbon\Carbon;
 use App\Models\Logs;
 use App\Models\Aberturas;
 
@@ -12,7 +13,7 @@ class AberturaService
     public function checkForOldAberturas($curso){
         $now = new DateTime();
         foreach($curso->aberturas as $abertura){
-            if($abertura->dataEncerar < $now) {
+            if($abertura->dataEncerar->isPast()) {
                 $abertura->delete();
             }
         }
@@ -20,15 +21,11 @@ class AberturaService
 
     public function checkIfAberturaCanBeCreated($curso,$data){
         //se for exatamenteigual da return de um erro
-        foreach($curso->aberturas as $abertura){
-            if($abertura->ano == $data->get('ano')){
-                if($abertura->tipoAbertura == $data->get('tipoAbertura')){
-                    if($abertura->dataEncerar > $data->get('dataAbertura')){
-                        return ["codigo"=>0,"error"=>"Já existe um periodo aberto."];
-                    }
-                }
-            }
+        $abertura = Aberturas::where('idCurso', $curso->id)->where('ano',$data->get('ano'))->where('tipoAbertura',$data->get('tipoAbertura'))->where('semestre',$data->get('semestre'))->where('idAnoletivo',$data->get('idAnoletivo'))->first();
+        if(!empty($abertura)){
+            return ["codigo"=>0,"error"=>"Já existe um periodo aberto."];
         }
+        
         if($data->get('ano') == 0){
             foreach($curso->aberturas as $abertura){
                 if($abertura->tipoAbertura == $data->get('tipoAbertura')){
@@ -42,16 +39,15 @@ class AberturaService
                 }
             }
         }
-        $now = new DateTime();
-        if($data->get('dataAbertura') < $now){
-            return ["codigo"=>0,"error"=>"A data de abertura é anteriora data atual."];
+
+        if(Carbon::parse($data->get('dataAbertura')) <= Carbon::now()){
+            return ["codigo"=>0,"error"=>"A data de abertura é anterior a data atual."];
         }
         
         return ["codigo"=>1];
     }
 
     public function save($curso, $data){
-        //'dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura', 'idUtilizador', 'idCurso'
         $abertura = new Aberturas();
         $abertura->dataAbertura = $data->get('dataAbertura');
         $abertura->dataEncerar = $data->get('dataEncerar');

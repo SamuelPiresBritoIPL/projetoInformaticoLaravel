@@ -17,14 +17,14 @@ class AberturasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function addAberturas(AberturaPostRequest $request, Curso $curso){
+    public function create(AberturaPostRequest $request, Curso $curso){
         $data = collect($request->validated());
         //apagar aberturas antigas
         (new AberturaService)->checkForOldAberturas($curso);
 
         $canCreate = (new AberturaService)->checkIfAberturaCanBeCreated($curso, $data);
         if($canCreate["codigo"] == 0){
-            response($canCreate["error"],401);
+            return response($canCreate["error"],401);
         }
 
         
@@ -34,9 +34,14 @@ class AberturasController extends Controller
         return response($abertura, 200);
     }
 
-    public function removeAberturas(Aberturas $abertura){
+    public function remove(Aberturas $abertura){
         if((new AberturaService)->remove($abertura))
             return response(200);
         return response(401);
+    }
+
+    public function update(AberturaPostRequest $request, Aberturas $abertura){
+        $data = collect($request->validated());
+
     }
 }

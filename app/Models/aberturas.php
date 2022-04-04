@@ -21,6 +21,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Aberturas extends Model
 {
     use SoftDeletes;
+
+    protected $casts = [
+        'dataAbertura' => 'datetime',
+        'dataEncerar' => 'datetime',
+    ];
+
     /**
      * @var array
      */

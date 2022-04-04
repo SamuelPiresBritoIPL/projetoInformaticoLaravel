@@ -26,15 +26,29 @@ class AberturaPostRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
-			'dataAbertura' => ['required', 'date'],
-			'dataEncerar' => ['required', 'date','after_or_equal:dataAbertura'],
-			'ano' => ['required', 'in:0,1,2,3,4,5'],
-			'tipoAbertura' => ['required', 'in:0,1'],
-			'semestre' => ['required', 'in:1,2'],
-			'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
-			'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
-		];
+        $rules = [];
+        if ($this->isMethod('post')) {
+            $rules = [
+                'dataAbertura' => ['required', 'date'],
+                'dataEncerar' => ['required', 'date','after_or_equal:dataAbertura'],
+                'ano' => ['required', 'in:0,1,2,3,4,5'],
+                'tipoAbertura' => ['required', 'in:0,1'],
+                'semestre' => ['required', 'in:1,2'],
+                'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
+                'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
+            ];
+        }else{
+            if(request()->has("dataAbertura") || request()->has("dataEncerar")){
+                $rules = array_merge($rules,array('dataAbertura' => ['required', 'date'],
+                                                'dataEncerar' => ['required', 'date','after_or_equal:dataAbertura']));
+            }
+            if(request()->has("ano")){
+                $rules = array_merge($rules,array('ano' => ['required', 'in:0,1,2,3,4,5']));
+            }
+            if(request()->has("semestre")){
+                $rules = array_merge($rules,array('semestre' => ['required', 'in:1,2']));
+            }
+        }
         return $rules;
     }
 
