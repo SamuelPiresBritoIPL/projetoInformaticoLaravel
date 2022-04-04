@@ -27,11 +27,10 @@ class AberturasController extends Controller
             return response($canCreate["error"],401);
         }
 
-        
         //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
         $abertura = (new AberturaService)->save($curso,$data);
         (new LogsService)->save("Abertura criada do tipo ".$data->get('tipoAbertura')." do curso ".$abertura->curso->nome,"Aberturas",$data->get('idUtilizador'));
-        return response($abertura, 200);
+        return response($abertura, 201);
     }
 
     public function remove(Aberturas $abertura){
@@ -42,6 +41,13 @@ class AberturasController extends Controller
 
     public function update(AberturaPostRequest $request, Aberturas $abertura){
         $data = collect($request->validated());
+        $canUpdate = (new AberturaService)->checkIfAberturaCanBeUpdated($abertura, $data);
+        if($canUpdate["codigo"] == 0){
+            return response($canUpdate["error"],401);
+        }
 
+        $abertura = (new AberturaService)->update($abertura,$data);
+        //log
+        return response($abertura, 200);
     }
 }

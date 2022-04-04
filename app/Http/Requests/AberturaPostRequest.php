@@ -45,9 +45,6 @@ class AberturaPostRequest extends FormRequest
             if(request()->has("ano")){
                 $rules = array_merge($rules,array('ano' => ['required', 'in:0,1,2,3,4,5']));
             }
-            if(request()->has("semestre")){
-                $rules = array_merge($rules,array('semestre' => ['required', 'in:1,2']));
-            }
         }
         return $rules;
     }
