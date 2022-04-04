@@ -52,6 +52,7 @@ class CursoController extends Controller
         $curso1 = Curso::where('id',$curso->id)->with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->first();
+        
         return response(new CursoResource($curso1),200);
     }
 

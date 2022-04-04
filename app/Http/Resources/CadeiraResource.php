@@ -19,6 +19,13 @@ class CadeiraResource extends JsonResource
     public function toArray($request)
     {
       switch (CadeiraResource::$format) {
+        case 'inscricaoucs':
+          return [
+            'id' => $this->id,
+            'codigo' => $this->codigo,
+            'nome' => $this->nome,
+            'abreviatura' => $this->abreviatura
+          ];
         case 'paracurso':
           TurnoResource::$format = 'paracadeira';
           return [

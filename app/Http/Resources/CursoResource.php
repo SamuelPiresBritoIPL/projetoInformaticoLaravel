@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\CoordenadorResource;
+use App\Services\CursoService;
 
 class CursoResource extends JsonResource
 {
@@ -35,11 +36,14 @@ class CursoResource extends JsonResource
             'coordenadores' => CoordenadorResource::collection($this->coordenadors)
           ];
         case 'aberturas':
+          //nr de anos de um curso enviar aqui
+          $anosCurso = (new CursoService)->getAnosCurso($this->id);
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
+            'totalanos' => $anosCurso,
             'aberturas' => AberturaResource::collection($this->aberturas)
           ];
         default:

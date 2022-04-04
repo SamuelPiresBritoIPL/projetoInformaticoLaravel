@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Cadeira;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\CadeiraController;
 use App\Http\Controllers\AberturasController;
 use App\Http\Controllers\AnoletivoController;
 use App\Http\Controllers\WebserviceController;
@@ -33,6 +35,7 @@ Route::group(['prefix' => 'curso'], function () {
 
 });
 
+//admin / coordenador
 Route::group(['prefix' => 'abertura'], function () {
     Route::post('/{curso}',[AberturasController::class, 'create']);
     Route::delete('/{abertura}',[AberturasController::class, 'remove']);
@@ -43,6 +46,11 @@ Route::group(['prefix' => 'abertura'], function () {
 Route::group(['prefix' => 'coordenador'], function () {
 	Route::post('/',[CoordenadorController::class, 'store']);
     Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
+});
+
+Route::group(['prefix' => 'cadeiras'], function () {
+	Route::get('/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
+    Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
 });
 
 
