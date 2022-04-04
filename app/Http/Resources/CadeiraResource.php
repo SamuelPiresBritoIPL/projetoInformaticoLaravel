@@ -24,7 +24,10 @@ class CadeiraResource extends JsonResource
             'id' => $this->id,
             'codigo' => $this->codigo,
             'nome' => $this->nome,
-            'abreviatura' => $this->abreviatura
+            'ano' => $this->ano,
+            'semestre' => $this->semestre,
+            'abreviatura' => $this->abreviatura,
+            'estado' => $this->estado
           ];
         case 'paracurso':
           TurnoResource::$format = 'paracadeira';
