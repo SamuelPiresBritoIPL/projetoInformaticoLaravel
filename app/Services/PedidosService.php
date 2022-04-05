@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Models\Logs;
 use App\Models\Pedidos;
+use App\Models\Aberturas;
+use App\Models\Anoletivo;
 use App\Models\Pedidosucs;
+use App\Models\Inscricaoucs;
 
 class PedidosService
 {
@@ -36,6 +39,53 @@ class PedidosService
 
         $pedidoucs->save();
         return $pedidoucs;
+    }
+
+    public function editPedidoByAdmin($data, Pedidos $pedido){
+        if((!$data->has('pedidosucsAprovadasIds') || !$data->has('pedidosucsReprovadasIds'))){
+            return ["msg" => "Têm de ser enviados os aprovados e reprovados mesmo que vazio!", "code" => 400];
+        }
+        if(sizeof($pedido->pedidosucs) != (sizeof($data->get('pedidosucsAprovadasIds'))+sizeof($data->get('pedidosucsReprovadasIds')))){
+            return ["msg" => "Não foram selecionadas todas as ucs!", "code" => 400];
+        }
+        
+        foreach($data->get('pedidosucsAprovadasIds') as $id){
+            $pedidoucs = Pedidosucs::where('id',$id)->first();
+            $pedidoucs->aceite = 1;
+            $pedidoucs->save();
+
+            //$idAnoletivo =  Aberturas::where('idCurso',$pedidoucs->cadeira->id)->select('idAnoletivo')->distinct()->get()->max('idAnoletivo');
+            $idAnoletivo =  (Anoletivo::where('anoletivo',Anoletivo::distinct()->get()->max('anoletivo'))->first())->id;
+
+            $inscricaoucs = "a";//verificiar se ja nao existe criado se ja houver n criar
+            $inscricaoucs = new Inscricaoucs();
+            $inscricaoucs->idUtilizador = $pedido->idUtilizador;
+            $inscricaoucs->idCadeira = $pedidoucs->idCadeira;
+            $inscricaoucs->nrinscricoes = 1;
+            $inscricaoucs->estado = 1;
+            $inscricaoucs->idAnoletivo = $idAnoletivo;
+            $inscricaoucs->save();
+            //inscrever alunos na cadeira
+        }
+        foreach($data->get('pedidosucsReprovadasIds') as $id){
+            //inscrever alunos na cadeira
+            $pedidoucs = Pedidosucs::where('id',$id)->first();
+            $pedidoucs->aceite = 0;
+            $pedidoucs->save();
+        }
+
+        if(sizeof($data->get('pedidosucsReprovadasIds')) == 0){
+            $pedido->estado = 2;
+        }else{
+            if(sizeof($data->get('pedidosucsAprovadasIds')) == 0){
+                $pedido->estado = 3;
+            }else{
+                $pedido->estado = 4;
+            }
+        }
+        $pedido->save();
+
+        return ["msg" => "Processo completo!", "code" => 200];
     }
 
 

@@ -23,6 +23,7 @@ class CreateTurnoTable extends Migration {
 			$table->string('tipo', 4);
 			$table->smallInteger('numero')->default(0);
 			$table->timestamps();
+			$table->softDeletes();
 			$table->engine = 'InnoDB';
 		});
 	}

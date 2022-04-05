@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Cadeira;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\CadeiraController;
@@ -33,7 +31,8 @@ Route::group(['prefix' => 'curso'], function () {
     Route::get('/cadeiras/{curso}', [CursoController::class, 'getCadeirasByCurso']);
     Route::get('/aberturas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'getAberturasByCurso']);
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
-
+    Route::get('/pedidos/{curso}/{anoletivo}/{semestre}',[PedidosController::class, 'getPedidosByCurso']);
+    Route::put('/pedidos/{pedido}',[PedidosController::class, 'editPedidoByCoordenador']);
 });
 
 //admin / coordenador

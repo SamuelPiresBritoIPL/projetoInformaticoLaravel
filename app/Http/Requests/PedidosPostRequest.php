@@ -26,21 +26,38 @@ class PedidosPostRequest extends FormRequest
      */
     public function rules()
     {
-        $this->validate([
-			'estado' => ['required', 'in:0,1'],
-		]);
-        //'idUtilizador', 'idAnoletivo', 'estado', 'descricao'
-        $rules = [
-            'descricao' => ['required', 'string', 'max:255'],
-            'estado' => ['required', 'in:0,1'],
-            'semestre' => ['required', 'in:1,2'],
-            'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
-            'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
-        ];
-        
-        //tem de receber um array de ids de cadeiras
-        if($this->request->get('estado') == 1){
-            $rules = array_merge($rules,array('cadeirasIds' => ['required','exists:cadeira,id']));
+        if ($this->isMethod('post')) {
+            $this->validate([
+                'estado' => ['required', 'in:0,1'],
+            ]);
+            //'idUtilizador', 'idAnoletivo', 'estado', 'descricao'
+            $rules = [
+                'descricao' => ['required', 'string', 'max:255'],
+                'estado' => ['required', 'in:0,1'],
+                'semestre' => ['required', 'in:1,2'],
+                'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
+                'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
+            ];
+            
+            //tem de receber um array de ids de cadeiras
+            if($this->request->get('estado') == 1){
+                $rules = array_merge($rules,array('cadeirasIds' => ['required','exists:cadeira,id']));
+            }
+        }
+
+        if($this->isMethod('get')){
+            $rules = [
+                'estado' => ['required', 'in:0,1,2,3,4'],
+                'semestre' => ['required', 'in:1,2'],
+                'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
+            ];
+        }
+
+        if($this->isMethod('put')){
+            $rules = [
+                'pedidosucsAprovadasIds' => ['','exists:pedidosucs,id'],
+                'pedidosucsReprovadasIds' => ['','exists:pedidosucs,id']
+            ];
         }
 
         return $rules;

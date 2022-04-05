@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PedidosPostRequest;
-use App\Http\Resources\PedidosResource;
-use App\Models\Anoletivo;
+use App\Models\Curso;
 use App\Models\Pedidos;
+use App\Models\Aberturas;
+use App\Models\Anoletivo;
+use App\Models\Inscricao;
+use App\Models\Pedidosucs;
+use App\Models\Inscricaoucs;
+use Illuminate\Http\Request;
 use App\Services\PedidosService;
+use App\Http\Resources\PedidosResource;
+use App\Http\Requests\PedidosPostRequest;
 
 class PedidosController extends Controller
 {
@@ -30,5 +36,22 @@ class PedidosController extends Controller
             }
         }
         return response((new PedidosResource($pedido)),201);
+    }
+
+    public function getPedidosByCurso(Curso $curso, Anoletivo $anoletivo,$semestre){
+        $pedidos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->rightjoin('utilizador', function ($join) use(&$curso) {
+            $join->on('utilizador.id', '=', 'pedidos.idUtilizador')
+                 ->where('utilizador.idCurso','=',$curso->id);
+        })->select('pedidos.*')->get();
+        return response(PedidosResource::collection($pedidos),200);
+    }
+
+    public function editPedidoByCoordenador(PedidosPostRequest $request, Pedidos $pedido){
+        $data = collect($request->validated());
+
+        $result = (new PedidosService)->editPedidoByAdmin($data, $pedido);
+
+        return response($result["msg"],$result["code"]);
+
     }
 }

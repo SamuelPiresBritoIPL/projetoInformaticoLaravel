@@ -26,7 +26,7 @@ class Turno extends Model
     /**
      * @var array
      */
-    protected $fillable = ['nome', 'idCadeira', 'vagastotal', 'visivel', 'tipo','numero','idanoletivo'];
+    protected $fillable = ['idCadeira', 'vagastotal', 'visivel', 'tipo','numero','idanoletivo', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

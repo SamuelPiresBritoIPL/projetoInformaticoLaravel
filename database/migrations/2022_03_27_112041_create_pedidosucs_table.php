@@ -18,6 +18,7 @@ class CreatePedidosucsTable extends Migration {
 			$table->unsignedInteger('id',true);
 			$table->integer('idCadeira')->unsigned()->index('idCadeira___idx');
 			$table->integer('idPedidos')->unsigned()->index('idPedidos_idx');
+			$table->smallInteger('aceite')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 			$table->engine = 'InnoDB';

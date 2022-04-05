@@ -17,6 +17,8 @@ class PedidosucsResource extends JsonResource
     {
         CadeiraResource::$format = 'inscricaoucs';
         return [
+            'id' => $this->id,
+            'aceite' => $this->aceite,
             'cadeira' => new CadeiraResource($this->cadeira)
         ];
     }
