@@ -22,7 +22,7 @@ class Pedidos extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idUtilizador', 'idAnoletivo', 'estado', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['idUtilizador', 'idAnoletivo', 'semestre', 'estado', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

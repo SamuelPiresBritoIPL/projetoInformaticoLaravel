@@ -9,6 +9,7 @@ use App\Http\Controllers\AberturasController;
 use App\Http\Controllers\AnoletivoController;
 use App\Http\Controllers\WebserviceController;
 use App\Http\Controllers\CoordenadorController;
+use App\Http\Controllers\PedidosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +52,8 @@ Route::group(['prefix' => 'coordenador'], function () {
 Route::group(['prefix' => 'cadeiras'], function () {
 	Route::get('/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
+    Route::post('pedidos',[PedidosController::class, 'store']);
 });
-
 
 Route::group(['prefix' => 'webservice'], function () {
     Route::post('curso', [WebserviceController::class, 'getCursos']);

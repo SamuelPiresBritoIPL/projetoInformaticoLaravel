@@ -42,7 +42,7 @@ class CadeiraResource extends JsonResource
           ];
         default:
         return [
-          'id' => $this->id,
+            'id' => $this->id,
             'codigo' => $this->codigo,
             'ano' => $this->ano,
             'semestre' => $this->semestre,
