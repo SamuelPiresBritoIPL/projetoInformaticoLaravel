@@ -57,13 +57,15 @@ class PedidosService
             //$idAnoletivo =  Aberturas::where('idCurso',$pedidoucs->cadeira->id)->select('idAnoletivo')->distinct()->get()->max('idAnoletivo');
             $idAnoletivo =  (Anoletivo::where('anoletivo',Anoletivo::distinct()->get()->max('anoletivo'))->first())->id;
 
-            $inscricaoucs = "a";//verificiar se ja nao existe criado se ja houver n criar
-            $inscricaoucs = new Inscricaoucs();
-            $inscricaoucs->idUtilizador = $pedido->idUtilizador;
-            $inscricaoucs->idCadeira = $pedidoucs->idCadeira;
-            $inscricaoucs->nrinscricoes = 1;
+            $inscricaoucs = Inscricaoucs::where('idUtilizador', $pedido->idUtilizador)->where('idCadeira',$pedidoucs->idCadeira)->where('idAnoletivo',$idAnoletivo)->first();//verificiar se ja nao existe criado se ja houver n criar
+            if(empty($inscricaoucs)){
+                $inscricaoucs = new Inscricaoucs();
+                $inscricaoucs->idUtilizador = $pedido->idUtilizador;
+                $inscricaoucs->idCadeira = $pedidoucs->idCadeira;
+                $inscricaoucs->nrinscricoes = 1;
+                $inscricaoucs->idAnoletivo = $idAnoletivo;
+            }
             $inscricaoucs->estado = 1;
-            $inscricaoucs->idAnoletivo = $idAnoletivo;
             $inscricaoucs->save();
             //inscrever alunos na cadeira
         }
