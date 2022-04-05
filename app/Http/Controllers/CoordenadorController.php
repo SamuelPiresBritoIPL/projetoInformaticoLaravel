@@ -17,8 +17,11 @@ class CoordenadorController extends Controller
 
     public function store(CoordenadorPostRequest $request){
         $data = collect($request->validated());
-        //dd($data);
-        $utilizador = Utilizador::where('login',$data->get('login'))->first();
+        if($data->has('login')){
+            $utilizador = Utilizador::where('login',$data->get('login'))->first();
+        }else{
+            $utilizador = Utilizador::where('email',$data->get('email'))->first();
+        }
         if(empty($utilizador)){
             return response("Este utilizador não é válido",422);
         }

@@ -27,10 +27,15 @@ class CoordenadorPostRequest extends FormRequest
     public function rules()
     {
         $rules = [
-			'login' => ['required', Rule::exists('utilizador', 'login')->where('login', $this->request->get('login'))],
 			'tipo' => ['required', 'in:1,0'],
 			'idCurso' => ['required', 'numeric', Rule::exists('curso', 'id')->where('id', $this->request->get('idCurso'))],
 		];
+
+        if($this->request->has('email')){
+            $rules = array_merge($rules,array('email' => ['required', Rule::exists('utilizador', 'email')->where('email', $this->request->get('email'))]));
+        }else{
+            $rules = array_merge($rules,array('login' => ['required', Rule::exists('utilizador', 'login')->where('login', $this->request->get('login'))]));
+        }        
         return $rules;
     }
 
