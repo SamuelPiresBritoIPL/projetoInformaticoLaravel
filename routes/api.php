@@ -5,6 +5,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\CadeiraController;
 use App\Http\Controllers\AberturasController;
 use App\Http\Controllers\AnoletivoController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WebserviceController;
 use App\Http\Controllers\CoordenadorController;
 use App\Http\Controllers\PedidosController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\PedidosController;
 //free use
 Route::get('curso', [CursoController::class, 'index']);
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
+Route::post('login', [AuthController::class, 'login']);
 
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
