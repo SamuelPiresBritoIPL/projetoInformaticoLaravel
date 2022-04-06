@@ -35,7 +35,7 @@ class AberturaService
             }
         }else{
             foreach($curso->aberturas as $abertura){
-                if($abertura->ano == 0){
+                if($abertura->ano == 0 && $abertura->tipoAbertura == $data->get('tipoAbertura')){
                     return ["codigo"=>0,"error"=>"Já existe um periodo aberto para todos os anos."];
                 }
             }

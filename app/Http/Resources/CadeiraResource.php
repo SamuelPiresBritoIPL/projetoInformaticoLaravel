@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\TurnoResource;
 use App\Http\Resources\CoordenadorResource;
+use App\Models\Inscricao;
+use App\Models\Inscricaoucs;
 use Database\Seeders\TurnoSeeder;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,6 +32,9 @@ class CadeiraResource extends JsonResource
             'estado' => $this->estado
           ];
         case 'paracurso':
+          //ir buscar numero total inscritos em quantos
+          $totalInscricoes = Inscricaoucs::where('idCadeira', $this->id)->where('estado', 1)->where('idAnoletivo', 1)->count();
+          //$totalInscritos = Inscricao::where('')
           TurnoResource::$format = 'paracadeira';
           return [
             'id' => $this->id,
@@ -38,6 +43,8 @@ class CadeiraResource extends JsonResource
             'semestre' => $this->semestre,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
+            'nrInscricoes' => $totalInscricoes,
+            'nrInscritos' => 0,
             'turnos' => TurnoResource::collection($this->turnos),
           ];
         default:
