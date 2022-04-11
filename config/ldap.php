@@ -127,7 +127,7 @@ return [
                 |
                 */
 
-                'account_suffix' => env('LDAP_ACCOUNT_SUFFIX', ''),
+                'account_suffix' => env('LDAP_ACCOUNT_SUFFIX'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -198,8 +198,8 @@ return [
                 |
                 */
 
-                'username' => env('LDAP_USERNAME', 'salas'),
-                'password' => env('LDAP_PASSWORD', 'np9ySKFZ'),//np9ySKFZ  $@l@$
+                'username' => env('LDAP_USERNAME'),
+                'password' => env('LDAP_PASSWORD'),//np9ySKFZ  $@l@$
 
                 /*
                 |--------------------------------------------------------------------------

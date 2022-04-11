@@ -291,11 +291,11 @@ return [
     'sync_attributes' => [
 
         //'email' => 'userprincipalname',
-        'email' => 'email',
-        'login' => 'login',
+        'email' => 'mail',
+        'username' => 'samaccountname',
 
-        //'name' => 'cn',
-        'name' => 'nome',
+        'name' => 'cn',
+        //'name' => 'nome',
 
     ],
 
