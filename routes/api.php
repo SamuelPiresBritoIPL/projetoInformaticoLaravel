@@ -23,6 +23,9 @@ use App\Http\Controllers\PedidosController;
 Route::get('curso', [CursoController::class, 'index']);
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
+//admin
+Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
+
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
 	Route::get('/cadeiras', [CursoController::class, 'getCursoComCadeiras']);

@@ -20,7 +20,7 @@ class Anoletivo extends Model
     /**
      * @var array
      */
-    protected $fillable = ['id', 'anoletivo'];
+    protected $fillable = ['id', 'anoletivo','semestreativo','ativo'];
 
    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
