@@ -24,7 +24,7 @@ class WebserviceController extends Controller
     	$json = (new WebserviceService)->callAPI("Get",$url);
         
         if(empty($json)){
-            return response("something went wrong", 401);
+            return response("Não foi possivel aceder ao website", 401);
         }
 
         $newDataAdded = (new WebserviceService)->getCursos($json);
@@ -41,11 +41,11 @@ class WebserviceController extends Controller
 
         set_time_limit(750);
         $url = (new WebserviceService)->makeUrl(config('services.webapiurls.turnos'),['anoletivo' => $data->get('anoletivo'),'estado' => $estado]);
-
+        
     	$json = (new WebserviceService)->callAPI("Get",$url);
 
         if(empty($json)){
-            return response("something went wrong", 401);
+            return response("Não foi possivel aceder ao website", 401);
         }
 
         $data = (new WebserviceService)->getInscricoesturnos($json);
