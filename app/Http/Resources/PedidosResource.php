@@ -18,6 +18,7 @@ class PedidosResource extends JsonResource
         'id' => $this->id,
         'estado' => $this->estado,
         'descricao' => $this->descricao,
+        'data' => $this->created_at,
         'utilizador' => new UtilizadorResource($this->utilizador),
         'anoletivo' => $this->anoletivo,
         'cadeiras' => PedidosucsResource::collection($this->pedidosucs)

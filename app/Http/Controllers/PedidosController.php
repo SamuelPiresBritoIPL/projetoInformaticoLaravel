@@ -39,7 +39,7 @@ class PedidosController extends Controller
     }
 
     public function getPedidosByCurso(Curso $curso, Anoletivo $anoletivo,$semestre){
-        $pedidos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->rightjoin('utilizador', function ($join) use(&$curso) {
+        $pedidos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->where('estado', 1)->rightjoin('utilizador', function ($join) use(&$curso) {
             $join->on('utilizador.id', '=', 'pedidos.idUtilizador')
                  ->where('utilizador.idCurso','=',$curso->id);
         })->select('pedidos.*')->get();
