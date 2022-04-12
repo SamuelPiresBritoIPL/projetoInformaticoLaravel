@@ -17,6 +17,8 @@ class CreateAnoletivoTable extends Migration {
 		{
 			$table->unsignedInteger('id',true);
 			$table->string('anoletivo', 10)->nullable();
+			$table->smallInteger('semestreativo')->nullable();
+			$table->smallInteger('ativo')->default(0);
 			$table->timestamps();
 			$table->engine = 'InnoDB';
 		});

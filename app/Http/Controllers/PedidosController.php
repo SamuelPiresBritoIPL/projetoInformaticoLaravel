@@ -32,6 +32,7 @@ class PedidosController extends Controller
         
         if($pedido->estado == 1){
             foreach($data->get('cadeirasIds') as $cadeiraId){
+                //ciclo para perceber se é para adicionar ucs ou remover ucs
                 (new PedidosService)->savePedidosUcs($pedido->id,$cadeiraId);
             }
         }
