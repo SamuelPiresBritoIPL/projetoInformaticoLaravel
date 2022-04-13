@@ -21,6 +21,45 @@ class WebserviceService
         return $url;
     }
 
+    /**
+    * Send a GET requst using cURL
+    * @param string $url to request
+    * @param array $get values to send
+    * @param array $options for cURL
+    * @return string
+    */
+    function curl_get($url, array $get = array(), array $options = array())
+    {   
+        try {
+            $defaults = array(
+                CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+                CURLOPT_HEADER => 0,
+                CURLOPT_RETURNTRANSFER => TRUE,
+                CURLOPT_TIMEOUT => 4
+            );
+        
+            $ch = curl_init();
+            curl_setopt_array($ch, ($options + $defaults));
+            $result = curl_exec($ch);
+            if(!$result)
+            {
+                trigger_error(curl_error($ch));
+            }
+            curl_close($ch);
+            if(empty($result)){
+                return;
+            }
+            $response = json_decode($result);
+            dd($response);
+            return $response;
+        }
+        catch (Exception $e) {
+            return;
+        }
+        
+        return $result;
+    }
+
     public function callAPI($method, $url){
         try {
             $response = file_get_contents($url);
