@@ -21,7 +21,7 @@ class WebserviceController extends Controller
         }
         $url = (new WebserviceService)->makeUrl(config('services.webapiurls.cursos'),['anoletivo' => $data->get('anoletivo'),'periodo' => 'S'.$data->get('semestre')]);
 
-    	$json = (new WebserviceService)->callAPI("Get",$url);
+    	$json = (new WebserviceService)->curl_get($url);
         
         if(empty($json)){
             return response("Não foi possivel aceder ao website", 401);
@@ -42,7 +42,7 @@ class WebserviceController extends Controller
         set_time_limit(750);
         $url = (new WebserviceService)->makeUrl(config('services.webapiurls.turnos'),['anoletivo' => $data->get('anoletivo'),'estado' => $estado]);
         
-    	$json = (new WebserviceService)->callAPI("Get",$url);
+    	$json = (new WebserviceService)->curl_get($url);
 
         if(empty($json)){
             return response("Não foi possivel aceder ao website", 401);
