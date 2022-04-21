@@ -31,7 +31,7 @@ class CadeiraResource extends JsonResource
             'semestre' => $this->semestre,
             'abreviatura' => $this->abreviatura,
             'estado' => $this->estado,
-            'turnos' => TurnoResource::collection($this->turnos)
+            'turnos' => TurnoResource::collection($this->turnosVisiveis)
           ];
         case 'paracurso':
           //ir buscar numero total inscritos em quantos
