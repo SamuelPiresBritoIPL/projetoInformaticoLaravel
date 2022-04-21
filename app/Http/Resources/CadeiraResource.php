@@ -22,6 +22,7 @@ class CadeiraResource extends JsonResource
     {
       switch (CadeiraResource::$format) {
         case 'inscricaoucs':
+          TurnoResource::$format = 'paracadeiraturno';
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
@@ -29,7 +30,8 @@ class CadeiraResource extends JsonResource
             'ano' => $this->ano,
             'semestre' => $this->semestre,
             'abreviatura' => $this->abreviatura,
-            'estado' => $this->estado
+            'estado' => $this->estado,
+            'turnos' => TurnoResource::collection($this->turnos)
           ];
         case 'paracurso':
           //ir buscar numero total inscritos em quantos

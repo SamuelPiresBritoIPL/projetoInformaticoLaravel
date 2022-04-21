@@ -51,6 +51,7 @@ Route::group(['prefix' => 'coordenador'], function () {
     Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
 });
 
+//aluno
 Route::group(['prefix' => 'cadeiras'], function () {
 	Route::get('/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);

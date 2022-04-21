@@ -48,6 +48,7 @@ class PedidosController extends Controller
     }
 
     public function editPedidoByCoordenador(PedidosPostRequest $request, Pedidos $pedido){
+
         $data = collect($request->validated());
 
         $result = (new PedidosService)->editPedidoByAdmin($data, $pedido);

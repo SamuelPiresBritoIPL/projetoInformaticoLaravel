@@ -29,6 +29,16 @@ class TurnoResource extends JsonResource
             'vagastotal' => $this->vagastotal,
             'vagasocupadas' => $vagasocupadas,
           ];
+        case 'paracadeiraturno':
+            $vagasocupadas = 0;
+            if(!is_null($this->vagastotal)){
+                //ir buscar mais dados para as vagasocupadas
+            }
+          return [
+            'id' => $this->id,
+            'tipo' => $this->tipo,
+            'numero' => $this->numero
+          ];
         default:
         return [
           'id' => $this->id,

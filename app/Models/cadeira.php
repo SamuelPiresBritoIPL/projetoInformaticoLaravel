@@ -64,4 +64,9 @@ class Cadeira extends Model
     {
         return $this->hasMany(turno::class, 'idCadeira')->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
     }
+
+    public function turnosvisiveis()
+    {
+        return $this->hasMany(turno::class, 'idCadeira')->WHERE('visivel', 1)->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
+    }
 }
