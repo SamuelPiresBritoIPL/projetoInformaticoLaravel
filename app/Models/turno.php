@@ -53,6 +53,15 @@ class Turno extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inscricaosutilizadores()
+    {
+        return $this->hasMany(Inscricao::class, 'idTurno')->join('utilizador','utilizador.id','=','inscricao.idUtilizador')
+        ->select('utilizador.login','utilizador.nome', 'locations.location AS em_location');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function anoletivo()

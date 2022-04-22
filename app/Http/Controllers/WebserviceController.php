@@ -20,9 +20,8 @@ class WebserviceController extends Controller
             return response("O semestre deve ser indicado para esta pedido", 401);
         }
         $url = (new WebserviceService)->makeUrl(config('services.webapiurls.cursos'),['anoletivo' => $data->get('anoletivo'),'periodo' => 'S'.$data->get('semestre')]);
-
-    	$json = (new WebserviceService)->curl_get($url);
         
+    	$json = (new WebserviceService)->callAPI("GET",$url);
         if(empty($json)){
             return response("Não foi possivel aceder ao website", 401);
         }
@@ -42,7 +41,7 @@ class WebserviceController extends Controller
         set_time_limit(750);
         $url = (new WebserviceService)->makeUrl(config('services.webapiurls.turnos'),['anoletivo' => $data->get('anoletivo'),'estado' => $estado]);
         
-    	$json = (new WebserviceService)->curl_get($url);
+    	$json = (new WebserviceService)->callAPI("GET",$url);
 
         if(empty($json)){
             return response("Não foi possivel aceder ao website", 401);

@@ -8,6 +8,7 @@ use App\Http\Controllers\AnoletivoController;
 use App\Http\Controllers\WebserviceController;
 use App\Http\Controllers\CoordenadorController;
 use App\Http\Controllers\PedidosController;
+use App\Http\Controllers\TurnoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,16 @@ Route::group(['prefix' => 'abertura'], function () {
 Route::group(['prefix' => 'coordenador'], function () {
 	Route::post('/',[CoordenadorController::class, 'store']);
     Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
+});
+
+//admin
+Route::group(['prefix' => 'cadeiras'], function () {
+	Route::get('stats/{cadeira}',[CadeiraController::class, 'getInformacoesCadeira']);
+});
+
+//admin
+Route::group(['prefix' => 'turno'], function () {
+	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesCadeira']);
 });
 
 //aluno

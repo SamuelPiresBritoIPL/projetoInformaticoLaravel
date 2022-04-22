@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cadeira;
+use App\Models\Utilizador;
+use App\Services\CadeiraService;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Resources\InscricaoucsResource;
-use App\Models\Cadeira;
-use App\Models\Inscricaoucs;
-use App\Models\Utilizador;
 
 class CadeiraController extends Controller
 {
@@ -28,5 +28,11 @@ class CadeiraController extends Controller
             CadeiraResource::$format = 'inscricaoucs';
             return response(CadeiraResource::collection($dados),200);
         }
+    }
+
+    public function getInformacoesCadeira(Cadeira $cadeira){
+        $result = (new CadeiraService)->getInformacoesCadeirasForAdmin($cadeira);
+
+        return response($result["msg"],$result["code"]);
     }
 }
