@@ -17,7 +17,6 @@ class AddForeignKeysToInscricaoTable extends Migration {
 		{
 			$table->foreign('idTurno', 'idTurnoo')->references('id')->on('turno')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 			$table->foreign('idUtilizador', 'idUtilizadorr')->references('id')->on('utilizador')->onUpdate('NO ACTION')->onDelete('NO ACTION');
-			$table->foreign('idAnoletivo', 'idAnoletivo_6')->references('id')->on('anoletivo')->onUpdate('NO ACTION')->onDelete('NO ACTION');
 		});
 	}
 
@@ -33,7 +32,6 @@ class AddForeignKeysToInscricaoTable extends Migration {
 		{
 			$table->dropForeign('idTurnoo');
 			$table->dropForeign('idUtilizadorr');
-			$table->dropForeign('idAnoletivo_6');
 		});
 	}
 

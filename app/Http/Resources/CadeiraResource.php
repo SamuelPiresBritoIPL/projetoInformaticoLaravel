@@ -31,7 +31,7 @@ class CadeiraResource extends JsonResource
             'semestre' => $this->semestre,
             'abreviatura' => $this->abreviatura,
             'estado' => $this->estado,
-            'turnos' => TurnoResource::collection($this->turnosVisiveis)
+            'turnos' => (TurnoResource::collection($this->turnosVisiveis))->groupBy('tipo')
           ];
         case 'paracurso':
           //ir buscar numero total inscritos em quantos
@@ -47,7 +47,7 @@ class CadeiraResource extends JsonResource
             'abreviatura' => $this->abreviatura,
             'nrInscricoes' => $totalInscricoes,
             'nrInscritos' => 0,
-            'turnos' => TurnoResource::collection($this->turnos),
+            'turnos' => (TurnoResource::collection($this->turnos))->groupBy('tipo'),
           ];
         default:
         return [

@@ -57,8 +57,15 @@ class Turno extends Model
      */
     public function inscricaosutilizadores()
     {
-        return $this->hasMany(Inscricao::class, 'idTurno')->join('utilizador','utilizador.id','=','inscricao.idUtilizador')
-        ->select('utilizador.login','utilizador.nome', 'locations.location AS em_location');
+        return $this->hasMany(Inscricao::class, 'idTurno')
+            ->join('utilizador','utilizador.id','=','inscricao.idUtilizador')
+            ->leftjoin('inscricaoucs', function($join)
+            {
+                $join->on('inscricaoucs.idUtilizador', '=', 'utilizador.id');
+                $join->where('inscricaoucs.idCadeira','=',$this->idCadeira);
+                $join->where('inscricaoucs.estado','=',1);
+            })
+            ->select('inscricao.id','utilizador.login','utilizador.nome', 'utilizador.id AS idutilizador','inscricaoucs.nrinscricoes');
     }
 
     /**

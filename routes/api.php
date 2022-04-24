@@ -59,7 +59,7 @@ Route::group(['prefix' => 'cadeiras'], function () {
 
 //admin
 Route::group(['prefix' => 'turno'], function () {
-	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesCadeira']);
+	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
 });
 
 //aluno
