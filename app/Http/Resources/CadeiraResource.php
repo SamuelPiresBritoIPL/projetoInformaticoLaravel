@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\TurnoResource;
-use App\Http\Resources\CoordenadorResource;
 use App\Models\Inscricao;
 use App\Models\Inscricaoucs;
 use Database\Seeders\TurnoSeeder;
+use App\Http\Resources\CursoResource;
+use App\Http\Resources\TurnoResource;
+use App\Http\Resources\CoordenadorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CadeiraResource extends JsonResource
@@ -58,7 +59,7 @@ class CadeiraResource extends JsonResource
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
             'turnos' => TurnoResource::collection($this->turnos),
-            'curso' => CursoResource::collection($this->curso),
+            'curso' => $this->idCurso,
         ];
       }  
     }

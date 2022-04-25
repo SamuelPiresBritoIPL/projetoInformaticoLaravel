@@ -54,6 +54,7 @@ Route::group(['prefix' => 'coordenador'], function () {
 
 //admin
 Route::group(['prefix' => 'cadeiras'], function () {
+	Route::get('/{cadeira}',[CadeiraController::class, 'getCadeira']);
 	Route::get('stats/{cadeira}',[CadeiraController::class, 'getInformacoesCadeira']);
 });
 
@@ -64,7 +65,7 @@ Route::group(['prefix' => 'turno'], function () {
 
 //aluno
 Route::group(['prefix' => 'cadeiras'], function () {
-	Route::get('/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
+	Route::get('/utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
 });

@@ -35,4 +35,8 @@ class CadeiraController extends Controller
 
         return response($result["msg"],$result["code"]);
     }
+
+    public function getCadeira(Cadeira $cadeira){
+        return response(new CadeiraResource($cadeira),200);
+    }
 }
