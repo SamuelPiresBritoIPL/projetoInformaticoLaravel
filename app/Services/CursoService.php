@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Cadeira;
 use App\Models\Logs;
+use App\Models\Cadeira;
+use App\Models\Anoletivo;
+use App\Models\Utilizador;
+use App\Models\Inscricaoucs;
 
 class CursoService
 {

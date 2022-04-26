@@ -59,7 +59,7 @@ class CadeiraResource extends JsonResource
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
             'turnos' => TurnoResource::collection($this->turnos),
-            'curso' => $this->idCurso,
+            'curso' => $this->curso,
         ];
       }  
     }

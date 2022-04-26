@@ -56,11 +56,14 @@ Route::group(['prefix' => 'coordenador'], function () {
 Route::group(['prefix' => 'cadeiras'], function () {
 	Route::get('/{cadeira}',[CadeiraController::class, 'getCadeira']);
 	Route::get('stats/{cadeira}',[CadeiraController::class, 'getInformacoesCadeira']);
+    Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']);
+    Route::post('/addalunoturno/{turno}',[CadeiraController::class, 'addAlunoTurno']);
 });
 
 //admin
 Route::group(['prefix' => 'turno'], function () {
 	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
+	Route::put('/{turno}',[TurnoController::class, 'editTurno']);
 });
 
 //aluno

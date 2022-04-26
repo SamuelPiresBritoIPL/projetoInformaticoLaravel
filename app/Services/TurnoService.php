@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\TurnoResource;
 use App\Models\Anoletivo;
 use App\Models\Inscricaoucs;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,21 @@ class TurnoService
             }
         }
         $send = ["totalinscritos" => $totalNaorepetentes+$totalRepetentes,"totalrepetentes" => $totalRepetentes,
-                "totalnaorepetentes" => $totalNaorepetentes, "alunos" => $alunos];
+                "totalnaorepetentes" => $totalNaorepetentes,"turno"=> new TurnoResource($turno), "alunos" => $alunos];
         return ['msg' => $send,'code' => 200];
+    }
+
+    public function editTurno($data,$turno){
+        if($data->has('visivel')){
+            $turno->visivel = $data->get('visivel');
+        }
+        if($data->has('repetentes')){
+            $turno->repetentes = $data->get('repetentes');
+        }
+        if($data->has('vagastotal')){
+            $turno->vagastotal = $data->get('vagastotal');
+        }
+        $turno->save();
+        return ['msg' => "Alterações feitas com sucesso",'code' => 200];
     }
 }

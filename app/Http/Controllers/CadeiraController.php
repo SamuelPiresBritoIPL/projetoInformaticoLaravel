@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Turno;
 use App\Models\Cadeira;
 use App\Models\Utilizador;
 use App\Services\CadeiraService;
 use App\Http\Resources\CadeiraResource;
+use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
 
 class CadeiraController extends Controller
@@ -38,5 +40,21 @@ class CadeiraController extends Controller
 
     public function getCadeira(Cadeira $cadeira){
         return response(new CadeiraResource($cadeira),200);
+    }
+
+    public function addAluno(CadeiraPostRequest $request,Cadeira $cadeira){
+        $data = collect($request->validated());
+
+        $result = (new CadeiraService)->addStudentToUC($data,$cadeira);
+
+        return response($result["msg"],$result["code"]);
+    }
+
+    public function addAlunoTurno(CadeiraPostRequest $request, Turno $turno){
+        $data = collect($request->validated());
+
+        $result = (new CadeiraService)->addStudentToTurno($data,$turno);
+
+        return response($result["msg"],$result["code"]);
     }
 }

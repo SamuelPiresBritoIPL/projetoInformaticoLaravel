@@ -44,6 +44,7 @@ class TurnoResource extends JsonResource
           'id' => $this->id,
           'vagastotal' => $this->vagastotal,
           'visivel' => $this->visivel,
+          'repetentes' => $this->repetentes,
           'tipo' => $this->tipo,
           'numero' => $this->numero,
           'cadeira' => $this->cadeira,
