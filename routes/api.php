@@ -7,6 +7,7 @@ use App\Http\Controllers\AberturasController;
 use App\Http\Controllers\AnoletivoController;
 use App\Http\Controllers\WebserviceController;
 use App\Http\Controllers\CoordenadorController;
+use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\TurnoController;
 
@@ -71,6 +72,7 @@ Route::group(['prefix' => 'cadeiras'], function () {
 	Route::get('/utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
+    Route::post('inscricao',[InscricaoController::class, 'store']);
 });
 
 Route::group(['prefix' => 'webservice'], function () {
