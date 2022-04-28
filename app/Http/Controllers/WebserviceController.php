@@ -48,6 +48,18 @@ class WebserviceController extends Controller
     public function getInscricoesturnos(WebservicePostRequest $request, $estado=1){
         $data = collect($request->validated());
 
+        $idcurso = 0;
+        if($request->has('idcurso')){
+            $idcurso = $request->get('idcurso');
+            if($idcurso != 0){
+                $curso = Curso::find($idcurso);
+                if(empty($curso)){
+                    return response("O curso não foi encontrado", 400);
+                }
+                $idcurso = $curso->codigo;
+            }
+        }
+
         set_time_limit(750);
         $baseurl = "";
         if (Storage::disk('local')->exists('urlinscricoes.txt')) {
@@ -57,17 +69,40 @@ class WebserviceController extends Controller
             $baseurl = Storage::disk('local')->get('urlinscricoes.txt');
         }
 
-        $url = (new WebserviceService)->makeUrl($baseurl,['anoletivo' => $data->get('anoletivo'),'estado' => $estado]);
+        $url = (new WebserviceService)->makeUrl($baseurl,['anoletivo' => $data->get('anoletivo'),'estado' => $estado]); //cod_curso=9119
         
-    	$json = (new WebserviceService)->callAPI("GET",$url);
-
-        if(empty($json)){
-            return response("Não foi possivel aceder ao website", 401);
+        $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0];
+        if($idcurso == 0){
+            $cursos = Curso::all();
+            foreach ($cursos as $c) {
+                $url2 = $url . "cod_curso=" . $c->codigo;
+                $dataSing = (new WebserviceController)->makeFinalUrlAndData($url2);
+                if(!empty($dataSing)){
+                    $data["cursonotfound"] += $dataSing["cursonotfound"];
+                    $data["cadeiranotfound"] += $dataSing["cadeiranotfound"];
+                    $data["newStudentAdded"] += $dataSing["newStudentAdded"];
+                    $data["newDataAdded"] += $dataSing["newDataAdded"];
+                }
+            }
+        }else{
+            $url = $url . "cod_curso=" . $idcurso;
+            $json = (new WebserviceService)->callAPI("GET",$url);
+            if(empty($json)){
+                return response("Não foi possivel aceder ao website", 401);
+            }
+            $data = (new WebserviceService)->getInscricoesturnos($json);
         }
 
-        $data = (new WebserviceService)->getInscricoesturnos($json);
-        
         return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded']], 200);
+    }
+
+    public function makeFinalUrlAndData($url){
+        $json = (new WebserviceService)->callAPI("GET",$url);
+        if(empty($json)){
+            return;
+        }
+        $data = (new WebserviceService)->getInscricoesturnos($json);
+        return $data;
     }
 
     public function changeurl(Request $request){
