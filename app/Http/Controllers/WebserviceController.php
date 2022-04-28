@@ -70,4 +70,19 @@ class WebserviceController extends Controller
         return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded']], 200);
     }
 
+    public function changeurl(Request $request){
+        if($request->has('urlturnos')){
+            Storage::disk('local')->put("urlcursos.txt", $request->get('urlturnos'));
+        }
+        if($request->has('urlinscricoes')){
+            Storage::disk('local')->put("urlinscricoes.txt", $request->get('urlinscricoes'));
+        }
+        return response(200);
+    }
+
+    public function geturls(){
+        $baseurl1 = Storage::disk('local')->get('urlinscricoes.txt');
+        $baseurl2 = Storage::disk('local')->get('urlcursos.txt');
+        return response(["urlturnos" => $baseurl2,"urlinscricoes" => $baseurl1],200);
+    }
 }
