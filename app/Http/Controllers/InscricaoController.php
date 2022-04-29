@@ -44,7 +44,6 @@ class InscricaoController extends Controller
                             $inscricao = Inscricao::find($inscricao->id);
                             if (!empty($inscricao)) {
                                 $inscricao = (new InscricaoService)->update($inscricao, $turnoId);
-                                dd($inscricao);
                             }
                         }
                     }
