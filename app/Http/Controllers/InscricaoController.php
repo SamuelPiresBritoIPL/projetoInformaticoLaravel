@@ -69,4 +69,12 @@ class InscricaoController extends Controller
         }
 
     }
+
+    public function delete(Inscricao $inscricao){
+        $del = $inscricao->delete();
+        if(!$del){
+            return response("Erro ao apagar a inscrição". 400);
+        }
+        return response("Inscrição apagada com sucesso". 200);
+    }
 }
