@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\Anoletivo;
-use App\Models\Aula;
 use Exception;
+use App\Models\Aula;
 use App\Models\Logs;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
+use App\Models\Anoletivo;
+use App\Models\Inscricao;
 use App\Models\Utilizador;
 use App\Models\Inscricaoucs;
+use Illuminate\Support\Facades\DB;
 
 class WebserviceService
 {
@@ -171,6 +173,34 @@ class WebserviceService
             'cursonotfound' => $cursonotfound,
             'cadeiranotfound' => $cadeiranotfound,
             'newDataAdded' => $newDataAdded,
+        ];
+    }
+
+    public function inscreverAlunosTurnosUnicos(Anoletivo $anoletivo, $semestre){
+        $turnos = Turno::select('turno.*')->rightjoin('cadeira', function ($join) use(&$semestre) {
+            $join->on('turno.idCadeira', '=', 'cadeira.id')->where('cadeira.semestre', '=', $semestre);
+        })->where('turno.idAnoletivo','=',$anoletivo->id)->where('turno.numero','=',0)->get();
+        $newInsc = 0;
+        $failedIns = 0;
+        foreach ($turnos as $turno) {
+            $ids = Inscricao::where('idTurno',$turno->id)->where('idAnoletivo',$anoletivo->id)->pluck('idUtilizador')->toArray();
+            $inscIds = Inscricaoucs::where('inscricaoucs.idCadeira','=',$turno->idCadeira)
+                        ->where('inscricaoucs.estado','=',1)->where('inscricaoucs.idAnoletivo','=',$anoletivo->id)
+                        ->whereNotIn('inscricaoucs.idUtilizador',$ids)->pluck('idUtilizador')->toArray();
+            $data = [];
+            foreach($inscIds as $inscId) {
+                array_push($data,['idUtilizador' => $inscId, 'idTurno' => $turno->id, 'idAnoletivo' => $anoletivo->id]);
+                
+            }
+            if(!empty($data)){
+                $newInsc_new = Inscricao::insertOrIgnore($data);
+                $newInsc += $newInsc_new;
+                $failedIns = count($data) - $newInsc;
+            }
+        }
+        return[
+            'novasInscricoes' => $newInsc,
+            'inscricoesFalharam' => $failedIns
         ];
     }
 }

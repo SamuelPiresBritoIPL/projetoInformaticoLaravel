@@ -82,5 +82,6 @@ Route::group(['prefix' => 'webservice'], function () {
     Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);
     Route::put('url', [WebserviceController::class, 'changeurl']);
     Route::get('url', [WebserviceController::class, 'geturls']);
+    Route::post('inscriverturnos', [WebserviceController::class, 'inscreverTurnos']);
 });
 
