@@ -55,8 +55,8 @@ Route::group(['prefix' => 'coordenador'], function () {
 
 //admin
 Route::group(['prefix' => 'cadeiras'], function () {
-	Route::get('/{cadeira}',[CadeiraController::class, 'getCadeira']); //sim
-	Route::get('stats/{cadeira}',[CadeiraController::class, 'getInformacoesCadeira']);
+	Route::get('/{cadeira}/{anoletivo}',[CadeiraController::class, 'getCadeira']); //sim
+	Route::get('stats/{cadeira}/{anoletivo}',[CadeiraController::class, 'getInformacoesCadeira']);
     Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']); //nao
     Route::post('/addalunoturno/{turno}',[CadeiraController::class, 'addAlunoTurno']); //nao
 });
