@@ -30,6 +30,19 @@ class CadeiraResource extends JsonResource
     public function toArray($request)
     {
       switch (CadeiraResource::$format) {
+        case 'inscricaoucsuser':
+          TurnoResource::$format = 'paracadeiraturno';
+          return [
+            'id' => $this->id,
+            'codigo' => $this->codigo,
+            'nome' => $this->nome,
+            'ano' => $this->ano,
+            'semestre' => $this->semestre,
+            'abreviatura' => $this->abreviatura,
+            'curso' => $this->curso->nome,
+            'codigocurso' => $this->curso->codigo,
+            'estado' => $this->estado
+          ];
         case 'inscricaoucs':
           TurnoResource::$format = 'paracadeiraturno';
           return [
@@ -61,17 +74,17 @@ class CadeiraResource extends JsonResource
             'turnos' => (TurnoResource::collection($this->turnos->where('idAnoletivo', $this->anoletivo)))->groupBy('tipo'),
           ];
         default:
-        return [
-            'id' => $this->id,
-            'codigo' => $this->codigo,
-            'ano' => $this->ano,
-            'semestre' => $this->semestre,
-            'nome' => $this->nome,
-            'abreviatura' => $this->abreviatura,
-            'turnos' => TurnoResource::collection($this->turnos),
-            'curso' => $this->curso,
-        ];
-      }  
+            return [
+                'id' => $this->id,
+                'codigo' => $this->codigo,
+                'ano' => $this->ano,
+                'semestre' => $this->semestre,
+                'nome' => $this->nome,
+                'abreviatura' => $this->abreviatura,
+                'turnos' => TurnoResource::collection($this->turnos->where('idAnoletivo', $this->anoletivo)),
+                'curso' => $this->curso,
+            ];
+        }  
     }
     public static function collection($resource){
       return new CadeiraResourceCollection($resource);

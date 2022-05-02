@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CadeiraService
 {
-    public function getInformacoesCadeirasForAdmin($cadeira){
-        $anoletivo = Anoletivo::where("ativo", 1)->first();
-        if(empty($anoletivo)){
-            return ['msg' => "Error",'code' => 404];
-        }
+    public function getInformacoesCadeirasForAdmin($cadeira, Anoletivo $anoletivo){
         $subQuery = "(select MAX(i.idTurno) from inscricao i join turno t on t.id = i.idTurno where i.idTurno IN 
         (SELECT t.id from turno t WHERE t.idCadeira = ". $cadeira->id ." and t.idAnoletivo = ". $anoletivo->id .") and i.idUtilizador = utilizador.id) as idTurno";
         $alunos = Inscricaoucs::where('idCadeira',$cadeira->id)->where('idAnoletivo', $anoletivo->id)->where('estado',1)

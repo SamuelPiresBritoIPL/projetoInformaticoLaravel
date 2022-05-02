@@ -45,7 +45,7 @@ class CursoController extends Controller
         $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->get();
-        return response(CursoResource::collection($cursos),200);
+        return response(CursoResourceCollection::make($cursos)->anoletivo($anoletivo->id,$semestre),200);
     }
 
     public function getCoordenadoresByCurso(Curso $curso){
@@ -54,12 +54,15 @@ class CursoController extends Controller
     }
 
     public function getAberturasByCurso(Curso $curso, Anoletivo $anoletivo, $semestre){
+        if($semestre != 1 && $semestre != 2){
+            return response("O semestre não é válido");
+        }
         CursoResource::$format = 'aberturas';
         $curso1 = Curso::where('id',$curso->id)->with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->first();
         
-        return response(new CursoResource($curso1),200);
+        return response(CursoResource::make($curso1)->anoletivo($anoletivo->id,$semestre),200);
     }
 
     public function getCadeirasByCurso(Curso $curso, Anoletivo $anoletivo, $semestre){

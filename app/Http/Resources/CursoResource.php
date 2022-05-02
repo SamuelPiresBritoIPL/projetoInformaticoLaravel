@@ -54,7 +54,7 @@ class CursoResource extends JsonResource
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
             'totalanos' => $anosCurso,
-            'aberturas' => AberturaResource::collection($this->aberturas)
+            'aberturas' => AberturaResource::collection($this->aberturas->where('semestre', $this->semestre)->where('idAnoletivo', $this->anoletivo))
           ];
         default:
         return [

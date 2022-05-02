@@ -17,7 +17,7 @@ class InscricaoucsResource extends JsonResource
     {
       switch (InscricaoucsResource::$format) {
         case 'cadeiras':
-          CadeiraResource::$format = 'inscricaoucs';
+          CadeiraResource::$format = 'inscricaoucsuser';
           return [
             'cadeira' => new CadeiraResource($this->cadeira),
             'estado' => $this->estado

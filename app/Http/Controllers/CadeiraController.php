@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
+use App\Models\Anoletivo;
 use App\Models\Inscricaoucs;
 
 class CadeiraController extends Controller
@@ -29,27 +30,27 @@ class CadeiraController extends Controller
                 $join->on('cadeira.id', '=', 'inscricaoucs.idCadeira')
                      ->where('inscricaoucs.idUtilizador','=',$utilizador->id);
             })->select('inscricaoucs.*', 'cadeira.*' )->get();
-            CadeiraResource::$format = 'inscricaoucs';
+            CadeiraResource::$format = 'inscricaoucsuser';
             return response(CadeiraResource::collection($dados),200);
         }
     }
 
-    public function getInformacoesCadeira(Cadeira $cadeira){
-        $result = (new CadeiraService)->getInformacoesCadeirasForAdmin($cadeira);
+    public function getInformacoesCadeira(Cadeira $cadeira, Anoletivo $anoletivo){
+        $result = (new CadeiraService)->getInformacoesCadeirasForAdmin($cadeira, $anoletivo);
 
         return response($result["msg"],$result["code"]);
     }
 
-    public function getCadeira(Cadeira $cadeira){
+    public function getCadeira(Cadeira $cadeira, Anoletivo $anoletivo){
         $tiposturnos = Turno::where('idCadeira', $cadeira->id)->select("tipo", DB::raw('count(*) as total'))->groupby("tipo")->pluck('tipo','total')->toArray();
-        $totalinscritos = Inscricaoucs::where('idCadeira', $cadeira->id)->where('estado', 1)->where('idAnoletivo', 1)->select(DB::raw('count(*) as total'))->get();
+        $totalinscritos = Inscricaoucs::where('idCadeira', $cadeira->id)->where('estado', 1)->where('idAnoletivo', $anoletivo->id)->select(DB::raw('count(*) as total'))->get();
         $numAlunos = $totalinscritos[0]->total;
         $data=[];
         foreach ($tiposturnos as $key => $value){
             array_push($data,["turno" => $value,"numeroturnos" => $key, "mediavagas" => round($numAlunos/$key)]);
         }
         
-        $cadeiras = new CadeiraResource($cadeira);
+        $cadeiras = CadeiraResource::make($cadeira)->anoletivo($anoletivo->id,$cadeira->semestre);
         return response(["info" => $data, "cadeiras" => $cadeiras],200);
     }
 
