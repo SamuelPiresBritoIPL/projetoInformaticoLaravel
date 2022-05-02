@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\CursoService;
 use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
+use App\Http\Resources\CursoResourceCollection;
 
 class CursoController extends Controller
 {
@@ -22,10 +23,13 @@ class CursoController extends Controller
     	return response(CursoResource::collection(Curso::all()),200);
     }
 
-    public function getCursoComCadeiras()
+    public function getCursoComCadeiras(Anoletivo $anoletivo,$semestre)
     {
+        if($semestre != 1 && $semestre != 2){
+            return response("O semestre não é válido");
+        }
         CursoResource::$format = 'cadeira';
-    	return response(CursoResource::collection(Curso::all()),200);
+    	return response(CursoResourceCollection::make(Curso::all())->anoletivo($anoletivo->id, $semestre),200);
     }
 
     public function getCoordenadores(){
@@ -49,7 +53,7 @@ class CursoController extends Controller
         return response(new CursoResource($curso),200);
     }
 
-    public function getAberturasByCurso(Curso $curso,Anoletivo $anoletivo,$semestre){
+    public function getAberturasByCurso(Curso $curso, Anoletivo $anoletivo, $semestre){
         CursoResource::$format = 'aberturas';
         $curso1 = Curso::where('id',$curso->id)->with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
@@ -58,9 +62,12 @@ class CursoController extends Controller
         return response(new CursoResource($curso1),200);
     }
 
-    public function getCadeirasByCurso(Curso $curso){
+    public function getCadeirasByCurso(Curso $curso, Anoletivo $anoletivo, $semestre){
+        if($semestre != 1 && $semestre != 2){
+            return response("O semestre não é válido");
+        }
         CursoResource::$format = 'cadeira';
-        return response(new CursoResource($curso),200);
+        return response(CursoResource::make($curso)->anoletivo($anoletivo->id, $semestre),200);
     }
     
 }

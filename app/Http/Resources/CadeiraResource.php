@@ -12,6 +12,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CadeiraResource extends JsonResource
 {
+    protected $anoletivo;
+    protected $semestre;
+
+    public function anoletivo($value, $value2){
+      $this->anoletivo = $value;
+      $this->semestre = $value2;
+      return $this;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -31,12 +39,14 @@ class CadeiraResource extends JsonResource
             'ano' => $this->ano,
             'semestre' => $this->semestre,
             'abreviatura' => $this->abreviatura,
+            'curso' => $this->curso->nome,
+            'codigocurso' => $this->curso->codigo,
             'estado' => $this->estado,
             'turnos' => (TurnoResource::collection($this->turnosVisiveis))->groupBy('tipo')
           ];
         case 'paracurso':
           //ir buscar numero total inscritos em quantos
-          $totalInscricoes = Inscricaoucs::where('idCadeira', $this->id)->where('estado', 1)->where('idAnoletivo', 1)->count();
+          $totalInscricoes = Inscricaoucs::where('idCadeira', $this->id)->where('estado', 1)->where('idAnoletivo', $this->anoletivo)->count();
           //$totalInscritos = Inscricao::where('')
           TurnoResource::$format = 'paracadeira';
           return [
@@ -48,7 +58,7 @@ class CadeiraResource extends JsonResource
             'abreviatura' => $this->abreviatura,
             'nrInscricoes' => $totalInscricoes,
             'nrInscritos' => 0,
-            'turnos' => (TurnoResource::collection($this->turnos))->groupBy('tipo'),
+            'turnos' => (TurnoResource::collection($this->turnos->where('idAnoletivo', $this->anoletivo)))->groupBy('tipo'),
           ];
         default:
         return [
@@ -62,5 +72,8 @@ class CadeiraResource extends JsonResource
             'curso' => $this->curso,
         ];
       }  
+    }
+    public static function collection($resource){
+      return new CadeiraResourceCollection($resource);
     }
 }

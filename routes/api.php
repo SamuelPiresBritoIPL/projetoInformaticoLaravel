@@ -30,20 +30,20 @@ Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletiv
 
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
-	Route::get('/cadeiras', [CursoController::class, 'getCursoComCadeiras']);
-    Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']);
-    Route::get('/aberturas/{anoletivo}/{semestre}',[CursoController::class, 'getAberturas']);
-    Route::get('/cadeiras/{curso}', [CursoController::class, 'getCadeirasByCurso']);
-    Route::get('/aberturas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'getAberturasByCurso']);
-    Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
+	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']); //sim 
+    Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']); //nao
+    Route::get('/aberturas/{anoletivo}/{semestre}',[CursoController::class, 'getAberturas']); //sim ja ta
+    Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']); //sim
+    Route::get('/aberturas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'getAberturasByCurso']); //sim ja ta
+    Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']); //nao
     Route::get('/pedidos/{curso}/{anoletivo}/{semestre}',[PedidosController::class, 'getPedidosByCurso']);
-    Route::put('/pedidos/{pedido}',[PedidosController::class, 'editPedidoByCoordenador']);
+    Route::put('/pedidos/{pedido}',[PedidosController::class, 'editPedidoByCoordenador']); //sim
 });
 
 //admin / coordenador
 Route::group(['prefix' => 'abertura'], function () {
-    Route::post('/{curso}',[AberturasController::class, 'create']);
-    Route::delete('/{abertura}',[AberturasController::class, 'remove']);
+    Route::post('/{curso}',[AberturasController::class, 'create']); //sim
+    Route::delete('/{abertura}',[AberturasController::class, 'remove']); //nao
     Route::put('/{abertura}',[AberturasController::class, 'update']);
 });
 

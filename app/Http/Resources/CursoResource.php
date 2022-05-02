@@ -2,12 +2,22 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CoordenadorResource;
 use App\Services\CursoService;
+use App\Http\Resources\CoordenadorResource;
+use App\Http\Resources\CursoResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CadeiraResourceCollection;
 
 class CursoResource extends JsonResource
 {
+    protected $anoletivo;
+    protected $semestre;
+
+    public function anoletivo($value, $value2){
+      $this->anoletivo = $value;
+      $this->semestre = $value2;
+      return $this;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -25,7 +35,7 @@ class CursoResource extends JsonResource
             'codigo' => $this->codigo,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
-            'cadeiras' => CadeiraResource::collection($this->cadeiras)
+            'cadeiras' => CadeiraResourceCollection::make($this->cadeiras->where('semestre', $this->semestre))->anoletivo($this->anoletivo, $this->semestre)
           ];
         case 'coordenador':
           return [
@@ -54,5 +64,8 @@ class CursoResource extends JsonResource
           'abreviatura' => $this->abreviatura
         ];
       }  
+    }
+    public static function collection($resource){
+      return new CursoResourceCollection($resource);
     }
 }
