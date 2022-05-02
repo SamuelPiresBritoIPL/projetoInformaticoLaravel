@@ -30,7 +30,7 @@ class InscricaoService
             $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', $data->get('idUtilizador'));
         })->get();
         if (empty($turnosutilizador)) {
-            return ['response' => 0, 'erro' => 'Você não tem turnos disponíveis para se inscrever'];
+            return ['response' => 0, 'erro' => 'Você não tem turnos disponíveis para se inscrever.'];
         } else {
             $idTurnosUtilizador = [];
             $turnosRejeitados = [];
@@ -43,7 +43,7 @@ class InscricaoService
             
             foreach($data->get('turnosIds') as $turnoId){
                 if(!in_array($turnoId, $idTurnosUtilizador)){
-                    return ['response' => 0, 'erro' => 'Ocorreu um erro dê refresh à página e tente novamente.'];
+                    return ['response' => 0, 'erro' => 'Ocorreu um erro, dê refresh à página e tente novamente.'];
                 } else {
                    foreach ($turnosutilizador as $turno) {
                        if ($turno->id == $turnoId) {
@@ -69,7 +69,7 @@ class InscricaoService
                 }
             }
             if (sizeOf($turnosRejeitados) == sizeOf($data->get('turnosIds'))) {
-                return ['response' => 0, 'erro' => 'Todos os turnos selecionados já encontram com o total das vagas preenchido'];
+                return ['response' => 0, 'erro' => 'Todos os turnos selecionados já se encontram com o total das vagas preenchido.'];
             }
             if (sizeOf($turnosRejeitados) > 0) {
                 return ['response' => 2, 'rejeitados' => $turnosRejeitados , 'idTurnosAceites' =>  $idTurnosRequeridos];
