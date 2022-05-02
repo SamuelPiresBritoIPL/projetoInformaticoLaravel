@@ -41,12 +41,16 @@ class CadeiraController extends Controller
     }
 
     public function getCadeira(Cadeira $cadeira){
-        $tiposturnos = Turno::where('idCadeira', $cadeira->id)->select("tipo", DB::raw('count(*) as total'))->groupby("tipo")->get();
+        $tiposturnos = Turno::where('idCadeira', $cadeira->id)->select("tipo", DB::raw('count(*) as total'))->groupby("tipo")->pluck('tipo','total')->toArray();
         $totalinscritos = Inscricaoucs::where('idCadeira', $cadeira->id)->where('estado', 1)->where('idAnoletivo', 1)->select(DB::raw('count(*) as total'))->get();
-        //dd($totalinscritos);
+        $numAlunos = $totalinscritos[0]->total;
+        $data=[];
+        foreach ($tiposturnos as $key => $value){
+            array_push($data,["turno" => $value,"numeroturnos" => $key, "mediavagas" => round($numAlunos/$key)]);
+        }
+        
         $cadeiras = new CadeiraResource($cadeira);
-        //return response(["info" => "tes", "cadeiras" => $cadeiras],200);
-        return response($cadeiras,200);
+        return response(["info" => $data, "cadeiras" => $cadeiras],200);
     }
 
     public function addAluno(CadeiraPostRequest $request,Cadeira $cadeira){
