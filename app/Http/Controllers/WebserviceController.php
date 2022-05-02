@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Services\WebserviceService;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\WebservicePostRequest;
+use App\Models\Anoletivo;
 
 class WebserviceController extends Controller
 {
@@ -116,8 +117,28 @@ class WebserviceController extends Controller
     }
 
     public function geturls(){
+        if (!Storage::disk('local')->exists('urlinscricoes.txt')) {
+            Storage::disk('local')->put("urlinscricoes.txt", config('services.webapiurls.turnos'));
+        }
+        if (!Storage::disk('local')->exists('urlcursos.txt')) {
+            Storage::disk('local')->put("urlcursos.txt", config('services.webapiurls.cursos'));
+        }
         $baseurl1 = Storage::disk('local')->get('urlinscricoes.txt');
         $baseurl2 = Storage::disk('local')->get('urlcursos.txt');
         return response(["urlturnos" => $baseurl2,"urlinscricoes" => $baseurl1],200);
+    }
+
+    public function inscreverTurnos(WebservicePostRequest $request)
+    {
+        $data = collect($request->validated());
+        if(empty($data->get('semestre'))){
+            return response("O semestre deve ser indicado para esta pedido", 401);
+        }
+        $anoletivo = Anoletivo::where('id', $data->get('anoletivo'))->first();
+        if(empty($anoletivo)){
+            return response("O ano letivo selecionado não foi encontrado", 401);
+        }
+        $newData = (new WebserviceService)->inscreverAlunosTurnosUnicos($anoletivo, $data->get('semestre'));
+        return response($newData, 200);
     }
 }
