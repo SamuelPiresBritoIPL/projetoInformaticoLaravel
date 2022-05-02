@@ -30,10 +30,10 @@ Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletiv
 
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
-	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']); //sim 
+	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']); //sim ja esta
     Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']); //nao
     Route::get('/aberturas/{anoletivo}/{semestre}',[CursoController::class, 'getAberturas']); //sim ja ta
-    Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']); //sim
+    Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']); //sim ja esta
     Route::get('/aberturas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'getAberturasByCurso']); //sim ja ta
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']); //nao
     Route::get('/pedidos/{curso}/{anoletivo}/{semestre}',[PedidosController::class, 'getPedidosByCurso']);
@@ -44,36 +44,36 @@ Route::group(['prefix' => 'curso'], function () {
 Route::group(['prefix' => 'abertura'], function () {
     Route::post('/{curso}',[AberturasController::class, 'create']); //sim
     Route::delete('/{abertura}',[AberturasController::class, 'remove']); //nao
-    Route::put('/{abertura}',[AberturasController::class, 'update']);
+    Route::put('/{abertura}',[AberturasController::class, 'update']); //nao
 });
 
 //admin / coordenador
 Route::group(['prefix' => 'coordenador'], function () {
-	Route::post('/',[CoordenadorController::class, 'store']);
-    Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
+	Route::post('/',[CoordenadorController::class, 'store']); //nao
+    Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']); //nao
 });
 
 //admin
 Route::group(['prefix' => 'cadeiras'], function () {
-	Route::get('/{cadeira}',[CadeiraController::class, 'getCadeira']);
+	Route::get('/{cadeira}',[CadeiraController::class, 'getCadeira']); //sim
 	Route::get('stats/{cadeira}',[CadeiraController::class, 'getInformacoesCadeira']);
-    Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']);
-    Route::post('/addalunoturno/{turno}',[CadeiraController::class, 'addAlunoTurno']);
+    Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']); //nao
+    Route::post('/addalunoturno/{turno}',[CadeiraController::class, 'addAlunoTurno']); //nao
 });
 
 //admin
 Route::group(['prefix' => 'turno'], function () {
-	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
-	Route::put('/{turno}',[TurnoController::class, 'editTurno']);
+	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']); //nao
+	Route::put('/{turno}',[TurnoController::class, 'editTurno']); //nao
 });
 
 //aluno
 Route::group(['prefix' => 'cadeiras'], function () {
-	Route::get('/utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
-    Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
-    Route::post('pedidos',[PedidosController::class, 'store']);
-    Route::post('inscricao',[InscricaoController::class, 'store']);
-    Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']);
+	Route::get('/utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']); //verificar se vai buscar ano ativo
+    Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']); //nao 
+    Route::post('pedidos',[PedidosController::class, 'store']);  //verificar
+    Route::post('inscricao',[InscricaoController::class, 'store']); //nao
+    Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']); //nao
 });
 
 Route::group(['prefix' => 'webservice'], function () {
