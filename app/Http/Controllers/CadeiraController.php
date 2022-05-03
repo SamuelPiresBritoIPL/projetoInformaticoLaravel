@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Turno;
 use App\Models\Cadeira;
+use App\Models\Anoletivo;
 use App\Models\Utilizador;
+use App\Models\Inscricaoucs;
 use App\Services\CadeiraService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
-use App\Models\Anoletivo;
-use App\Models\Inscricaoucs;
+use Illuminate\Http\Request;
 
 class CadeiraController extends Controller
 {
@@ -68,5 +69,22 @@ class CadeiraController extends Controller
         $result = (new CadeiraService)->addStudentToTurno($data,$turno);
 
         return response($result["msg"],$result["code"]);
+    }
+
+    public function editVagasTurnos(Request $request, Cadeira $cadeira, Anoletivo $anoletivo){
+        if($request->has("tipoturno") && $request->has("vagas")){
+            foreach($request->get("tipoturno") as $k => $turnotipo){
+                if(array_key_exists($k,$request->get("vagas"))){
+                    $turnos = Turno::where('idCadeira',$cadeira->id)->where('idAnoletivo', $anoletivo->id)->where('tipo',$turnotipo)->get();
+                    foreach ($turnos as $key => $value) {
+                        $value->vagastotal = $request->get("vagas")[$k];
+                        $value->save();
+                    }
+                }
+            }
+        }else{
+            return response("Faltam dados a serem enviados",401);
+        }
+        return response("valores alterados",200);
     }
 }
