@@ -34,7 +34,7 @@ Route::get('logs', [LogsController::class, 'index']); //sim ja esta
 
 
 //admin / coordenador
-Route::group(['prefix' => 'curso'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'], 'prefix' => 'curso'], function () {
 	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']);
     Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']);
     Route::get('/aberturas/{anoletivo}/{semestre}',[CursoController::class, 'getAberturas']);
@@ -46,20 +46,20 @@ Route::group(['prefix' => 'curso'], function () {
 });
 
 //admin / coordenador
-Route::group(['prefix' => 'abertura'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'abertura'], function () {
     Route::post('/{curso}',[AberturasController::class, 'create']);
     Route::delete('/{abertura}',[AberturasController::class, 'remove']);
     Route::put('/{abertura}',[AberturasController::class, 'update']);
 });
 
 //admin / coordenador
-Route::group(['prefix' => 'coordenador'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'coordenador'], function () {
 	Route::post('/',[CoordenadorController::class, 'store']);
     Route::delete('/{coordenador}',[CoordenadorController::class, 'remove']);
 });
 
 //admin
-Route::group(['prefix' => 'cadeiras'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'cadeiras'], function () {
 	Route::get('/{cadeira}/{anoletivo}',[CadeiraController::class, 'getCadeira']);
 	Route::get('stats/{cadeira}/{anoletivo}',[CadeiraController::class, 'getInformacoesCadeira']);
     Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']);
@@ -68,13 +68,13 @@ Route::group(['prefix' => 'cadeiras'], function () {
 });
 
 //admin
-Route::group(['prefix' => 'turno'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'turno'], function () {
 	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
 	Route::put('/{turno}',[TurnoController::class, 'editTurno']);
 });
 
 //aluno
-Route::group(['prefix' => 'cadeirasaluno'], function () {
+Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasaluno'], function () {
 	Route::get('utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
@@ -82,7 +82,7 @@ Route::group(['prefix' => 'cadeirasaluno'], function () {
     Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']);
 });
 
-Route::group(['prefix' => 'webservice'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],['prefix' => 'webservice'], function () {
     Route::post('curso', [WebserviceController::class, 'getCursos']);
     Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
     Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);

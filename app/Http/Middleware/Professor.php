@@ -17,9 +17,9 @@ class Professor
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->isAdmin || Auth::user()->isCoordenador || Auth::user()->isProfessor) {
+        if (Auth::user()->isAdmin() || Auth::user()->isCoordenador() || Auth::user()->isProfessor()) {
             return $next($request);
         }
-        abort(404);
+        return response("Não tem autorização para fazer este pedido",401);
     }
 }
