@@ -10,6 +10,7 @@ use App\Http\Controllers\CoordenadorController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\TurnoController;
+use App\Http\Controllers\LogsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,8 @@ Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
 //admin
 Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
+Route::get('logs', [LogsController::class, 'index']); //sim ja esta
+
 
 //admin / coordenador
 Route::group(['prefix' => 'curso'], function () {
