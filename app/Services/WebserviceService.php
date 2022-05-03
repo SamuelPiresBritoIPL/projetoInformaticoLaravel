@@ -62,6 +62,7 @@ class WebserviceService
                 $utilizador->login = $turno->LOGIN;
                 $utilizador->idCurso = $curso->id;
                 $utilizador->tipo = 1;
+                $utilizador->password = "teste123";
                 $utilizador->save();
                 $newDataAdded += 1;
             }
@@ -144,6 +145,7 @@ class WebserviceService
                 $utilizador->login = $inscricao->LOGIN;
                 $utilizador->idCurso = $curso->id;
                 $utilizador->tipo = 0;
+                $utilizador->password = "teste123";
                 $utilizador->save();
                 $newStudentAdded += 1;
             }
@@ -183,13 +185,14 @@ class WebserviceService
         $newInsc = 0;
         $failedIns = 0;
         foreach ($turnos as $turno) {
-            $ids = Inscricao::where('idTurno',$turno->id)->where('idAnoletivo',$anoletivo->id)->pluck('idUtilizador')->toArray();
+            $ids = Inscricao::where('idTurno',$turno->id)->pluck('idUtilizador')->toArray();
+            
             $inscIds = Inscricaoucs::where('inscricaoucs.idCadeira','=',$turno->idCadeira)
                         ->where('inscricaoucs.estado','=',1)->where('inscricaoucs.idAnoletivo','=',$anoletivo->id)
                         ->whereNotIn('inscricaoucs.idUtilizador',$ids)->pluck('idUtilizador')->toArray();
             $data = [];
             foreach($inscIds as $inscId) {
-                array_push($data,['idUtilizador' => $inscId, 'idTurno' => $turno->id, 'idAnoletivo' => $anoletivo->id]);
+                array_push($data,['idUtilizador' => $inscId, 'idTurno' => $turno->id]);
                 
             }
             if(!empty($data)){

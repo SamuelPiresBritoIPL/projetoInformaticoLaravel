@@ -21,8 +21,10 @@ class CreateUtilizadorTable extends Migration {
 			$table->string('nome', 100);
 			$table->string('login', 60)->nullable()->unique('login_UNIQUE');
 			$table->smallInteger('tipo')->default(0);
+			$table->string('password');
 			$table->integer('idCurso')->unsigned()->index('idCurso_idx');
-			$table->timestamps();
+            $table->rememberToken();
+            $table->timestamps();
 			$table->engine = 'InnoDB';
 		});
 	}

@@ -11,6 +11,7 @@ use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\LogsController;
+use App\Http\Controllers\UtilizadorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ use App\Http\Controllers\LogsController;
 |
 */
 //free use
+Route::post('login', [UtilizadorController::class, 'login'])->name('login');
 Route::get('curso', [CursoController::class, 'index']);
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
@@ -72,8 +74,8 @@ Route::group(['prefix' => 'turno'], function () {
 });
 
 //aluno
-Route::group(['prefix' => 'cadeiras'], function () {
-	Route::get('/utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
+Route::group(['prefix' => 'cadeirasaluno'], function () {
+	Route::get('utilizador/{utilizador}',[CadeiraController::class, 'getCadeirasUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
     Route::post('inscricao',[InscricaoController::class, 'store']);

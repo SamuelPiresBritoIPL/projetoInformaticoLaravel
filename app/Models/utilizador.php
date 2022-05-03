@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property int $id
@@ -20,8 +23,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property Log[] $logs
  * @property Pedido[] $pedidos
  */
-class Utilizador extends Model
+class Utilizador extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
     /**
      * The table associated with the model.
      * 
@@ -32,7 +36,17 @@ class Utilizador extends Model
     /**
      * @var array
      */
-    protected $fillable = ['numero', 'email', 'nome', 'login', 'tipo', 'idCurso'];
+    protected $fillable = ['numero', 'email', 'nome', 'login', 'tipo', 'password', 'idCurso'];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -97,4 +111,33 @@ class Utilizador extends Model
     {
         return $this->hasMany(turno::class, 'idProfessor');
     }
+
+    public function isAdmin(){
+        if($this->tipo == 3)
+            return true;
+        return false;
+    }
+
+    public function isCoordenador(){
+        if($this->tipo == 2)
+            return true;
+        return false;
+    }
+
+    public function isProfessor(){
+        if($this->tipo == 1)
+            return true;
+        return false;
+    }
+
+    public function isEstudante(){
+        if($this->tipo == 0)
+            return true;
+        return false;
+    }
+
+    public function setPasswordAttribute($value)
+	{
+		$this->attributes['password'] = bcrypt($value);
+	}
 }
