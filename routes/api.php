@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'cadeiras']
 Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'turno'], function () {
 	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
 	Route::put('/{turno}',[TurnoController::class, 'editTurno']);
+	Route::put('export/{turno}',[TurnoController::class, 'exportTurno']);
 });
 
 //aluno
@@ -82,7 +83,7 @@ Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasalun
     Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']);
 });
 
-Route::group(['middleware' => ['auth:api','coordenador'],['prefix' => 'webservice'], function () {
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'webservice'], function () {
     Route::post('curso', [WebserviceController::class, 'getCursos']);
     Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
     Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);
