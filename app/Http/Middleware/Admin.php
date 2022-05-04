@@ -17,9 +17,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->isAdmin) {
+        if (Auth::user()->isAdmin()) {
             return $next($request);
         }
-        abort(404);
+        return response("Não tem autorização para fazer este pedido",401);
     }
 }

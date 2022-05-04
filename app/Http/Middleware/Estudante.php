@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class Utilizador
+class Estudante
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,9 @@ class Utilizador
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->isAdmin || Auth::user()->isCoordenador || Auth::user()->isProfessor || Auth::user()->isEstudante) {
+        if (Auth::user()->isAdmin() || Auth::user()->isCoordenador() || Auth::user()->isProfessor() || Auth::user()->isEstudante()) {
             return $next($request);
         }
-        abort(404);
+        return response("Não tem autorização para fazer este pedido",401);
     }
 }

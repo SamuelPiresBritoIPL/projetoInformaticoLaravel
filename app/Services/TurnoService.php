@@ -2,10 +2,14 @@
 
 namespace App\Services;
 
-use App\Http\Resources\TurnoResource;
+use App\Models\Turno;
 use App\Models\Anoletivo;
 use App\Models\Inscricaoucs;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\TurnoResource;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 class TurnoService
 {
@@ -41,5 +45,43 @@ class TurnoService
         }
         $turno->save();
         return ['msg' => "Alterações feitas com sucesso",'code' => 200];
+    }
+
+    public function ExportExcel($data_array,Turno $turno){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        try {
+            $spreadSheet = new Spreadsheet();
+            $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
+            $spreadSheet->getActiveSheet()->fromArray($data_array);
+            $Excel_writer = new Xls($spreadSheet);
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="' . $turno->tipo . ($turno->numero) . '_' . $turno->cadeira->nome . '.xls"');
+            header('Cache-Control: max-age=0');
+            ob_end_clean();
+            $Excel_writer->save('php://output');
+            exit();
+        } catch (Exception $e) {
+            return response(401,"Algum erro estranho");
+        }
+    }
+
+    /**
+    *This function loads the customer data from the database then converts it
+    * into an Array that will be exported to Excel
+    */
+   function exportTurno(Turno $turno){
+        $data_array [] = array("Cadeira:",$turno->cadeira->codigo,$turno->cadeira->nome);
+        $data_array [] = array("Turno:",$turno->tipo . ($turno->numero));
+        $data_array [] = array("Alunos:");
+        $data_array [] = array("Numero","Nome");
+        foreach($turno->inscricaosutilizadores as $utilizadores)
+        {
+            $data_array[] = array(
+                'Numero' =>$utilizadores->login,
+                'Nome' => $utilizadores->nome,
+            );
+        }
+        $this->ExportExcel($data_array,$turno);
     }
 }
