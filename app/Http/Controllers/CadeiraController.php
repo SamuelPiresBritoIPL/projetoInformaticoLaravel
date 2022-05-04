@@ -16,10 +16,10 @@ use Illuminate\Http\Request;
 
 class CadeiraController extends Controller
 {
-    public function getCadeirasUtilizador(Utilizador $utilizador){
-        if($utilizador->tipo == 0){ //estudante
+    public function getCadeirasUtilizador(Request $request){
+        if($request->user()->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
-            return response(InscricaoucsResource::collection($utilizador->inscricaoucs),200);
+            return response(InscricaoucsResource::collection($request->user()->inscricaoucs),200);
         }
     }
 
