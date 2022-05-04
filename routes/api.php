@@ -29,6 +29,11 @@ Route::post('login', [UtilizadorController::class, 'login'])->name('login');
 Route::get('curso', [CursoController::class, 'index']);
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
+//utilizador logado
+Route::group(['middleware' => ['auth:api'],'prefix' => 'utilizadorlogado'], function () {
+	Route::get('/', [UtilizadorController::class, 'getInfoUtilizadorLogado']);
+});
+
 //admin
 Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
 Route::get('logs', [LogsController::class, 'index']); //sim ja esta

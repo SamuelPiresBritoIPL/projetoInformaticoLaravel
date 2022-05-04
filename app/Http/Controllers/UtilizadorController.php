@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CursoResource;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\CursoResource;
+use App\Http\Resources\UtilizadorResource;
 
 class UtilizadorController extends Controller
 {
@@ -34,5 +35,9 @@ class UtilizadorController extends Controller
 			'access_token' => $token,
 			'curso' => (!empty($utilizador->curso)) ? new CursoResource($utilizador->curso) : ""
 		], 200);
+	}
+
+	public function getInfoUtilizadorLogado(Request $request){
+		return new UtilizadorResource($request->user());
 	}
 }
