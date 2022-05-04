@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aula;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,11 +28,14 @@ class UtilizadorController extends Controller
 		//delete previous tokens
 		$utilizador->tokens()->delete();
 		$token = $utilizador->createToken('authToken')->accessToken;
+		$aulas = Aula::where('idProfessor', $utilizador->id)->first();
         CursoResource::$format = 'default';
 		return response([
 			'login' => $utilizador->login,
             'nome' => $utilizador->nome,
 			'tipo' => $utilizador->tipo,
+			'isCoordenador' => empty($utilizador->coordenadors) ? 0 : 1,
+			'isProfessor' => empty($aulas) ? 0 : 1,
 			'access_token' => $token,
 			'curso' => (!empty($utilizador->curso)) ? new CursoResource($utilizador->curso) : ""
 		], 200);
