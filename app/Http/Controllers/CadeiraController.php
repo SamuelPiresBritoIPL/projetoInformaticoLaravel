@@ -77,8 +77,10 @@ class CadeiraController extends Controller
                 if(array_key_exists($k,$request->get("vagas"))){
                     $turnos = Turno::where('idCadeira',$cadeira->id)->where('idAnoletivo', $anoletivo->id)->where('tipo',$turnotipo)->get();
                     foreach ($turnos as $key => $value) {
-                        $value->vagastotal = $request->get("vagas")[$k];
-                        $value->save();
+                        if(!empty($request->get("vagas")[$k])){
+                            $value->vagastotal = $request->get("vagas")[$k];
+                            $value->save();
+                        }
                     }
                 }
             }

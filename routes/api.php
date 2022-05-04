@@ -7,6 +7,7 @@ use App\Http\Controllers\AberturasController;
 use App\Http\Controllers\AnoletivoController;
 use App\Http\Controllers\WebserviceController;
 use App\Http\Controllers\CoordenadorController;
+use App\Http\Controllers\EstudanteController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\TurnoController;
@@ -83,6 +84,7 @@ Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasalun
     Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']);
 });
 
+//admin
 Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'webservice'], function () {
     Route::post('curso', [WebserviceController::class, 'getCursos']);
     Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
@@ -90,5 +92,10 @@ Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'webservice
     Route::put('url', [WebserviceController::class, 'changeurl']);
     Route::get('url', [WebserviceController::class, 'geturls']);
     Route::post('inscriverturnos', [WebserviceController::class, 'inscreverTurnos']);
+});
+
+//admin
+Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'estudante'], function () {
+    Route::get('dados/{estudante}/{anoletivo}/{semestre}', [EstudanteController::class, 'getDados']);
 });
 
