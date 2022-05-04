@@ -67,11 +67,11 @@ Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'cadeiras']
     Route::put('/turnovagas/{cadeira}/{anoletivo}',[CadeiraController::class, 'editVagasTurnos']);
 });
 
-//admin
-Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'turno'], function () {
+//admin coordenador
+Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'turno'], function () {
 	Route::get('stats/{turno}',[TurnoController::class, 'getInformacoesTurnos']);
 	Route::put('/{turno}',[TurnoController::class, 'editTurno']);
-	Route::put('export/{turno}',[TurnoController::class, 'exportTurno']);
+	Route::get('export/{turno}',[TurnoController::class, 'exportTurno']);
 });
 
 //aluno

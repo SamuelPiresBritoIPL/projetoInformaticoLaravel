@@ -22,10 +22,8 @@ class TurnoController extends Controller
         return response($result["msg"],$result["code"]);
     }
 
-    public function exportTurno(TurnoPostRequest $request, Turno $turno){
-        $data = collect($request->validated());
-        
-        $result = (new TurnoService)->editTurno($data,$turno);
+    public function exportTurno(Turno $turno){
+        $result = (new TurnoService)->exportTurno($turno);
 
         return response($result["msg"],$result["code"]);
     }
