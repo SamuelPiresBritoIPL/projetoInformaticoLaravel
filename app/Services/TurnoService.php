@@ -60,9 +60,10 @@ class TurnoService
             header('Cache-Control: max-age=0');
             ob_end_clean();
             $Excel_writer->save('php://output');
-            exit();
+            return ['msg' => "hmmmm",'code' => 200];
+            //exit();
         } catch (Exception $e) {
-            return response(401,"Algum erro estranho");
+            return ['msg' => "Algo aconteceu",'code' => 200];
         }
     }
 
@@ -82,6 +83,6 @@ class TurnoService
                 'Nome' => $utilizadores->nome,
             );
         }
-        $this->ExportExcel($data_array,$turno);
+        return $this->ExportExcel($data_array,$turno);
     }
 }

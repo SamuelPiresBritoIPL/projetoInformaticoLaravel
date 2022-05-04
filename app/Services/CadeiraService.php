@@ -83,7 +83,7 @@ class CadeiraService
             return ['msg' => "Este utilizador não é válido",'code' => 404];
         }
 
-        $anoletivo = Anoletivo::where("ativo", 1)->first();
+        $anoletivo = Anoletivo::where("id", $turno->idAnoletivo)->first();
         if(empty($anoletivo)){
             return ['msg' => "Ano letivo não definido",'code' => 404];
         }
@@ -93,7 +93,7 @@ class CadeiraService
             return ['msg' => "O aluno não está inscrito nersta unidade curricular",'code' => 404];
         }
 
-        $inscricao = Inscricao::where('idUtilizador',$utilizador->id)->where('idTurno',$turno->id)->where('idAnoletivo',$anoletivo->id)->first();
+        $inscricao = Inscricao::where('idUtilizador',$utilizador->id)->where('idTurno',$turno->id)->first();
         
         if(!empty($inscricao)){
             return ['msg' => "O aluno já está inscrito neste turno",'code' => 404];
@@ -101,7 +101,6 @@ class CadeiraService
         $inscricao = new Inscricao();
         $inscricao->idTurno = $turno->id;
         $inscricao->idUtilizador = $utilizador->id;
-        $inscricao->idAnoletivo = $anoletivo->id;
         $inscricao->save();
         return ['msg' => "Aluno adicionado ao turno com sucesso",'code' => 200];
     }
