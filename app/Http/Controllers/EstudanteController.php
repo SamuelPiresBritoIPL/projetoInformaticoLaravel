@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anoletivo;
 use App\Models\Utilizador;
+use App\Services\EstudanteService;
 
 class EstudanteController extends Controller
 {
@@ -12,7 +13,9 @@ class EstudanteController extends Controller
             return response("O semestre não é válido");
         }
 
-        return response(200);
+        $result = (new EstudanteService)->getDadosEstudante($estudante,$anoletivo,$semestre);
+
+        return response($result["msg"],$result["code"]);
     }
 
 }

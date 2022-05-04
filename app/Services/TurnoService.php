@@ -81,7 +81,7 @@ class TurnoService
     */
    function exportTurno(Turno $turno){
         $data_array [] = array("Cadeira:",$turno->cadeira->codigo,$turno->cadeira->nome);
-        $data_array [] = array("Turno:",$turno->tipo . ($turno->numero));
+        $data_array [] = array("Turno:",$turno->tipo . ($turno->numero != 0 ? $turno->numero : ""));
         $data_array [] = array("Alunos:");
         $data_array [] = array("Numero","Nome");
         foreach($turno->inscricaosutilizadores as $utilizadores)
