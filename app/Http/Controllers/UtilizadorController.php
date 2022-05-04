@@ -32,7 +32,7 @@ class UtilizadorController extends Controller
             'nome' => $utilizador->nome,
 			'tipo' => $utilizador->tipo,
 			'access_token' => $token,
-			'curso' => new CursoResource($utilizador->curso)
+			'curso' => (!empty($utilizador->curso)) ? new CursoResource($utilizador->curso) : ""
 		], 200);
 	}
 }
