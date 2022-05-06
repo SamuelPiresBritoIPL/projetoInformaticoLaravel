@@ -34,7 +34,6 @@ class AberturaPostRequest extends FormRequest
                 'ano' => ['required', 'in:0,1,2,3,4,5'],
                 'tipoAbertura' => ['required', 'in:0,1'],
                 'semestre' => ['required', 'in:1,2'],
-                'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
                 'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))],
             ];
         }else{

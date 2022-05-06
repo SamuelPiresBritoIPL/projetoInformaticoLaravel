@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AberturaPostRequest;
 use App\Models\curso;
-use Illuminate\Http\Request;
-use App\Http\Resources\CursoResource;
 use App\Models\Aberturas;
-use App\Services\AberturaService;
+use Illuminate\Http\Request;
 use App\Services\LogsService;
+use App\Services\AberturaService;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\CursoResource;
+use App\Http\Requests\AberturaPostRequest;
 
 class AberturasController extends Controller
 {
@@ -29,7 +30,7 @@ class AberturasController extends Controller
 
         //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
         $abertura = (new AberturaService)->save($curso,$data);
-        (new LogsService)->save("Abertura criada do tipo ".$data->get('tipoAbertura')." do curso ".$abertura->curso->nome,"Aberturas",$data->get('idUtilizador'));
+        (new LogsService)->save("Abertura criada do tipo ".$data->get('tipoAbertura')." do curso ".$abertura->curso->nome,"Aberturas",Auth::user()->id);
         return response($abertura, 201);
     }
 

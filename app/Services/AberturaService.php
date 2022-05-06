@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Logs;
 use App\Models\Curso;
 use App\Models\Aberturas;
+use Illuminate\Support\Facades\Auth;
 
 class AberturaService
 {
@@ -84,7 +85,7 @@ class AberturaService
         $abertura->ano = $data->get('ano');
         $abertura->semestre = $data->get('semestre');
         $abertura->tipoAbertura = $data->get('tipoAbertura');
-        $abertura->idUtilizador = $data->get('idUtilizador');
+        $abertura->idUtilizador = Auth::user()->id;
         $abertura->idAnoletivo = $data->get('idAnoletivo');
         $abertura->idCurso = $curso->id;
         $abertura->save();
