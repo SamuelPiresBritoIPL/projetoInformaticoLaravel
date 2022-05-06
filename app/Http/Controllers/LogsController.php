@@ -14,7 +14,4 @@ class LogsController extends Controller
 
         return response(LogsResource::collection($logs),200);
     }
-
-
-    
 }

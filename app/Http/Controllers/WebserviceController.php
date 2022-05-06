@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\curso;
 use App\Models\turno;
 use App\Models\cadeira;
+use App\Models\Anoletivo;
 use App\Models\utilizador;
 use App\Models\inscricaoucs;
 use Illuminate\Http\Request;
+use App\Services\LogsService;
 use App\Services\WebserviceService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\WebservicePostRequest;
-use App\Models\Anoletivo;
 
 class WebserviceController extends Controller
 {
@@ -35,6 +37,8 @@ class WebserviceController extends Controller
     	$json = (new WebserviceService)->callAPI("GET",$url);
         if(empty($json)){
             return response("Não foi possivel aceder ao website", 401);
+        }else{
+            (new LogsService)->save("Atualização dos turnos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }
 
         $newDataAdded = (new WebserviceService)->getCursos($json);
@@ -50,6 +54,7 @@ class WebserviceController extends Controller
         $data = collect($request->validated());
 
         $idcurso = 0;
+        $curso = Curso::find($idcurso);
         if($request->has('idcurso')){
             $idcurso = $request->get('idcurso');
             if($idcurso != 0){
@@ -85,6 +90,7 @@ class WebserviceController extends Controller
                     $data["newDataAdded"] += $dataSing["newDataAdded"];
                 }
             }
+            (new LogsService)->save("Atualização das inscricoes de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }else{
             $url = $url . "cod_curso=" . $idcurso;
             $json = (new WebserviceService)->callAPI("GET",$url);
@@ -92,6 +98,8 @@ class WebserviceController extends Controller
                 return response("Não foi possivel aceder ao website", 401);
             }
             $data = (new WebserviceService)->getInscricoesturnos($json);
+
+            (new LogsService)->save("Atualização das inscricoes feita por: " . Auth::user()->login ." ao curso " . $curso->nome, "webservices",  Auth::user()->id);
         }
 
         return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded']], 200);
@@ -109,9 +117,11 @@ class WebserviceController extends Controller
     public function changeurl(Request $request){
         if($request->has('urlturnos')){
             Storage::disk('local')->put("urlcursos.txt", $request->get('urlturnos'));
+            (new LogsService)->save("Atualização do url 'urlcursos' feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }
         if($request->has('urlinscricoes')){
             Storage::disk('local')->put("urlinscricoes.txt", $request->get('urlinscricoes'));
+            (new LogsService)->save("Atualização do url 'urlinscricoes' feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }
         return response(200);
     }
@@ -139,6 +149,7 @@ class WebserviceController extends Controller
             return response("O ano letivo selecionado não foi encontrado", 401);
         }
         $newData = (new WebserviceService)->inscreverAlunosTurnosUnicos($anoletivo, $data->get('semestre'));
+        (new LogsService)->save("Inscricao em todos os turnos unicos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         return response($newData, 200);
     }
 }
