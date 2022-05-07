@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $idUtilizador
  * @property int $idAnoLetivo
+ * @property int $idCurso
  * @property int $estado   0 => sem alteracoes para se fazer || 1 => pedido de ucs pendente || 2 => pedido aceite por coordenador || 3 => pedido rejeitado pelo coordenador || 4 => parcialmente aceite
  * @property string $descricao
  * @property string $created_at
@@ -22,7 +23,7 @@ class Pedidos extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idUtilizador', 'idAnoletivo', 'semestre', 'estado', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['idUtilizador', 'idAnoletivo', 'idCurso', 'semestre', 'estado', 'descricao', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -38,6 +39,14 @@ class Pedidos extends Model
     public function anoletivo()
     {
         return $this->belongsTo(Anoletivo::class, 'idAnoLetivo');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function curso()
+    {
+        return $this->belongsTo(curso::class, 'idCurso');
     }
 
     /**

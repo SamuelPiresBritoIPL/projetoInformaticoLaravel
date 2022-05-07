@@ -11,10 +11,11 @@ use App\Models\Inscricaoucs;
 
 class PedidosService
 {
-    public function save($data){
+    public function save($data, $idCurso){
         $pedido = new Pedidos();
         $pedido->idUtilizador = $data->get('idUtilizador');
         $pedido->idAnoLetivo = $data->get('idAnoletivo');
+        $pedido->idCurso = $idCurso;
         $pedido->descricao = $data->get('descricao');
         $pedido->estado = $data->get('estado');
         $pedido->semestre = $data->get('semestre');
@@ -55,7 +56,7 @@ class PedidosService
             $pedidoucs->save();
 
             //$idAnoletivo =  Aberturas::where('idCurso',$pedidoucs->cadeira->id)->select('idAnoletivo')->distinct()->get()->max('idAnoletivo');
-            $idAnoletivo =  (Anoletivo::where('anoletivo',Anoletivo::distinct()->get()->max('anoletivo'))->first())->id;
+            $idAnoletivo =  (Anoletivo::where('ativo',1)->first())->id;
 
             $inscricaoucs = Inscricaoucs::where('idUtilizador', $pedido->idUtilizador)->where('idCadeira',$pedidoucs->idCadeira)->where('idAnoletivo',$idAnoletivo)->first();//verificiar se ja nao existe criado se ja houver n criar
             if(empty($inscricaoucs)){
@@ -112,5 +113,9 @@ class PedidosService
             }
         }
         return ['response' => 1];
+    }
+
+    public function removerUcs($cadeirasIds, $idUtilizador, $idAnoletivo){
+        $removed = Inscricaoucs::where('idUtilizador', $idUtilizador)->where('idAnoletivo', $idAnoletivo)->where('estado',1)->whereNotIn('idCadeira', $cadeirasIds)->delete();
     }
 }

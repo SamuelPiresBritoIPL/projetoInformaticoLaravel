@@ -6,6 +6,8 @@ use DateTime;
 use Carbon\Carbon;
 use App\Models\Logs;
 use App\Models\Curso;
+use App\Models\Turno;
+use App\Models\Cadeira;
 use App\Models\Aberturas;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +46,34 @@ class AberturaService
 
         if(Carbon::parse($data->get('dataAbertura')) <= Carbon::now()){
             return ["codigo"=>0,"error"=>"A data de abertura é anterior a data atual."];
+        }
+
+        if($data->get('tipoAbertura') == 1){
+            if($data->get('ano') == 0){
+                $cadeiras = Cadeira::where('idCurso', $curso->id)->where('semestre',$data->get('semestre'))->pluck('id')->toArray();
+            }else{
+                $cadeiras = Cadeira::where('idCurso', $curso->id)->where('semestre',$data->get('semestre'))->where('ano',$data->get('ano'))->pluck('id')->toArray();
+            }
+            
+            $turnos = Turno::wherein('idCadeira',$cadeiras)->join('cadeira', 'cadeira.id', '=', 'turno.idCadeira')->where('visivel',1)->whereNull('vagastotal')->get();
+            if(!empty($turnos)){
+                $msg = "Turnos que faltam definir vagas: ";
+                $cursos = [];
+                foreach ($turnos as $key => $turno) {
+                    if(!array_key_exists($turno->idCadeira,$cursos)){
+                        $cursos[$turno->idCadeira] = [];
+                    }
+                    array_push($cursos[$turno->idCadeira], $turno);
+                }
+
+                foreach ($cursos as $key => $turnos2) {
+                    $msg .= "\n" . $turnos2[0]->nome . ": ";
+                    foreach ($turnos2 as $key => $turno) {
+                        $msg .= $turno->tipo . $turno->numero . ", ";
+                    }
+                }
+                return ["codigo"=>0,"error"=> $msg];
+            }
         }
         
         return ["codigo"=>1];

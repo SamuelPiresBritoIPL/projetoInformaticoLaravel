@@ -25,7 +25,7 @@ class AberturasController extends Controller
 
         $canCreate = (new AberturaService)->checkIfAberturaCanBeCreated($curso, $data);
         if($canCreate["codigo"] == 0){
-            return response($canCreate["error"],401);
+            return response(["erros" => $canCreate["error"]],401);
         }
 
         //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
