@@ -26,7 +26,7 @@ use App\Http\Controllers\UtilizadorController;
 */
 //free use
 Route::post('login', [UtilizadorController::class, 'login'])->name('login');
-Route::get('curso', [CursoController::class, 'index']);
+
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
 //utilizador logado
@@ -38,7 +38,9 @@ Route::group(['middleware' => ['auth:api'],'prefix' => 'utilizadorlogado'], func
 Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
 Route::get('logs', [LogsController::class, 'index']); //sim ja esta
 
-
+Route::group(['middleware' => ['auth:api','estudante'], 'prefix' => 'curso'], function () {
+	Route::get('/', [CursoController::class, 'index']);
+});
 //admin / coordenador
 Route::group(['middleware' => ['auth:api','coordenador'], 'prefix' => 'curso'], function () {
 	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']);

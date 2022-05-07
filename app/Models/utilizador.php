@@ -119,7 +119,7 @@ class Utilizador extends Authenticatable
     }
 
     public function isCoordenador(){
-        if($this->tipo == 2 || !empty($this->coordenadors))
+        if($this->tipo == 2 || count($this->coordenadors) != 0)
             return true;
         return false;
     }

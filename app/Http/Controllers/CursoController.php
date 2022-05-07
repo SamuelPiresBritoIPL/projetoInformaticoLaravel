@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\curso;
 use App\Models\Anoletivo;
+use App\Models\Coordenador;
 use Illuminate\Http\Request;
 use App\Services\CursoService;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
 use App\Http\Resources\CursoResourceCollection;
@@ -20,6 +22,23 @@ class CursoController extends Controller
     public function index()
     {
         CursoResource::$format = 'default';
+        if(Auth::user()->isEstudante() || Auth::user()->isAdmin()){
+            return response(CursoResource::collection(Curso::all()),200);
+        }
+        if(Auth::user()->isCoordenador()){
+            $idsCursos = Coordenador::where('idUtilizador', Auth::user()->id)->pluck('idCurso')->toArray();
+            $cursos = Curso::whereIn('id',$idsCursos)->get();
+            return response(CursoResource::collection($cursos),200);
+        }
+        if(Auth::user()->isProfessor()){
+            $idsCursos = Coordenador::where('idUtilizador', Auth::user()->id)->pluck('idCurso')->toArray();
+            $cursos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
+                        ->join('aula','aula.idTurno','=','turno.id')->where('aula.idProfessor',Auth::user()->id)
+                        ->select('curso.*')->distinct('curso.id')->get();
+            //dd($cursos);
+            return response(CursoResource::collection($cursos),200);
+        }
+        //decidir que cursos ir buscar
     	return response(CursoResource::collection(Curso::all()),200);
     }
 
