@@ -38,12 +38,14 @@ Route::group(['middleware' => ['auth:api'],'prefix' => 'utilizadorlogado'], func
 Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
 Route::get('logs', [LogsController::class, 'index']); //sim ja esta
 
-Route::group(['middleware' => ['auth:api','estudante'], 'prefix' => 'curso'], function () {
+Route::group(['middleware' => ['auth:api','estudante'], 'prefix' => 'cursoauth'], function () {
 	Route::get('/', [CursoController::class, 'index']);
+    Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']);
 });
+
 //admin / coordenador
 Route::group(['middleware' => ['auth:api','coordenador'], 'prefix' => 'curso'], function () {
-	Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']);
+    Route::get('/cadeiras/{anoletivo}/{semestre}', [CursoController::class, 'getCursoComCadeiras']);
     Route::get('/coordenadores',[CursoController::class, 'getCoordenadores']);
     Route::get('/aberturas/{anoletivo}/{semestre}',[CursoController::class, 'getAberturas']);
     Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']);

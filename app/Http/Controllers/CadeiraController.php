@@ -19,7 +19,20 @@ class CadeiraController extends Controller
     public function getCadeirasUtilizador(Request $request){
         if($request->user()->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
-            return response(InscricaoucsResource::collection($request->user()->inscricaoucs),200);
+            $anoletivo = Anoletivo::where('ativo',1)->first();
+            $inscricaoucs = Inscricaoucs::where('idUtilizador',($request->user())->id)->where('idAnoletivo',$anoletivo->id)
+                            ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
+                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
+                            ->select('inscricaoucs.*','curso.id as idCurso','curso.nome as nomeCurso','cadeira.nome as nomeCadeira')->get();
+            $cursos = [];
+            foreach ($inscricaoucs as $key => $inscricao) {
+                if(!array_key_exists($inscricao->idCurso,$cursos)){
+                    $cursos[$inscricao->idCurso] = [];
+                }
+                array_push($cursos[$inscricao->idCurso], $inscricao);
+            }
+            //dd($cursos);
+            return response($cursos,200);
         }
     }
 
