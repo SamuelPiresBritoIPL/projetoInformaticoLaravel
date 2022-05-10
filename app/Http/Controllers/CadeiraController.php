@@ -16,14 +16,16 @@ use Illuminate\Http\Request;
 
 class CadeiraController extends Controller
 {
+
     public function getCadeirasUtilizador(Request $request){
         if($request->user()->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
             $anoletivo = Anoletivo::where('ativo',1)->first();
-            $inscricaoucs = Inscricaoucs::where('idUtilizador',($request->user())->id)->where('idAnoletivo',$anoletivo->id)
+            $dados = Inscricaoucs::where('idUtilizador',($request->user())->id)->where('idAnoletivo',$anoletivo->id)
                             ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
-                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
-                            ->select('inscricaoucs.*','curso.id as idCurso','curso.nome as nomeCurso','cadeira.nome as nomeCadeira')->get();
+                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')->get();
+            $inscricaoucs = InscricaoucsResource::collection($dados);        
+
             $cursos = [];
             foreach ($inscricaoucs as $key => $inscricao) {
                 if(!array_key_exists($inscricao->idCurso,$cursos)){
@@ -33,6 +35,13 @@ class CadeiraController extends Controller
             }
             //dd($cursos);
             return response($cursos,200);
+        }
+    }
+
+    public function getCadeirasTurnosUtilizador(Request $request){
+        if($request->user()->tipo == 0){ //estudante
+            InscricaoucsResource::$format = 'cadeiras';
+            return response(InscricaoucsResource::collection($request->user()->inscricaoucs),200);
         }
     }
 

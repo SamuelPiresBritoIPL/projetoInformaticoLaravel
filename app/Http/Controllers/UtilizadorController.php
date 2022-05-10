@@ -34,7 +34,7 @@ class UtilizadorController extends Controller
 			'login' => $utilizador->login,
             'nome' => $utilizador->nome,
 			'tipo' => $utilizador->tipo,
-			'isCoordenador' => empty($utilizador->coordenadors) ? 0 : 1,
+			'isCoordenador' => $utilizador->isCoordenador() ? 1 : 0,
 			'isProfessor' => empty($aulas) ? 0 : 1,
 			'access_token' => $token,
 			'curso' => (!empty($utilizador->curso)) ? new CursoResource($utilizador->curso) : ""
