@@ -101,7 +101,7 @@ class Utilizador extends Authenticatable
      */
     public function pedidos()
     {
-        return $this->hasMany(pedido::class, 'idUtilizador');
+        return $this->hasMany(pedidos::class, 'idUtilizador');
     }
 
     /**

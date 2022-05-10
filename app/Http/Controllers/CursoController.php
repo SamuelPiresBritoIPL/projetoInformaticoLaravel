@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
 use App\Http\Resources\CursoResourceCollection;
+use Illuminate\Support\Arr;
 
 class CursoController extends Controller
 {
@@ -35,10 +36,8 @@ class CursoController extends Controller
             $cursos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
                         ->join('aula','aula.idTurno','=','turno.id')->where('aula.idProfessor',Auth::user()->id)
                         ->select('curso.*')->distinct('curso.id')->get();
-            //dd($cursos);
             return response(CursoResource::collection($cursos),200);
         }
-        //decidir que cursos ir buscar
     	return response(CursoResource::collection(Curso::all()),200);
     }
 
