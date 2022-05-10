@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
 use App\Models\Anoletivo;
 use App\Models\Utilizador;
+use App\Models\Coordenador;
 use App\Models\Inscricaoucs;
+use Illuminate\Http\Request;
 use App\Services\CadeiraService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
-use Illuminate\Http\Request;
+use App\Services\CoordenadorService;
 
 class CadeiraController extends Controller
 {
@@ -34,6 +38,28 @@ class CadeiraController extends Controller
             //dd($cursos);
             return response($cursos,200);
         }
+    }
+
+    public function getCadeirasProfessor(Anoletivo $anoletivo, $semestre){
+        /*if(!(new CoordenadorService)->isProfessor($cadeira)){
+            return response("Não tem permissão para aceder a esta unidade curricular",401);
+        }*/
+        $subquery = "(select count(*) from inscricao where idTurno = turno.id) as vagas";
+        $turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
+            ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)->where('aula.idProfessor',Auth::user()->id)
+            ->select('cadeira.*','turno.*','curso.nome as nomeCurso',DB::raw($subquery))->distinct('turno.id')->get();
+
+        $dados = [];
+        foreach ($turnos as $key => $turno) {
+            if(!array_key_exists($turno->idCurso,$dados)){
+                $dados[$turno->idCurso] = ["curso" => $turno->nomeCurso, "cadeiras" => []];
+            }
+            if(!array_key_exists($turno->idCadeira,$dados[$turno->idCurso]["cadeiras"])){
+                $dados[$turno->idCurso]["cadeiras"][$turno->idCadeira] = [];
+            }
+            array_push($dados[$turno->idCurso]["cadeiras"][$turno->idCadeira], $turno);
+        }
+        return response($dados,200);
     }
 
     public function getCadeirasNaoAprovadasUtilizador(Utilizador $utilizador){
