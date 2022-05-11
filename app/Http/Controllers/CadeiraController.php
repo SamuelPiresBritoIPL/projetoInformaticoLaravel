@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
+use App\Models\aberturas;
 use App\Models\Anoletivo;
 use App\Models\Utilizador;
 use App\Models\Coordenador;
@@ -12,11 +14,11 @@ use App\Models\Inscricaoucs;
 use Illuminate\Http\Request;
 use App\Services\CadeiraService;
 use Illuminate\Support\Facades\DB;
+use App\Services\CoordenadorService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
-use App\Services\CoordenadorService;
 
 class CadeiraController extends Controller
 {
@@ -30,10 +32,15 @@ class CadeiraController extends Controller
         if($request->user()->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
             $anoletivo = Anoletivo::where('ativo',1)->first();
-            $dados = Inscricaoucs::where('idUtilizador',($request->user())->id)->where('idAnoletivo',$anoletivo->id)
+            $dados = Inscricaoucs::where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
                             ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
-                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')->get();
-            $inscricaoucs = InscricaoucsResource::collection($dados);        
+                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
+                            ->join('aberturas', 'aberturas.idCurso', '=', 'curso.id')->where('aberturas.dataAbertura', '<=', Carbon::now())
+                            ->where('aberturas.dataEncerar', '>=', Carbon::now())->select('curso.id')->get();
+            /* $dados = aberturas::where('aberturas.dataAbertura', '<=', Carbon::now())->where('aberturas.dataEncerar', '>=', Carbon::now())->join('curso')
+                            ->join('curso', 'curso.id','=','aberturas.idCurso') */
+            $inscricaoucs = InscricaoucsResource::collection($dados);   
+            dd($dados);
 
             $cursos = [];
             foreach ($inscricaoucs as $key => $inscricao) {
