@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Resources\TurnoResource;
 use App\Http\Resources\CoordenadorResource;
-use App\Models\Turno;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CadeiraResource extends JsonResource
