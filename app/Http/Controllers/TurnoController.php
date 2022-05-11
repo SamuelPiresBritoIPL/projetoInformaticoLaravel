@@ -14,6 +14,12 @@ class TurnoController extends Controller
         return response($result["msg"],$result["code"]);
     }
 
+    public function getInformacoesTurnosProfessores(Turno $turno){
+        $result = (new TurnoService)->getInformacoesTurnoForAdmin($turno);
+
+        return response($result["msg"],$result["code"]);
+    }
+
     public function editTurno(TurnoPostRequest $request, Turno $turno){
         $data = collect($request->validated());
         

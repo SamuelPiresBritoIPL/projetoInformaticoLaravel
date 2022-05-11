@@ -40,7 +40,6 @@ class WebserviceService
     public function getCursos($json){
         $newDataAdded = 0;
         $updatedData = 0;
-        Aula::truncate();
         foreach ($json as $turno) {
             $curso = Curso::where('codigo',$turno->CD_Curso)->first();
             if(empty($curso)){
@@ -110,12 +109,14 @@ class WebserviceService
                 $newturno->save();
                 $newDataAdded += 1;
             }
-
-            $aula = new Aula();
-            $aula->idTurno = $newturno->id;
-            $aula->idProfessor = $utilizador->id;
-            $aula->save();
-            $newDataAdded += 1;
+            $newaula = Aula::where('idTurno',$newturno->id)->where('idProfessor',$utilizador->id)->first();
+            if(empty($newaula)){
+                $newaula = new Aula();
+                $newaula->idTurno = $newturno->id;
+                $newaula->idProfessor = $utilizador->id;
+                $newaula->save();
+                $newDataAdded += 1;
+            }
         }
         return $newDataAdded;
     }

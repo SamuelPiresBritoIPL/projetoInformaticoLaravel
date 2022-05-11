@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Turno;
 use App\Models\Inscricao;
 use App\Models\Inscricaoucs;
 use Database\Seeders\TurnoSeeder;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Resources\TurnoResource;
 use App\Http\Resources\CoordenadorResource;
@@ -73,6 +75,20 @@ class CadeiraResource extends JsonResource
             'nrInscritos' => 0,
             'turnos' => (TurnoResource::collection($this->turnos->where('idAnoletivo', $this->anoletivo)))->groupBy('tipo'),
           ];
+        case 'paraprofessor':
+          TurnoResource::$format = 'paracadeira';
+          $turnos = Turno::where('idCadeira', $this->id)->join('aula','aula.idTurno','=','turno.id')
+                            ->where('aula.idProfessor', Auth::user()->id)->where('idAnoletivo', $this->anoletivo)->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC')->select('turno.*')->get();
+          return [
+            'id' => $this->id,
+            'codigo' => $this->codigo,
+            'ano' => $this->ano,
+            'semestre' => $this->semestre,
+            'nome' => $this->nome,
+            'abreviatura' => $this->abreviatura,
+            'turnos' => TurnoResource::collection($turnos),
+            'curso' => $this->curso,
+        ];
         default:
             return [
                 'id' => $this->id,

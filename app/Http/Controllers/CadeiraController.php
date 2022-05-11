@@ -64,6 +64,25 @@ class CadeiraController extends Controller
         return response($dados,200);
     }
 
+    public function getStatsCadeiraProfessor(Cadeira $cadeira, Anoletivo $anoletivo){
+        if(!(new CoordenadorService)->isProfessorCadeira($cadeira)){
+            return response("Não tem permissão para aceder a esta unidade curricular",401);
+        }
+        $result = (new CadeiraService)->getInformacoesCadeirasForAdmin($cadeira, $anoletivo);
+
+        return response($result["msg"],$result["code"]);
+    }
+
+    public function getCadeiraProfessor(Cadeira $cadeira, Anoletivo $anoletivo){
+        if(!(new CoordenadorService)->isProfessorCadeira($cadeira)){
+            return response("Não tem permissão para aceder a esta unidade curricular",401);
+        }
+        
+        CadeiraResource::$format = 'paraprofessor';
+        $cadeira = CadeiraResource::make($cadeira)->anoletivo($anoletivo->id,$cadeira->semestre);
+        return response(["cadeira" => $cadeira],200);
+    }
+
     public function getCadeirasNaoAprovadasUtilizador(Utilizador $utilizador){
         if($utilizador->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
