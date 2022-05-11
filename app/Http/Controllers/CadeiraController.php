@@ -30,12 +30,34 @@ class CadeiraController extends Controller
             $dados = Inscricaoucs::where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
                             ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
                             ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
-                            ->join('aberturas', 'aberturas.idCurso', '=', 'curso.id')->where('aberturas.dataAbertura', '<=', Carbon::now())
+                            ->join('aberturas', 'aberturas.idCurso', '=', 'curso.id')
                             ->where('aberturas.dataEncerar', '>=', Carbon::now())->select('curso.id')->get();
             /* $dados = aberturas::where('aberturas.dataAbertura', '<=', Carbon::now())->where('aberturas.dataEncerar', '>=', Carbon::now())->join('curso')
                             ->join('curso', 'curso.id','=','aberturas.idCurso') */
             $inscricaoucs = InscricaoucsResource::collection($dados);   
-            dd($dados);
+
+            $cursos = [];
+            foreach ($inscricaoucs as $key => $inscricao) {
+                if(!array_key_exists($inscricao->idCurso,$cursos)){
+                    $cursos[$inscricao->idCurso] = [];
+                }
+                array_push($cursos[$inscricao->idCurso], $inscricao);
+            }
+            //dd($cursos);
+            return response($cursos,200);
+        }
+    }
+
+    public function getCadeirasUtilizadorConfirmar(Request $request){
+        if($request->user()->tipo == 0){ //estudante
+            InscricaoucsResource::$format = 'cadeiras';
+            $anoletivo = Anoletivo::where('ativo',1)->first();
+            $dados = Inscricaoucs::where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
+                            ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
+                            ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')->get();
+            /* $dados = aberturas::where('aberturas.dataAbertura', '<=', Carbon::now())->where('aberturas.dataEncerar', '>=', Carbon::now())->join('curso')
+                            ->join('curso', 'curso.id','=','aberturas.idCurso') */
+            $inscricaoucs = InscricaoucsResource::collection($dados);   
 
             $cursos = [];
             foreach ($inscricaoucs as $key => $inscricao) {

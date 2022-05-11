@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'turno'], fun
 //aluno
 Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasaluno'], function () {
 	Route::get('utilizador',[CadeiraController::class, 'getCadeirasUtilizador']);
+    Route::get('confirmar/utilizador',[CadeiraController::class, 'getCadeirasUtilizadorConfirmar']);
     Route::get('turnos/utilizador',[CadeiraController::class, 'getCadeirasTurnosUtilizador']);
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
