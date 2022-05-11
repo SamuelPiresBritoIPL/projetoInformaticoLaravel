@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Resources\TurnoResource;
 use App\Http\Resources\CoordenadorResource;
+use App\Models\Turno;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CadeiraResource extends JsonResource
@@ -47,6 +48,16 @@ class CadeiraResource extends JsonResource
           ];
         case 'inscricaoucs':
           TurnoResource::$format = 'paracadeiraturno';
+          $turnos = Turno::join('inscricaoucs', function ($join) use(&$request) {
+            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')
+            ->where('inscricaoucs.idUtilizador', '=', $request->user()->id)
+            ->where('turno.numero', '>' , 0)
+            ->where('turno.visivel', '=', 1);
+          })->join('cadeira', function ($join) {
+            $join->on('turno.idCadeira', '=', 'cadeira.id')
+            ->where('cadeira.idCurso', '=', $this->curso->id)
+            ->where('cadeira.id', '=', $this->id);
+          })->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC')->select('turno.*')->get();
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
@@ -57,7 +68,7 @@ class CadeiraResource extends JsonResource
             'curso' => $this->curso->nome,
             'codigocurso' => $this->curso->codigo,
             'estado' => $this->estado,
-            'turnos' => (TurnoResource::collection($this->turnosVisiveis))->groupBy('tipo')
+            'turnos' => (TurnoResource::collection($turnos))->groupBy('tipo')
           ];
         case 'paracurso':
           //ir buscar numero total inscritos em quantos
