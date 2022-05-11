@@ -56,7 +56,7 @@ class AberturaService
             }
             
             $turnos = Turno::wherein('idCadeira',$cadeiras)->join('cadeira', 'cadeira.id', '=', 'turno.idCadeira')->where('visivel',1)->whereNull('vagastotal')->get();
-            if(!empty($turnos)){
+            if($turnos->isNotEmpty()){
                 $msg = "Turnos que faltam definir vagas: ";
                 $cursos = [];
                 foreach ($turnos as $key => $turno) {
