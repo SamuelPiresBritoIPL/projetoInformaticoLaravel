@@ -20,6 +20,11 @@ use App\Services\CoordenadorService;
 
 class CadeiraController extends Controller
 {
+    public function exportCadeira(Cadeira $cadeira){
+        $result = (new CadeiraService)->exportCadeira($cadeira);
+
+        return response($result["msg"],$result["code"]);
+    }
 
     public function getCadeirasUtilizador(Request $request){
         if($request->user()->tipo == 0){ //estudante

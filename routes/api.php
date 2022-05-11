@@ -111,9 +111,10 @@ Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'estudante'
 
 //admin
 Route::group(['middleware' => ['auth:api','professor'],'prefix' => 'cadeirasprofessor'], function () {
+    Route::get('export/{cadeira}',[CadeiraController::class, 'exportCadeira']);
     Route::get('/{anoletivo}/{semestre}', [CadeiraController::class, 'getCadeirasProfessor']);
     Route::get('stats/{cadeira}/{anoletivo}', [CadeiraController::class, 'getStatsCadeiraProfessor']);
-    Route::get('cadeira/{cadeira}/{anoletivo}', [CadeiraController::class, 'getCadeiraProfessor']);
+    Route::get('cadeira/{cadeira}/{anoletivo}', [CadeiraController::class, 'getCadeiraProfessor']); 
 });
 
 Route::group(['middleware' => ['auth:api','professor'],'prefix' => 'turnosprofessor'], function () {
