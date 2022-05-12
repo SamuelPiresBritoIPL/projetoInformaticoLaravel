@@ -35,6 +35,10 @@ class CoordenadorController extends Controller
             return response("Este utilizador é administrador",422);
         }
 
+        if ($utilizador->isEstudante()) {
+            return response("Este utilizador é aluno",422);
+        }
+
         $coordenador = Coordenador::where('idUtilizador',$utilizador->id)->where('idCurso',$data->get('idCurso'))->first();
         if(!empty($coordenador)){
             return response("Este utilizador já é administrador da cadeira!",422);
