@@ -8,11 +8,13 @@ use App\Models\Turno;
 use App\Models\Cadeira;
 use App\Models\aberturas;
 use App\Models\Anoletivo;
+use App\Models\Inscricao;
 use App\Models\Utilizador;
 use App\Models\Coordenador;
 use App\Models\Inscricaoucs;
 use Illuminate\Http\Request;
 use App\Services\CadeiraService;
+use PhpParser\Node\Stmt\Foreach_;
 use Illuminate\Support\Facades\DB;
 use App\Services\CoordenadorService;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +24,13 @@ use App\Http\Resources\InscricaoucsResource;
 
 class CadeiraController extends Controller
 {
+    public function mudarTurno(CadeiraPostRequest $request, Turno $turno){
+        $data = collect($request->validated());
+
+        $inscricao = Inscricao::whereIn('id',$data->get('inscricaoIds'))->update(['idTurno' => $turno->id]);;
+        return response("dados alterados com sucesso", 200);
+    }
+
     public function exportCadeira(Cadeira $cadeira){
         $result = (new CadeiraService)->exportCadeira($cadeira);
 
