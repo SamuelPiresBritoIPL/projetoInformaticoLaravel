@@ -18,22 +18,14 @@ class TurnoResource extends JsonResource
     {
       switch (TurnoResource::$format) {
         case 'paracadeira':
-            $vagasocupadas = 0;
-            if(!is_null($this->vagastotal)){
-                //ir buscar mais dados para as vagasocupadas
-            }
           return [
             'id' => $this->id,
             'tipo' => $this->tipo,
             'numero' => $this->numero,
             'vagastotal' => $this->vagastotal,
-            'vagasocupadas' => $vagasocupadas,
+            'vagasocupadas' => count($this->inscricaosutilizadores),
           ];
         case 'paracadeiraturno':
-            $vagasocupadas = 0;
-            if(!is_null($this->vagastotal)){
-                //ir buscar mais dados para as vagasocupadas
-            }
           return [
             'id' => $this->id,
             'tipo' => $this->tipo,
