@@ -83,6 +83,16 @@ class CursoController extends Controller
         return response(CursoResource::make($curso1)->anoletivo($anoletivo->id,$semestre),200);
     }
 
+    public function getCoordenadoresAuth(){
+        CursoResource::$format = 'coordenador';
+        if(Auth::user()->isCoordenador() || Auth::user()->isProfessor()){
+            $idsCursos = Coordenador::where('idUtilizador', Auth::user()->id)->pluck('idCurso')->toArray();
+            $cursos = Curso::whereIn('id', $idsCursos)->get();
+            return response(CursoResource::collection($cursos),200);
+        }
+        return response(CursoResource::collection(Curso::all()),200);
+    }
+
     public function getCadeirasByCurso(Curso $curso, Anoletivo $anoletivo, $semestre){
         if($semestre != 1 && $semestre != 2){
             return response("O semestre não é válido");
