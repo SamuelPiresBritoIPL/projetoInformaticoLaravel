@@ -107,12 +107,12 @@ class CadeiraController extends Controller
         $subquery = "(select count(*) from inscricao where idTurno = turno.id) as vagas";
         $turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
             ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)->where('aula.idProfessor',Auth::user()->id)
-            ->select('cadeira.*','turno.*','curso.nome as nomeCurso',DB::raw($subquery))->distinct('turno.id')->get();
+            ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();
 
         $dados = [];
         foreach ($turnos as $key => $turno) {
             if(!array_key_exists($turno->idCurso,$dados)){
-                $dados[$turno->idCurso] = ["curso" => $turno->nomeCurso, "cadeiras" => []];
+                $dados[$turno->idCurso] = ["curso" => $turno->nomeCurso, "codigoCurso" => $turno->codigoCurso,  "cadeiras" => []];
             }
             if(!array_key_exists($turno->idCadeira,$dados[$turno->idCurso]["cadeiras"])){
                 $dados[$turno->idCurso]["cadeiras"][$turno->idCadeira] = [];
