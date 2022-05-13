@@ -40,6 +40,7 @@ Route::get('logs', [LogsController::class, 'index']); //sim ja esta
 
 Route::group(['middleware' => ['auth:api','estudante'], 'prefix' => 'cursoauth'], function () {
 	Route::get('/', [CursoController::class, 'index']);
+    Route::get('/coordenadores',[CursoController::class, 'getCoordenadoresAuth']);
     Route::get('/cadeiras/{curso}/{anoletivo}/{semestre}', [CursoController::class, 'getCadeirasByCurso']);
 });
 
