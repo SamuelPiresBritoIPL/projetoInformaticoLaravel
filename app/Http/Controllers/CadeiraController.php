@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CadeiraResource;
 use App\Http\Requests\CadeiraPostRequest;
 use App\Http\Resources\InscricaoucsResource;
+use Doctrine\DBAL\Schema\Visitor\Visitor;
 
 class CadeiraController extends Controller
 {
@@ -45,7 +46,8 @@ class CadeiraController extends Controller
                             ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
                             ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
                             ->select('inscricaoucs.*','cadeira.*')->get();
-            $aberturas = Aberturas::where('aberturas.dataAbertura', '<=', Carbon::now())->where('aberturas.dataEncerar', '>=', Carbon::now())
+            $now = Carbon::now();
+            $aberturas = Aberturas::whereDate('aberturas.dataAbertura', '<=', $now)->whereDate('aberturas.dataEncerar', '>=', $now)
                                 ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                                     $query->from('inscricaoucs')
                                           ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
@@ -105,10 +107,15 @@ class CadeiraController extends Controller
             return response("Não tem permissão para aceder a esta unidade curricular",401);
         }*/
         $subquery = "(select count(*) from inscricao where idTurno = turno.id) as vagas";
+        $idsCadeiras = Cadeira::join('turno','turno.idCadeira','=','cadeira.id')
+                        ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)
+                        ->where('aula.idProfessor',Auth::user()->id)->distinct('cadeira.id')->pluck('cadeira.id')->toArray();
         $turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
+                        ->where('turno.idAnoletivo', $anoletivo->id)->whereIn('cadeira.id', $idsCadeiras)
+                        ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();
+        /*$turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
             ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)->where('aula.idProfessor',Auth::user()->id)
-            ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();
-
+            ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();*/
         $dados = [];
         foreach ($turnos as $key => $turno) {
             if(!array_key_exists($turno->idCurso,$dados)){
@@ -206,5 +213,15 @@ class CadeiraController extends Controller
             return response("Faltam dados a serem enviados",401);
         }
         return response("valores alterados",200);
+    }
+
+    public function tornarInvisivel(Cadeira $cadeira,Anoletivo $anoletivo, $visivel){
+        if($visivel != 0 && $visivel != 1){
+            return response("Os dados enviados não são validos!",401);
+        }
+
+        $result = (new CadeiraService)->mudarVisibilidade($cadeira,$anoletivo,$visivel);
+
+        return response($result["msg"],$result["code"]);
     }
 }

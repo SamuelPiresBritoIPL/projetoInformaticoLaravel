@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'cadeiras']
 	Route::get('stats/{cadeira}/{anoletivo}',[CadeiraController::class, 'getInformacoesCadeira']);
     Route::post('/addaluno/{cadeira}',[CadeiraController::class, 'addAluno']);
     Route::post('/addalunoturno/{turno}',[CadeiraController::class, 'addAlunoTurno']);
+    Route::post('/turnosinvisivel/{cadeira}/{anoletivo}/{visivel}',[CadeiraController::class, 'tornarInvisivel']);
     Route::put('/turnovagas/{cadeira}/{anoletivo}',[CadeiraController::class, 'editVagasTurnos']);
     Route::put('mudarturno/{turno}',[CadeiraController::class, 'mudarTurno']);
 });

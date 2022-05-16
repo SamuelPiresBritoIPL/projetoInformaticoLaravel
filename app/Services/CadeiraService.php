@@ -156,4 +156,10 @@ class CadeiraService
         }
         return $this->ExportExcel($data_array,$cadeira);
     }
+
+    public function mudarVisibilidade(Cadeira $cadeira,Anoletivo $anoletivo,$visivel){
+        $turnos = Cadeira::where('cadeira.id',$cadeira->id)->join('turno','turno.idCadeira','=','cadeira.id')
+                        ->where('turno.idAnoletivo', $anoletivo->id)->update(['turno.visivel'=>$visivel]);
+        return ['msg' => "Turnos atualizados",'code' => 200];
+    }
 }
