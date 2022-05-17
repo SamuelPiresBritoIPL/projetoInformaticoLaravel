@@ -35,7 +35,7 @@ class Curso extends Model
      */
     public function aberturas()
     {
-        return $this->hasMany(aberturas::class, 'idCurso');
+        return $this->hasMany(aberturas::class, 'idCurso')->orderBy('ano', 'ASC');
     }
 
     /**

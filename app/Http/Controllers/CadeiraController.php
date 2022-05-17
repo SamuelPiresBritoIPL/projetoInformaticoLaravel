@@ -112,7 +112,8 @@ class CadeiraController extends Controller
                         ->where('aula.idProfessor',Auth::user()->id)->distinct('cadeira.id')->pluck('cadeira.id')->toArray();
         $turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
                         ->where('turno.idAnoletivo', $anoletivo->id)->whereIn('cadeira.id', $idsCadeiras)
-                        ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();
+                        ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))
+                        ->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC')->distinct('turno.id')->get();
         /*$turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
             ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)->where('aula.idProfessor',Auth::user()->id)
             ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))->distinct('turno.id')->get();*/

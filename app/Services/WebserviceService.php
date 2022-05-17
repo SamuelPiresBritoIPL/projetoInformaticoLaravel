@@ -154,7 +154,7 @@ class WebserviceService
             $anoletivo = Anoletivo::where('anoletivo',$inscricao->CD_LECTIVO)->first();
             if(empty($anoletivo)){
                 $anoletivo = new Anoletivo();
-                $anoletivo->anoletivo = $inscricao->CD_Lectivo;
+                $anoletivo->anoletivo = $inscricao->CD_LECTIVO;
                 $anoletivo->save();
             }
             
