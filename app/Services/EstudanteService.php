@@ -22,7 +22,9 @@ class EstudanteService
             $join->where('inscricaoucs.estado','=',2);
         })->leftjoin('curso', function($join){
             $join->on('curso.id','=','cadeira.idCurso');
-        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso')->get();
+        })->leftjoin('anoletivo', function($join){
+            $join->on('anoletivo.id','=','inscricaoucs.idAnoletivo');
+        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso','anoletivo.anoletivo')->get();
 
         foreach ($cadeiras as $key => $cadeira) {
             if(!array_key_exists($cadeira->idCurso,$cadeirasAprovadas)){

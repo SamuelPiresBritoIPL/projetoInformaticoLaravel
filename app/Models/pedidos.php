@@ -38,7 +38,7 @@ class Pedidos extends Model
      */
     public function anoletivo()
     {
-        return $this->belongsTo(Anoletivo::class, 'idAnoLetivo');
+        return $this->belongsTo(Anoletivo::class, 'idAnoletivo');
     }
 
     /**
