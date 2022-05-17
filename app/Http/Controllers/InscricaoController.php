@@ -29,33 +29,38 @@ class InscricaoController extends Controller
             $idTurnosAceites = $canBeCreated['idTurnosAceites'];
         } else if($canBeCreated['response'] == 1){
             $idTurnosAceites = $data->get('turnosIds');
-        }
+        } 
 
         foreach($idTurnosAceites as $turnoId){
             $tipoturno = DB::table('turno')->select('tipo')->where('id', $turnoId)->get();
             if (!empty($tipoturno)) {
-                $subquery = "select i.*, t.tipo, t.idCadeira,c.id as cadeiraId from inscricao i join turno t on t.id = i.idTurno join cadeira c on c.id = t.idCadeira where idUtilizador = " . $data->get('idUtilizador') . " and t.tipo = '" . $tipoturno[0]->tipo . "'";
+                $subquery = "select i.*, t.tipo, t.idCadeira,c.id as cadeiraId from inscricao i join turno t on t.id = i.idTurno join cadeira c on c.id = t.idCadeira where i.idUtilizador = " . $data->get('idUtilizador') . " and t.tipo = '" . $tipoturno[0]->tipo . "'";
                 $inscricoes = DB::select(DB::raw($subquery));
-     
-                if (sizeof($inscricoes) > 1) {
+
+                if (sizeof($inscricoes) > 0) {
                     $idCadeiraTurnoRequerido = DB::table('turno')->select('idCadeira')->where('id', $turnoId)->get();
+                    $inscricaoNova = true;
+                    $idInscricao = 0;
                     foreach ($inscricoes as $inscricao) {
                         if ($idCadeiraTurnoRequerido[0]->idCadeira == $inscricao->idCadeira) {
-                            $inscricao = Inscricao::find($inscricao->id);
-                            if (!empty($inscricao)) {
-                                $inscricao = (new InscricaoService)->update($inscricao, $turnoId);
-                            }
+                            $inscricaoNova = false;
+                            $idInscricao = $inscricao->id;
+                            break;
                         }
                     }
-                } else if ((sizeof($inscricoes) == 1 and $inscricoes[0]->idTurno == $turnoId)) {
-                    //não faz nada pois ja esta inscrito
-                } else {
-                    if(!empty($inscricoes)){
-                        $inscricao = Inscricao::find($inscricoes[0]->id);
+                    if ($inscricaoNova == true) {
+                        $inscricao = (new InscricaoService)->save($data->get('idUtilizador'), $turnoId);
+                    } 
+                    if ($inscricaoNova == false) {
+                        $inscricao = Inscricao::find($idInscricao);
                         if (!empty($inscricao)) {
-                            $inscricao = (new InscricaoService)->save($data->get('idUtilizador'), $turnoId);
+                            $inscricao = (new InscricaoService)->update($inscricao, $turnoId);
                         }
-                    }   
+                    }
+                }
+
+                if (sizeof($inscricoes) == 0) {
+                    $inscricao = (new InscricaoService)->save($data->get('idUtilizador'), $turnoId);
                 }
             } else {
                 return response('Ocorreu um erro, dê refresh à página e tente novamente.', 401);

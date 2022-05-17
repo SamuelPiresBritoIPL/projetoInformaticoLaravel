@@ -29,7 +29,9 @@ class TurnoResource extends JsonResource
           return [
             'id' => $this->id,
             'tipo' => $this->tipo,
-            'numero' => $this->numero
+            'numero' => $this->numero,
+            'vagastotal' => $this->vagastotal,
+            'vagasocupadas' => count($this->inscricaosutilizadores)
           ];
         default:
         return [
