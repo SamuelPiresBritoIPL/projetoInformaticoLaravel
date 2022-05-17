@@ -8,9 +8,13 @@ use App\Services\EstudanteService;
 
 class EstudanteController extends Controller
 {
-    public function getDados(Utilizador $estudante, Anoletivo $anoletivo, $semestre){
+    public function getDados($estudante, Anoletivo $anoletivo, $semestre){
+        $estudante = Utilizador::where('login', $estudante)->first();
+        if(empty($estudante)){
+            return response("O login não foi encontrado",400);
+        } 
         if($semestre != 1 && $semestre != 2){
-            return response("O semestre não é válido");
+            return response("O semestre não é válido",400);
         }
 
         $result = (new EstudanteService)->getDadosEstudante($estudante,$anoletivo,$semestre);
