@@ -19,9 +19,10 @@ use Illuminate\Support\Facades\DB;
 use App\Services\CoordenadorService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CadeiraResource;
+use App\Http\Resources\PedidosResource;
 use App\Http\Requests\CadeiraPostRequest;
-use App\Http\Resources\InscricaoucsResource;
 use Doctrine\DBAL\Schema\Visitor\Visitor;
+use App\Http\Resources\InscricaoucsResource;
 
 class CadeiraController extends Controller
 {
@@ -67,7 +68,11 @@ class CadeiraController extends Controller
                     }
                 }
             }
-            $inscricaoucs = InscricaoucsResource::collection($cadeirasEnviar);   
+            $inscricaoucs = InscricaoucsResource::collection($cadeirasEnviar);
+            $ins = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
+                                    )->join('cadeira','turno.idCadeira','=','cadeira.id')
+                                    ->where('turno.idAnoletivo', '=', '1')->where('cadeira.semestre', $anoletivo->semestreativo)
+                                    ->where('turno.numero', '>', 0)->pluck('turno.id')->toArray();
             $cursos = [];
             foreach ($inscricaoucs as $key => $inscricao) {
                 if(!array_key_exists($inscricao->idCurso,$cursos)){
@@ -75,7 +80,7 @@ class CadeiraController extends Controller
                 }
                 array_push($cursos[$inscricao->idCurso], $inscricao);
             }
-            return response($cursos,200);
+            return response(["cursos" => $cursos, "inscricoes" => $ins],200);
         }
     }
 
@@ -98,7 +103,9 @@ class CadeiraController extends Controller
                 array_push($cursos[$inscricao->idCurso], $inscricao);
             }
             //dd($cursos);
-            return response($cursos,200);
+            $user = Utilizador::where('id', ($request->user())->id)->first();
+            $infoPedidos = [];
+            return response(["cursos" => $cursos, "pedidos" => PedidosResource::collection($user->pedidos), "infoPedidos" => $infoPedidos],200);
         }
     }
 
