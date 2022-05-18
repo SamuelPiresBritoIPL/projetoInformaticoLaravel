@@ -35,7 +35,7 @@ class TurnoPostRequest extends FormRequest
                 $rules = array_merge($rules,array('repetentes' => 'required', 'numeric', 'in:0,1'));
             }
             if($this->request->has('vagastotal')){
-                $rules = array_merge($rules,array('vagastotal' => 'required', 'numeric', 'gte:1'));
+                $rules = array_merge($rules,array('vagastotal' => 'required|numeric|gt:0'));
             }
         }
         return $rules;
