@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
-use App\Models\aberturas;
+use App\Models\Aberturas;
 use App\Models\Anoletivo;
 use App\Models\Inscricao;
 use App\Models\Utilizador;
