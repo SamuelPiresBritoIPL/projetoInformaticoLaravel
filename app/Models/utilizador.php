@@ -53,7 +53,7 @@ class Utilizador extends Authenticatable
      */
     public function curso()
     {
-        return $this->belongsTo(curso::class, 'idCurso');
+        return $this->belongsTo(Curso::class, 'idCurso');
     }
 
     /**
@@ -61,7 +61,7 @@ class Utilizador extends Authenticatable
      */
     public function aberturas()
     {
-        return $this->hasMany(aberturas::class, 'idUtilizador');
+        return $this->hasMany(Aberturas::class, 'idUtilizador');
     }
 
     /**
@@ -69,7 +69,7 @@ class Utilizador extends Authenticatable
      */
     public function coordenadors()
     {
-        return $this->hasMany(coordenador::class, 'idUtilizador');
+        return $this->hasMany(Coordenador::class, 'idUtilizador');
     }
 
     /**
@@ -77,7 +77,7 @@ class Utilizador extends Authenticatable
      */
     public function inscricaos()
     {
-        return $this->hasMany(inscricao::class, 'idUtilizador');
+        return $this->hasMany(Inscricao::class, 'idUtilizador');
     }
 
     /**
@@ -85,7 +85,7 @@ class Utilizador extends Authenticatable
      */
     public function inscricaoucs()
     {
-        return $this->hasMany(inscricaoucs::class, 'idUtilizador');
+        return $this->hasMany(Inscricaoucs::class, 'idUtilizador');
     }
 
     /**
@@ -93,7 +93,7 @@ class Utilizador extends Authenticatable
      */
     public function logs()
     {
-        return $this->hasMany(logs::class, 'idUtilizador');
+        return $this->hasMany(Logs::class, 'idUtilizador');
     }
 
     /**
@@ -101,7 +101,7 @@ class Utilizador extends Authenticatable
      */
     public function pedidos()
     {
-        return $this->hasMany(pedidos::class, 'idUtilizador');
+        return $this->hasMany(Pedidos::class, 'idUtilizador');
     }
 
     /**
@@ -109,7 +109,7 @@ class Utilizador extends Authenticatable
      */
     public function turnos()
     {
-        return $this->hasMany(turno::class, 'idProfessor');
+        return $this->hasMany(Turno::class, 'idProfessor');
     }
 
     public function isAdmin(){

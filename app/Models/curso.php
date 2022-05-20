@@ -35,7 +35,7 @@ class Curso extends Model
      */
     public function aberturas()
     {
-        return $this->hasMany(aberturas::class, 'idCurso')->orderBy('ano', 'ASC');
+        return $this->hasMany(Aberturas::class, 'idCurso')->orderBy('ano', 'ASC');
     }
 
     /**
@@ -43,7 +43,7 @@ class Curso extends Model
      */
     public function cadeiras()
     {
-        return $this->hasMany(cadeira::class, 'idCurso');
+        return $this->hasMany(Cadeira::class, 'idCurso');
     }
 
     /**
@@ -51,7 +51,7 @@ class Curso extends Model
      */
     public function coordenadors()
     {
-        return $this->hasMany(coordenador::class, 'idCurso');
+        return $this->hasMany(Coordenador::class, 'idCurso');
     }
 
     /**
@@ -59,6 +59,6 @@ class Curso extends Model
      */
     public function utilizadors()
     {
-        return $this->hasMany(utilizador::class, 'idCurso');
+        return $this->hasMany(Utilizador::class, 'idCurso');
     }
 }

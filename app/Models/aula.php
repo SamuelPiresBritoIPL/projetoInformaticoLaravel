@@ -31,7 +31,7 @@ class Aula extends Model
      */
     public function turno()
     {
-        return $this->belongsTo(turno::class, 'idTurno');
+        return $this->belongsTo(Turno::class, 'idTurno');
     }
 
     /**
@@ -39,6 +39,6 @@ class Aula extends Model
      */
     public function professor()
     {
-        return $this->belongsTo(utilizador::class, 'idProfessor');
+        return $this->belongsTo(Utilizador::class, 'idProfessor');
     }
 }

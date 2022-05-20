@@ -46,7 +46,7 @@ class Pedidos extends Model
      */
     public function curso()
     {
-        return $this->belongsTo(curso::class, 'idCurso');
+        return $this->belongsTo(Curso::class, 'idCurso');
     }
 
     /**

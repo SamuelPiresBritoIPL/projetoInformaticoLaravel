@@ -37,7 +37,7 @@ class Aberturas extends Model
      */
     public function utilizador()
     {
-        return $this->belongsTo(utilizador::class, 'idUtilizador');
+        return $this->belongsTo(Utilizador::class, 'idUtilizador');
     }
 
     /**

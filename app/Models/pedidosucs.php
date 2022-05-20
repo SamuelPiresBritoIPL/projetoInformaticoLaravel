@@ -27,7 +27,7 @@ class Pedidosucs extends Model
      */
     public function cadeira()
     {
-        return $this->belongsTo(cadeira::class, 'idCadeira');
+        return $this->belongsTo(Cadeira::class, 'idCadeira');
     }
 
     /**
@@ -35,6 +35,6 @@ class Pedidosucs extends Model
      */
     public function pedido()
     {
-        return $this->belongsTo(pedido::class, 'idPedidos');
+        return $this->belongsTo(Pedido::class, 'idPedidos');
     }
 }

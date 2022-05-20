@@ -33,7 +33,7 @@ class Coordenador extends Model
      */
     public function curso()
     {
-        return $this->belongsTo(curso::class, 'idCurso');
+        return $this->belongsTo(Curso::class, 'idCurso');
     }
 
     /**
@@ -41,6 +41,6 @@ class Coordenador extends Model
      */
     public function utilizador()
     {
-        return $this->belongsTo(utilizador::class, 'idUtilizador');
+        return $this->belongsTo(Utilizador::class, 'idUtilizador');
     }
 }

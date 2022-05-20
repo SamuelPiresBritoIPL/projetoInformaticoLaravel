@@ -33,7 +33,7 @@ class Inscricao extends Model
      */
     public function turno()
     {
-        return $this->belongsTo(turno::class, 'idTurno');
+        return $this->belongsTo(Turno::class, 'idTurno');
     }
 
     /**
@@ -41,6 +41,6 @@ class Inscricao extends Model
      */
     public function utilizador()
     {
-        return $this->belongsTo(utilizador::class, 'idUtilizador');
+        return $this->belongsTo(Utilizador::class, 'idUtilizador');
     }
 }

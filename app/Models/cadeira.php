@@ -38,7 +38,7 @@ class Cadeira extends Model
      */
     public function curso()
     {
-        return $this->belongsTo(curso::class, 'idCurso');
+        return $this->belongsTo(Curso::class, 'idCurso');
     }
 
     /**
@@ -46,7 +46,7 @@ class Cadeira extends Model
      */
     public function inscricaoucs()
     {
-        return $this->hasMany(inscricaoucs::class, 'idCadeira');
+        return $this->hasMany(Inscricaoucs::class, 'idCadeira');
     }
 
     /**
@@ -54,7 +54,7 @@ class Cadeira extends Model
      */
     public function pedidosucs()
     {
-        return $this->hasMany(pedidosucs::class, 'idCadeira');
+        return $this->hasMany(Pedidosucs::class, 'idCadeira');
     }
 
     /**
@@ -62,11 +62,11 @@ class Cadeira extends Model
      */
     public function turnos()
     {
-        return $this->hasMany(turno::class, 'idCadeira')->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
+        return $this->hasMany(Turno::class, 'idCadeira')->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
     }
 
     public function turnosvisiveis()
     {
-        return $this->hasMany(turno::class, 'idCadeira')->WHERE('visivel', 1)->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
+        return $this->hasMany(Turno::class, 'idCadeira')->WHERE('visivel', 1)->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC');
     }
 }
