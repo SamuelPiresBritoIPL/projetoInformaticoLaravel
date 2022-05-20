@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Utilizador;
-use App\Models\coordenador;
+use App\Models\Coordenador;
 use Illuminate\Http\Request;
 use App\Http\Resources\CoordenadorResource;
 use App\Http\Requests\CoordenadorPostRequest;
