@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\curso;
+use App\Models\Curso;
 use App\Models\Aberturas;
 use Illuminate\Http\Request;
 use App\Services\LogsService;

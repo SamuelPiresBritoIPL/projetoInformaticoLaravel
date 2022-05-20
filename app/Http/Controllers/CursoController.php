@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\curso;
+use App\Models\Curso;
 use App\Models\Anoletivo;
 use App\Models\Coordenador;
 use Illuminate\Http\Request;

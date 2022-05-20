@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\curso;
-use App\Models\turno;
-use App\Models\cadeira;
+use App\Models\Curso;
+use App\Models\Turno;
+use App\Models\Cadeira;
 use App\Models\Anoletivo;
-use App\Models\utilizador;
-use App\Models\inscricaoucs;
+use App\Models\Utilizador;
+use App\Models\Inscricaoucs;
 use Illuminate\Http\Request;
 use App\Services\LogsService;
 use App\Services\WebserviceService;
