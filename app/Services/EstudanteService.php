@@ -24,7 +24,7 @@ class EstudanteService
             $join->on('curso.id','=','cadeira.idCurso');
         })->leftjoin('anoletivo', function($join){
             $join->on('anoletivo.id','=','inscricaoucs.idAnoletivo');
-        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso','anoletivo.anoletivo')->get();
+        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*', 'anoletivo.anoletivo')->get();
 
         foreach ($cadeiras as $key => $cadeira) {
             if(!array_key_exists($cadeira->idCurso,$cadeirasAprovadas)){
@@ -40,7 +40,7 @@ class EstudanteService
             $join->where('inscricaoucs.estado','=',1);
         })->leftjoin('curso', function($join){
             $join->on('curso.id','=','cadeira.idCurso');
-        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso')->get();
+        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso')->get();
 
         $turnos = Turno::join('inscricao', function($join){
             $join->on('turno.id','=','inscricao.idTurno');
@@ -50,7 +50,7 @@ class EstudanteService
 
         foreach ($cadeiras as $key => $cadeira) {
             if(!array_key_exists($cadeira->idCurso,$cadeirasInscritas)){
-                $cadeirasInscritas[$cadeira->idCurso] = ["nome" => $cadeira->nomeCurso, "cadeiras" => []];
+                $cadeirasInscritas[$cadeira->idCurso] = ["nome" => $cadeira->nomeCurso, "codigo" => $cadeira->codigoCurso, "cadeiras" => []];
             }
             array_push($cadeirasInscritas[$cadeira->idCurso]["cadeiras"], ["uc" => $cadeira, "turnos" => []]);
         }
@@ -64,6 +64,8 @@ class EstudanteService
                 }
             }
         }
+
+        $infoAluno = Utilizador::where('id', $estudante->id)->select('login', 'nome')->get();
 
 
         /*
@@ -86,6 +88,6 @@ class EstudanteService
 
         $pedidos = PedidosResource::collection($estudante->pedidos);
 
-        return ["msg" => ["cadeirasAprovadas" => $cadeirasAprovadas, "cadeirasInscritas" => $cadeirasInscritas, "pedidos" => $pedidos], "code" => 200];
+        return ["msg" => ["cadeirasAprovadas" => $cadeirasAprovadas, "cadeirasInscritas" => $cadeirasInscritas, "pedidos" => $pedidos, "aluno" => $infoAluno], "code" => 200];
     }
 }
