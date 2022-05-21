@@ -77,7 +77,7 @@ class WebserviceController extends Controller
 
         $url = (new WebserviceService)->makeUrl($baseurl,['anoletivo' => $data->get('anoletivo'),'estado' => $estado]); //cod_curso=9119
         
-        $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0];
+        $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0,'dataChanged' => 0];
         if($idcurso == 0){
             $cursos = Curso::all();
             foreach ($cursos as $c) {
@@ -88,6 +88,7 @@ class WebserviceController extends Controller
                     $data["cadeiranotfound"] += $dataSing["cadeiranotfound"];
                     $data["newStudentAdded"] += $dataSing["newStudentAdded"];
                     $data["newDataAdded"] += $dataSing["newDataAdded"];
+                    $data["dataChanged"] += $dataSing["dataChanged"];
                 }
             }
             (new LogsService)->save("Atualização das inscricoes de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
@@ -102,7 +103,7 @@ class WebserviceController extends Controller
             (new LogsService)->save("Atualização das inscricoes feita por: " . Auth::user()->login ." ao curso " . $curso->nome, "webservices",  Auth::user()->id);
         }
 
-        return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded']], 200);
+        return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded'],"dataChanged" => $data['dataChanged']], 200);
     }
 
     public function makeFinalUrlAndData($url){

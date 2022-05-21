@@ -126,6 +126,7 @@ class WebserviceService
         $cursonotfound = 0;
         $cadeiranotfound = 0;
         $newDataAdded = 0;
+        $dataChanged = 0;
         foreach ($json as $inscricao) {
             $curso = Curso::where('codigo',$inscricao->CD_CURSO)->first();
             if(empty($curso)){
@@ -170,12 +171,14 @@ class WebserviceService
             $inscricaoucs->estado = $inscricao->CD_STATUS;
             $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
             $inscricaoucs->save();
+            $dataChanged += 1;
         }
         return[
             'newStudentAdded' => $newStudentAdded,
             'cursonotfound' => $cursonotfound,
             'cadeiranotfound' => $cadeiranotfound,
             'newDataAdded' => $newDataAdded,
+            'dataChanged' => $dataChanged,
         ];
     }
 

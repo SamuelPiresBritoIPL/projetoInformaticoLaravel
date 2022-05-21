@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use stdClass;
 use App\Models\Utilizador;
 use App\Models\Coordenador;
 use Illuminate\Http\Request;
-use App\Http\Resources\CoordenadorResource;
-use App\Http\Requests\CoordenadorPostRequest;
 use App\Services\LogsService;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\CoordenadorResource;
+use App\Http\Requests\CoordenadorPostRequest;
 
 class CoordenadorController extends Controller
 {
@@ -41,7 +42,7 @@ class CoordenadorController extends Controller
 
         $coordenador = Coordenador::where('idUtilizador',$utilizador->id)->where('idCurso',$data->get('idCurso'))->first();
         if(!empty($coordenador)){
-            return response("Este utilizador já é administrador da cadeira!",422);
+            return response(['login2' => "Este utilizador já é administrador da unidade curricular!"],422);
         }
         $coordenador = new Coordenador();
         $coordenador->idUtilizador = $utilizador->id;

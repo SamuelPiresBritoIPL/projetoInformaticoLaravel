@@ -142,7 +142,7 @@ class CadeiraService
     * into an Array that will be exported to Excel
     */
    function exportCadeira(Cadeira $cadeira){
-        $data_array [] = array("Cadeira:",$cadeira->codigo,$cadeira->nome);
+        $data_array [] = array("Unidade curricular:",$cadeira->codigo,$cadeira->nome);
         $data_array [] = array("Alunos:");
         $data_array [] = array("Numero","Nome");
         $alunos = Utilizador::join('inscricaoucs','utilizador.id', '=', 'inscricaoucs.idUtilizador')
