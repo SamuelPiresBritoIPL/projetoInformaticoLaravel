@@ -31,6 +31,18 @@ class InscricaoController extends Controller
             $idTurnosAceites = $data->get('turnosIds');
         } 
 
+        $inscricoesAtuais = Inscricao::join('turno', function ($join) use(&$data) {
+            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', $data->get('idUtilizador'));
+        })->select('inscricao.id', 'turno.id as turnoId')->get();
+
+        //verificar se houve algum turno retirado, se foi entao apaga
+        foreach ($inscricoesAtuais as $inscricaoAtual) {
+            if (!in_array($inscricaoAtual->turnoId, $idTurnosAceites)) {
+                $inscricao = Inscricao::find($inscricaoAtual->id);
+                $inscricao->delete();
+            }
+        }
+
         foreach($idTurnosAceites as $turnoId){
             $tipoturno = DB::table('turno')->select('tipo')->where('id', $turnoId)->get();
             if (!empty($tipoturno)) {
