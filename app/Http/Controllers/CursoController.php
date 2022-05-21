@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
+use App\Models\Turno;
 use App\Models\Anoletivo;
 use App\Models\Coordenador;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Services\CursoService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
 use App\Http\Resources\CursoResourceCollection;
-use Illuminate\Support\Arr;
 
 class CursoController extends Controller
 {
@@ -97,8 +98,28 @@ class CursoController extends Controller
         if($semestre != 1 && $semestre != 2){
             return response("O semestre não é válido");
         }
+        $tiposturnos = Turno::join('cadeira','cadeira.id','turno.idCadeira')->where('cadeira.idCurso',$curso->id)
+                            ->where('cadeira.semestre',$semestre)->where('turno.idAnoletivo',$anoletivo->id)
+                            ->select("turno.tipo")->groupby("tipo")->pluck('tipo')->toArray();
         CursoResource::$format = 'cadeira';
-        return response(CursoResource::make($curso)->anoletivo($anoletivo->id, $semestre),200);
+        return response(["cadeiras" => CursoResource::make($curso)->anoletivo($anoletivo->id, $semestre),"tiposTurnos" => $tiposturnos],200);
+    }
+
+    public function editVagasTurnos(Request $request,Curso $curso, Anoletivo $anoletivo, $semestre){
+        if($semestre != 1 && $semestre != 2){
+            return response("O semestre não é válido");
+        }
+        if($request->has("tipoturno") && $request->has("vagas")){
+            for ($i = 0; $i < count($request->get("tipoturno")); $i++) {
+                if($request->get('vagas')[$i] != null && $request->get('vagas')[$i] > 0){
+                    Turno::join('cadeira','cadeira.id','turno.idCadeira')->where('cadeira.idCurso',$curso->id)
+                            ->where('cadeira.semestre',$semestre)->where('turno.idAnoletivo',$anoletivo->id)
+                            ->where('turno.tipo', $request->get("tipoturno")[$i])
+                            ->update(['turno.vagastotal' => ($request->get('vagas')[$i])]);
+                }
+            }
+        }
+        return response("Tudo atualizado comm sucesso!", 200);
     }
     
 }

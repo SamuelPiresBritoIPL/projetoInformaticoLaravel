@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth:api','coordenador'], 'prefix' => 'curso'], 
     Route::get('/coordenadores/{curso}',[CursoController::class, 'getCoordenadoresByCurso']);
     Route::get('/pedidos/{curso}/{anoletivo}/{semestre}',[PedidosController::class, 'getPedidosByCurso']);
     Route::put('/pedidos/{pedido}',[PedidosController::class, 'editPedidoByCoordenador']);
+    Route::put('/turnosvagas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'editVagasTurnos']);
 });
 
 //admin / coordenador
