@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Anoletivo;
@@ -61,9 +62,12 @@ class CursoController extends Controller
             return response("O semestre não é válido");
         }
         CursoResource::$format = 'aberturas';
+        $now = Carbon::now();
         $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
-        }])->get();
+        }])->join('aberturas','curso.id','=','aberturas.idCurso')->where('aberturas.dataEncerar', '>', $now)
+        ->whereNull('deleted_at')->select('curso.*')->get();
+
         return response(CursoResourceCollection::make($cursos)->anoletivo($anoletivo->id,$semestre),200);
     }
 
