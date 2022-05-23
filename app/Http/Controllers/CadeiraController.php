@@ -80,7 +80,31 @@ class CadeiraController extends Controller
                 }
                 array_push($cursos[$inscricao->idCurso], $inscricao);
             }
-            return response(["cursos" => $cursos, "inscricoes" => $ins],200);
+
+            $aberturaAtivas = Aberturas::whereDate('aberturas.dataAbertura', '>', $now)
+            ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
+                $query->from('inscricaoucs')
+                      ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
+                      ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
+                      ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
+                      ->select('curso.id')->distinct('curso.id')->pluck('curso.id')->toArray();
+            })->where('tipoAbertura',1)->join('curso','idCurso','=','curso.id')->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'ano')->get();
+
+            $aberturasPorCurso = [];
+            foreach ($aberturaAtivas as $key => $aberturaAtiva) {
+                if(!array_key_exists($aberturaAtiva->idCurso, $aberturasPorCurso)){
+                    $aberturasPorCurso[$aberturaAtiva->idCurso] = [];
+                }
+                $dataAbertura = Carbon::parse($aberturaAtiva->dataAbertura);
+                $now = Carbon::now();
+                $dias = $dataAbertura->diffInDays($now);
+
+                $aberturaAtiva["diasAteAbertura"] = $dias;
+
+                array_push($aberturasPorCurso[$aberturaAtiva->idCurso], $aberturaAtiva);
+            }
+
+            return response(["cursos" => $cursos, "inscricoes" => $ins, "aberturas" => $aberturasPorCurso],200);
         }
     }
 
