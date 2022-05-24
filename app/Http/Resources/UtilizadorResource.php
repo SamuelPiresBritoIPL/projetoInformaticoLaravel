@@ -17,7 +17,10 @@ class UtilizadorResource extends JsonResource
         return [
             'id' => $this->id,
             'login' => $this->login,
-            'nome' => $this->nome
+            'nome' => $this->nome,
+            'idCurso' => $this->curso->id,
+            'curso' => $this->curso->nome,
+            'codigoCurso' => $this->curso->codigo
         ];
     }
 }

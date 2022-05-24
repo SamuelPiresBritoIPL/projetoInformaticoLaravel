@@ -129,7 +129,18 @@ class CadeiraController extends Controller
             //dd($cursos);
             $user = Utilizador::where('id', ($request->user())->id)->first();
             $infoPedidos = [];
-            return response(["cursos" => $cursos, "pedidos" => PedidosResource::collection($user->pedidos), "infoPedidos" => $infoPedidos],200);
+
+            $now = Carbon::now();
+            $isOpen = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
+            ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)->get();
+
+            if (sizeof($isOpen) != 0) {
+                $isOpen = true;
+            } else {
+                $isOpen = false;
+            }
+
+            return response(["cursos" => $cursos, "pedidos" => PedidosResource::collection($user->pedidos), "infoPedidos" => $infoPedidos, "periodo" => $isOpen],200);
         }
     }
 
