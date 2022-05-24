@@ -63,6 +63,7 @@ class CursoController extends Controller
         }
 
         CursoResource::$format = 'aberturasDashboard';
+
         if (Auth::user()->isAdmin()) {
             $now = Carbon::now();
             $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
@@ -77,7 +78,6 @@ class CursoController extends Controller
             }])->join('coordenador','curso.id','=','coordenador.idCurso')->where('coordenador.idUtilizador', Auth::user()->id)->select('curso.*')->distinct('curso.id')->get();
         }
                 
-
         return response(CursoResourceCollection::make($cursos)->anoletivo($anoletivo->id,$semestre),200);
     }
 
