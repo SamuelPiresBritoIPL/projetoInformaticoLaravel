@@ -61,12 +61,22 @@ class CursoController extends Controller
         if($semestre != 1 && $semestre != 2){
             return response("O semestre não é válido");
         }
+
         CursoResource::$format = 'aberturasDashboard';
-        $now = Carbon::now();
-        $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
-            $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
-        }])->join('aberturas','curso.id','=','aberturas.idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)
-        ->whereNull('deleted_at')->select('curso.*')->get();
+        if (Auth::user()->isAdmin()) {
+            $now = Carbon::now();
+            $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
+                $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
+            }])->join('aberturas','curso.id','=','aberturas.idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)
+            ->whereNull('deleted_at')->select('curso.*')->distinct('curso.id')->get();
+        }
+        if (Auth::user()->isCoordenador()) {
+            $now = Carbon::now();
+            $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
+                $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
+            }])->join('coordenador','curso.id','=','coordenador.idCurso')->where('coordenador.idUtilizador', Auth::user()->id)->select('curso.*')->distinct('curso.id')->get();
+        }
+                
 
         return response(CursoResourceCollection::make($cursos)->anoletivo($anoletivo->id,$semestre),200);
     }
