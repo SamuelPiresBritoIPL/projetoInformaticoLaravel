@@ -66,7 +66,7 @@ class CursoController extends Controller
         $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->join('aberturas','curso.id','=','aberturas.idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)
-        ->whereNull('deleted_at')->select('curso.*')->get();
+        ->whereNull('deleted_at')->distinct('curso.id')->select('curso.*')->get();
 
         return response(CursoResourceCollection::make($cursos)->anoletivo($anoletivo->id,$semestre),200);
     }
