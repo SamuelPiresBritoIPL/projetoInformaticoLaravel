@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,6 +37,15 @@ class Curso extends Model
     public function aberturas()
     {
         return $this->hasMany(Aberturas::class, 'idCurso')->orderBy('ano', 'ASC');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function aberturasdefinidas()
+    {
+        $now = Carbon::now();
+        return $this->hasMany(Aberturas::class, 'idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)->orderBy('ano', 'ASC');
     }
 
     /**

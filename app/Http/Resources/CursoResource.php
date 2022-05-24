@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use App\Services\CursoService;
 use App\Http\Resources\CoordenadorResource;
 use App\Http\Resources\CursoResourceCollection;
@@ -57,6 +58,19 @@ class CursoResource extends JsonResource
             'totalanos' => $anosCurso,
             'totalpedidos' => $pedidosCurso,
             'aberturas' => AberturaResource::collection($this->aberturas->where('semestre', $this->semestre)->where('idAnoletivo', $this->anoletivo))
+          ];
+        case 'aberturasDashboard':
+          //nr de anos de um curso enviar aqui
+          $anosCurso = (new CursoService)->getAnosCurso($this->id);
+          $pedidosCurso = (new CursoService)->getPedidosCurso($this->id);
+          return [
+            'id' => $this->id,
+            'codigo' => $this->codigo,
+            'nome' => $this->nome,
+            'abreviatura' => $this->abreviatura,
+            'totalanos' => $anosCurso,
+            'totalpedidos' => $pedidosCurso,
+            'aberturas' => AberturaResource::collection($this->aberturasdefinidas->where('semestre', $this->semestre)->where('idAnoletivo', $this->anoletivo))
           ];
         default:
         return [
