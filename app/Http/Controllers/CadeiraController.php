@@ -186,7 +186,7 @@ class CadeiraController extends Controller
 
             $dados = Cadeira::where('idCurso', $utilizador->idCurso)->leftJoin('inscricaoucs', function ($join) use(&$utilizador) {
                 $join->on('cadeira.id', '=', 'inscricaoucs.idCadeira')
-                     ->where('inscricaoucs.idUtilizador','=',$utilizador->id);
+                     ->where('inscricaoucs.idUtilizador','=',$utilizador->id)->where('inscricaoucs.estado','1');
             })->select('inscricaoucs.*', 'cadeira.*' )->get();
             CadeiraResource::$format = 'inscricaoucsuser';
             return response(CadeiraResource::collection($dados),200);

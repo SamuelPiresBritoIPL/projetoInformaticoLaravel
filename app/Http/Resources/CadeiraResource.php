@@ -50,6 +50,7 @@ class CadeiraResource extends JsonResource
           $turnos = Turno::join('inscricaoucs', function ($join) use(&$request) {
             $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')
             ->where('inscricaoucs.idUtilizador', '=', $request->user()->id)
+            ->where('inscricaoucs.estado', 1)
             ->where('turno.numero', '>' , 0)
             ->where('turno.visivel', '=', 1);
           })->join('cadeira', function ($join) {
