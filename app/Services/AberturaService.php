@@ -88,7 +88,7 @@ class AberturaService
 
         if($data->has("ano")){
             if($abertura->ano != $data->get('ano')){
-                $curso = Curso::where('idCurso', $abertura->idCurso)->first();
+                $curso = Curso::where('id', $abertura->idCurso)->first();
                 if($data->get('ano') == 0){
                     foreach($curso->aberturas as $aberturaCurso){
                         if($abertura->id != $aberturaCurso->id && $abertura->tipoAbertura == $aberturaCurso->tipoAbertura){
