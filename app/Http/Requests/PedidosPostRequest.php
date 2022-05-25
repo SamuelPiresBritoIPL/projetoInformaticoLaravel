@@ -63,6 +63,16 @@ class PedidosPostRequest extends FormRequest
         return $rules;
     }
 
+    public function messages()
+    {
+        return array_merge(
+            parent::messages(),
+            [
+                'descricao.required'=>'Tem de justificar o porquê do seu pedido.',
+            ]
+        );
+    }
+
     /**
     * [failedValidation [Overriding the event validator for custom error response]]
     * @param  Validator $validator [description]
