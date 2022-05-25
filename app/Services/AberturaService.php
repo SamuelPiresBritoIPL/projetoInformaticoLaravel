@@ -82,7 +82,9 @@ class AberturaService
     public function checkIfAberturaCanBeUpdated($abertura,$data){
         if($data->has("dataAbertura")) {
 			if(Carbon::parse($data->get('dataAbertura')) <= Carbon::now()){
-                return ["codigo"=>0,"error"=>"A data de abertura é anterior a data atual."];
+                $errors = [];
+                $errors["dataAbertura"] = ["A data de abertura não pode ser alterada para uma data ja ocorrida."];
+                return ["codigo"=>0,"error"=>$errors];
             }
 		}
 
