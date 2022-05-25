@@ -140,7 +140,11 @@ class WebserviceService
                 continue;
             }
 
-            $utilizador = Utilizador::where('login', $inscricao->LOGIN)->first();
+            if($inscricao->LOGIN == null){
+                $utilizador = Utilizador::where('nome', $inscricao->NM_ALUNO)->where('login', $inscricao->LOGIN)->first();
+            }else{
+                $utilizador = Utilizador::where('login', $inscricao->LOGIN)->first();
+            }
             if(empty($utilizador)){
                 $utilizador = new Utilizador();
                 $utilizador->nome = $inscricao->NM_ALUNO;
