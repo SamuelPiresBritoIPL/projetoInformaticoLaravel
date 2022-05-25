@@ -81,14 +81,14 @@ class CadeiraController extends Controller
                 array_push($cursos[$inscricao->idCurso], $inscricao);
             }
 
-            $aberturaAtivas = Aberturas::whereDate('aberturas.dataAbertura', '>', $now)
+            $aberturaAtivas = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                 $query->from('inscricaoucs')
                       ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
                       ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
                       ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
                       ->select('curso.id')->distinct('curso.id')->pluck('curso.id')->toArray();
-            })->where('tipoAbertura',1)->join('curso','idCurso','=','curso.id')->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'ano')->get();
+            })->where('tipoAbertura',1)->join('curso','idCurso','=','curso.id')->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'dataEncerar', 'ano')->get();
 
             $aberturasPorCurso = [];
             foreach ($aberturaAtivas as $key => $aberturaAtiva) {
@@ -96,10 +96,27 @@ class CadeiraController extends Controller
                     $aberturasPorCurso[$aberturaAtiva->idCurso] = [];
                 }
                 $dataAbertura = Carbon::parse($aberturaAtiva->dataAbertura);
+                $dataEncerrar = Carbon::parse($aberturaAtiva->dataEncerar);
                 $now = Carbon::now();
                 $dias = $dataAbertura->diffInDays($now);
+                $diasTermino = $dataEncerrar->diffInDays($now);
+
+                if ($dias == 0) {
+                    $dias = "menos de 1 dia";
+                    $aberturaAtiva["menosdeumdia"] = true;
+                } else {
+                    $aberturaAtiva["menosdeumdia"] = false;
+                }
+
+                if ($diasTermino == 0) {
+                    $diasTermino = "menos de 1 dia";
+                    $aberturaAtiva["menosdeumdiatermino"] = true;
+                } else {
+                    $aberturaAtiva["menosdeumdiatermino"] = false;
+                }
 
                 $aberturaAtiva["diasAteAbertura"] = $dias;
+                $aberturaAtiva["diasAteTerminar"] = $diasTermino;
 
                 array_push($aberturasPorCurso[$aberturaAtiva->idCurso], $aberturaAtiva);
             }
@@ -134,13 +151,44 @@ class CadeiraController extends Controller
             $isOpen = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)->get();
 
+            $pedidosAtivo = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
+            ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)
+            ->select('dataAbertura', 'dataEncerar')->get();
+
+            $pedidosAtivo = $pedidosAtivo[0];
+
+            $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
+            $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
+
+            $now = Carbon::now();
+            $dias = $dataAbertura->diffInDays($now);
+            $diasTermino = $dataEncerrar->diffInDays($now);
+
+            if ($dias == 0) {
+                $dias = "menos de 1 dia";
+                $pedidosAtivo["menosdeumdia"] = true;
+            } else {
+                $pedidosAtivo["menosdeumdia"] = false;
+            }
+
+            if ($diasTermino == 0) {
+                $diasTermino = "menos de 1 dia";
+                $pedidosAtivo["menosdeumdiatermino"] = true;
+            } else {
+                $pedidosAtivo["menosdeumdiatermino"] = false;
+            }
+
+            $pedidosAtivo["diasAteAbertura"] = $dias;
+            $pedidosAtivo["diasAteTerminar"] = $diasTermino;
+
+
             if (sizeof($isOpen) != 0) {
                 $isOpen = true;
             } else {
                 $isOpen = false;
             }
 
-            return response(["cursos" => $cursos, "pedidos" => PedidosResource::collection($user->pedidos), "infoPedidos" => $infoPedidos, "periodo" => $isOpen],200);
+            return response(["cursos" => $cursos, "pedidos" => PedidosResource::collection($user->pedidos), "infoPedidos" => $pedidosAtivo, "periodo" => $isOpen],200);
         }
     }
 
