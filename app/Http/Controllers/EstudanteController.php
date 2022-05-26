@@ -13,6 +13,9 @@ class EstudanteController extends Controller
         if(empty($estudante)){
             return response("O login não foi encontrado",400);
         } 
+        if (!$estudante->isEstudante()) {
+            return response("Este utilizador não é um aluno.",400);
+        }
         if($semestre != 1 && $semestre != 2){
             return response("O semestre não é válido",400);
         }
