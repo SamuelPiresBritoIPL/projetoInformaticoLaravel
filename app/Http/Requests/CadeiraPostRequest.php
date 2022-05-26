@@ -57,6 +57,8 @@ class CadeiraPostRequest extends FormRequest
                 'login.exists'=>'O login definido não existe.',
                 'email.required'=>'Não defeniu o email.',
                 'email.exists'=>'O email definido não existe.',
+                'inscricaoIds.required'=>'O turno presente não tem alunos inscritos para se moverem.',
+                'inscricaoIds.exists'=>'Os turnos selecionados não existem.',
             ]
         );
     }
