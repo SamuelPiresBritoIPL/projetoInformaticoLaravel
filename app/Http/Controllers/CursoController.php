@@ -133,7 +133,7 @@ class CursoController extends Controller
                 }
             }
         }
-        return response("Tudo atualizado comm sucesso!", 200);
+        return response("Atualizações efetuadas com sucesso!", 200);
     }
     
 }

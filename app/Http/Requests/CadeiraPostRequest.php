@@ -48,6 +48,19 @@ class CadeiraPostRequest extends FormRequest
         return $rules;
     }
 
+    public function messages()
+    {
+        return array_merge(
+            parent::messages(),
+            [
+                'login.required'=>'Não defeniu o login.',
+                'login.exists'=>'O login definido não existe.',
+                'email.required'=>'Não defeniu o email.',
+                'email.exists'=>'O email definido não existe.',
+            ]
+        );
+    }
+
     /**
     * [failedValidation [Overriding the event validator for custom error response]]
     * @param  Validator $validator [description]

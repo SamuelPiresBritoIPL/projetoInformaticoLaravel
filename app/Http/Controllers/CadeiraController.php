@@ -266,9 +266,20 @@ class CadeiraController extends Controller
         foreach ($tiposturnos as $key => $value){
             array_push($data,["turno" => $value,"numeroturnos" => $key, "mediavagas" => round($numAlunos/$key)]);
         }
+
+        $turnos = Cadeira::where('cadeira.id',$cadeira->id)->join('turno','turno.idCadeira','=','cadeira.id')
+                        ->where('turno.idAnoletivo', $anoletivo->id)->where('turno.visivel', 1)->count();
+
+        $isVisivel = false;
+
+        if ($turnos > 0) {
+            $isVisivel = true;
+        } else {
+            $isVisivel = false;
+        }
         
         $cadeiras = CadeiraResource::make($cadeira)->anoletivo($anoletivo->id,$cadeira->semestre);
-        return response(["info" => $data, "cadeiras" => $cadeiras],200);
+        return response(["info" => $data, "cadeiras" => $cadeiras, "isVisivel" => $isVisivel],200);
     }
 
     public function addAluno(CadeiraPostRequest $request,Cadeira $cadeira){
