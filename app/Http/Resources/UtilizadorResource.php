@@ -19,8 +19,8 @@ class UtilizadorResource extends JsonResource
             'login' => $this->login,
             'nome' => $this->nome,
             'idCurso' => !empty($this->curso) ? $this->curso->id : "",
-            'curso' => $this->curso->nome,
-            'codigoCurso' => $this->curso->codigo
+            'curso' => !empty($this->curso) ? $this->curso->nome : "",
+            'codigoCurso' => !empty($this->curso) ? $this->curso->codigo : ""
         ];
     }
 }
