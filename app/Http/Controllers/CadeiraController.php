@@ -155,33 +155,36 @@ class CadeiraController extends Controller
             ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)
             ->select('dataAbertura', 'dataEncerar')->get();
 
-            $pedidosAtivo = $pedidosAtivo[0];
+            if (sizeof($pedidosAtivo) != 0) {
+                $pedidosAtivo = $pedidosAtivo[0];
 
-            $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
-            $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
+                $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
+                $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
 
-            $now = Carbon::now();
-            $dias = $dataAbertura->diffInDays($now);
-            $diasTermino = $dataEncerrar->diffInDays($now);
+                $now = Carbon::now();
+                $dias = $dataAbertura->diffInDays($now);
+                $diasTermino = $dataEncerrar->diffInDays($now);
 
-            if ($dias == 0) {
-                $dias = "menos de 1 dia";
-                $pedidosAtivo["menosdeumdia"] = true;
+                if ($dias == 0) {
+                    $dias = "menos de 1 dia";
+                    $pedidosAtivo["menosdeumdia"] = true;
+                } else {
+                    $pedidosAtivo["menosdeumdia"] = false;
+                }
+
+                if ($diasTermino == 0) {
+                    $diasTermino = "menos de 1 dia";
+                    $pedidosAtivo["menosdeumdiatermino"] = true;
+                } else {
+                    $pedidosAtivo["menosdeumdiatermino"] = false;
+                }
+
+                $pedidosAtivo["diasAteAbertura"] = $dias;
+                $pedidosAtivo["diasAteTerminar"] = $diasTermino;
             } else {
-                $pedidosAtivo["menosdeumdia"] = false;
+                $pedidosAtivo = [];
             }
-
-            if ($diasTermino == 0) {
-                $diasTermino = "menos de 1 dia";
-                $pedidosAtivo["menosdeumdiatermino"] = true;
-            } else {
-                $pedidosAtivo["menosdeumdiatermino"] = false;
-            }
-
-            $pedidosAtivo["diasAteAbertura"] = $dias;
-            $pedidosAtivo["diasAteTerminar"] = $diasTermino;
-
-
+            
             if (sizeof($isOpen) != 0) {
                 $isOpen = true;
             } else {
