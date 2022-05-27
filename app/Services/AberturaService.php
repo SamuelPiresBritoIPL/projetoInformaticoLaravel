@@ -55,7 +55,7 @@ class AberturaService
                 $cadeiras = Cadeira::where('idCurso', $curso->id)->where('semestre',$data->get('semestre'))->where('ano',$data->get('ano'))->pluck('id')->toArray();
             }
             
-            $turnos = Turno::wherein('idCadeira',$cadeiras)->join('cadeira', 'cadeira.id', '=', 'turno.idCadeira')->where('visivel',1)->whereNull('vagastotal')->get();
+            $turnos = Turno::wherein('idCadeira',$cadeiras)->join('cadeira', 'cadeira.id', '=', 'turno.idCadeira')->where('turno.idAnoletivo',$data->get('idAnoletivo'))->where('visivel',1)->whereNull('vagastotal')->get();
             if($turnos->isNotEmpty()){
                 $msg = "Turnos que faltam definir vagas: ";
                 $cursos = [];
