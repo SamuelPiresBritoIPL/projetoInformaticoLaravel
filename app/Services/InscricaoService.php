@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Turno;
 use App\Models\Inscricao;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class InscricaoService
 {
@@ -48,20 +49,21 @@ class InscricaoService
     }
 
     public function checkData($data){
-        $turnosutilizador = Turno::select('turno.*')->join('inscricaoucs', function ($join) use(&$data) {
-            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', $data->get('idUtilizador'));
-        })->get();
-        if (empty($turnosutilizador)) {
+        $idTurnosUtilizador = Turno::select('turno.*')->join('inscricaoucs', function ($join) {
+            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', Auth::user()->id);
+        })->pluck('turno.id')->toArray();
+        if (empty($idTurnosUtilizador)) {
             return ['response' => 0, 'erro' => 'Você não tem turnos disponíveis para se inscrever.'];
         } else {
-            $idTurnosUtilizador = [];
             $turnosRejeitados = [];
             $idTurnosRequeridos = [];
+            $idTurnoUser = [];
             
-            foreach ($turnosutilizador as $turno) {
-                array_push($idTurnosUtilizador, $turno->id);
-            }
-            $idTurnosRequeridos = $data->get('turnosIds');
+            $idTurnosRequeridos = $data->get('turnosIds') ;
+            $idTurnoUser = Turno::select('turno.*')->join('inscricao', function ($join) use(&$idTurnosRequeridos){
+                $join->on('turno.id', '=', 'inscricao.idTurno')->where('inscricao.idUtilizador', '=', Auth::user()->id);
+            })->whereIn('turno.id', $idTurnosRequeridos)->pluck('id')->toArray();
+            $idTurnosRequeridos = array_diff($idTurnoUser,$idTurnosRequeridos );
             $turnos = Turno::whereIn('id', $idTurnosRequeridos)->get();
             
             foreach($turnos as $turno){
@@ -73,7 +75,7 @@ class InscricaoService
                     if ($turno->vagastotal == null or $turno->vagastotal <= $vagasocupadas) {
                         $turnoRejeitado = DB::table('turno')->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome as cadeira', 'curso.nome as curso','turno.idCadeira','turno.tipo')
                         ->join('inscricaoucs', function ($join) use(&$data, &$turno) {
-                            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', $data->get('idUtilizador'))->where('turno.id', '=' , $turno->id);
+                            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', Auth::user()->id)->where('turno.id', '=' , $turno->id);
                         })
                         ->join('cadeira', function ($join) {
                             $join->on('turno.idCadeira', '=', 'cadeira.id')->select('cadeira.nome');
