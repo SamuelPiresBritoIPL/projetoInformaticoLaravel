@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Turno;
+use App\Models\Anoletivo;
 use App\Models\Inscricao;
 use App\Models\Inscricaoucs;
 use Database\Seeders\TurnoSeeder;
@@ -47,12 +48,14 @@ class CadeiraResource extends JsonResource
           ];
         case 'inscricaoucs':
           TurnoResource::$format = 'paracadeiraturno';
-          $turnos = Turno::join('inscricaoucs', function ($join) use(&$request) {
+          $anoletivo = Anoletivo::where('ativo',1)->first();
+          $turnos = Turno::join('inscricaoucs', function ($join) use(&$request, &$anoletivo) {
             $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')
             ->where('inscricaoucs.idUtilizador', '=', $request->user()->id)
             ->where('inscricaoucs.estado', 1)
             ->where('turno.numero', '>' , 0)
-            ->where('turno.visivel', '=', 1);
+            ->where('turno.visivel', '=', 1)
+            ->where('turno.idAnoletivo', $anoletivo->id);
           })->join('cadeira', function ($join) {
             $join->on('turno.idCadeira', '=', 'cadeira.id')
             ->where('cadeira.idCurso', '=', $this->curso->id)

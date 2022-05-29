@@ -40,32 +40,29 @@ class InscricaoService
                 array_push($idTurnosUtilizador, $turno->id);
             }
             $idTurnosRequeridos = $data->get('turnosIds');
+            $turnos = Turno::whereIn('id', $idTurnosRequeridos)->get();
             
-            foreach($data->get('turnosIds') as $turnoId){
-                if(!in_array($turnoId, $idTurnosUtilizador)){
+            foreach($turnos as $turno){
+                if(!in_array($turno->id, $idTurnosUtilizador)){
                     return ['response' => 0, 'erro' => 'Ocorreu um erro, dê refresh à página e tente novamente.'];
                 } else {
-                   foreach ($turnosutilizador as $turno) {
-                       if ($turno->id == $turnoId) {
-                           $vagasocupadas = Inscricao::where('idTurno', $turno->id)->count();
-                           if ($turno->vagastotal == null or $turno->vagastotal <= $vagasocupadas) {
-                                $turnoRejeitado = DB::table('turno')->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome as cadeira', 'curso.nome as curso')
-                                ->join('inscricaoucs', function ($join) use(&$data, &$turno) {
-                                    $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', $data->get('idUtilizador'))->where('turno.id', '=' , $turno->id);
-                                })
-                                ->join('cadeira', function ($join) {
-                                    $join->on('turno.idCadeira', '=', 'cadeira.id')->select('cadeira.nome');
-                                })
-                                ->join('curso', function ($join) {
-                                    $join->on('cadeira.idCurso', '=', 'curso.id')->select('curso.nome');
-                                })->get();
-                                array_push($turnosRejeitados, $turnoRejeitado[0]);
-                                $idTurnosRequeridos = \array_filter($idTurnosRequeridos, static function ($element) use(&$turno) {
-                                    return $element !== $turno->id;
-                                });
-                           } 
-                       }
-                   }
+                    $vagasocupadas = Inscricao::where('idTurno', $turno->id)->count();
+                    if ($turno->vagastotal == null or $turno->vagastotal <= $vagasocupadas) {
+                        $turnoRejeitado = DB::table('turno')->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome as cadeira', 'curso.nome as curso','turno.idCadeira','turno.tipo')
+                        ->join('inscricaoucs', function ($join) use(&$data, &$turno) {
+                            $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', $data->get('idUtilizador'))->where('turno.id', '=' , $turno->id);
+                        })
+                        ->join('cadeira', function ($join) {
+                            $join->on('turno.idCadeira', '=', 'cadeira.id')->select('cadeira.nome');
+                        })
+                        ->join('curso', function ($join) {
+                            $join->on('cadeira.idCurso', '=', 'curso.id')->select('curso.nome');
+                        })->first();
+                        array_push($turnosRejeitados, $turnoRejeitado);
+                        $idTurnosRequeridos = \array_filter($idTurnosRequeridos, static function ($element) use(&$turno) {
+                            return $element !== $turno->id;
+                        });
+                    } 
                 }
             }
             if (sizeOf($turnosRejeitados) == sizeOf($data->get('turnosIds'))) {
