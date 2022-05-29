@@ -19,6 +19,7 @@ class CreateTurnoTable extends Migration {
 			$table->integer('idCadeira')->unsigned()->index('idCadeira_idx');
 			$table->integer('idAnoletivo')->unsigned()->index('idAnoletivo_idx');
 			$table->integer('vagastotal')->nullable();
+			$table->integer('vagasocupadas')->unsigned()->default(0);
 			$table->smallInteger('repetentes')->default(1);
 			$table->smallInteger('visivel')->default(1);
 			$table->string('tipo', 4);

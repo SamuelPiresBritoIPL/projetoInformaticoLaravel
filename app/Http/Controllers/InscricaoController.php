@@ -19,6 +19,7 @@ class InscricaoController extends Controller
         //fazer inscricao
         $idTurnosAceites = [];
         $turnosRejeitados = [];
+        $idCadeiras = [];
 
         $data = collect($request->validated());
         $canBeCreated = (new InscricaoService)->checkData($data);
@@ -51,7 +52,10 @@ class InscricaoController extends Controller
                 if($mudanca == 0){
                     $inscricao = (new InscricaoService)->remove($inscricaoAtual->id, $inscricaoAtual->turnoId);
                     unset($idTurnosAceites[$inscricaoAtual->turnoId]);
+                    array_push($idCadeiras,$inscricaoAtual->idCadeira);
                 }    
+            }else{
+                unset($idTurnosAceites[$inscricaoAtual->turnoId]);
             }
         }
 
@@ -62,18 +66,28 @@ class InscricaoController extends Controller
             $inscricoes = DB::select(DB::raw($subquery));
             if (sizeof($inscricoes) == 0) {
                 $inscricao = (new InscricaoService)->save($data->get('idUtilizador'), $turno->id);
+                if($inscricao != null){
+                    if(!in_array($turno->id,$idCadeiras)){
+                        array_push($idCadeiras,$turno->id);
+                    }
+                }
             }else{
                 $inscricao = Inscricao::find($inscricoes[0]->id);
                 if (!empty($inscricao)) {
                     $inscricao = (new InscricaoService)->update($inscricao, $turno->id);
+                    if($inscricao != null){
+                        if(!in_array($turno->id,$idCadeiras)){
+                            array_push($idCadeiras,$turno->id);
+                        }
+                    }
                 }
             }            
         }
 
         if ($canBeCreated['response'] == 2) {
-            return response($canBeCreated['rejeitados'], 201);
+            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras], 201);
         } else if($canBeCreated['response'] == 1){
-            return response(201);
+            return response(["idsCadeiras" => $idCadeiras],201);
         }
 
     }
