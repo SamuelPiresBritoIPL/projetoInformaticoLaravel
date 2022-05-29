@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Carbon\Carbon;
 use App\Services\CursoService;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CoordenadorResource;
 use App\Http\Resources\CursoResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -44,7 +45,7 @@ class CursoResource extends JsonResource
             'codigo' => $this->codigo,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
-            'coordenadores' => CoordenadorResource::collection($this->coordenadors)
+            'coordenadores' => CoordenadorResource::collection($this->coordenadors->where('idUtilizador','!=',Auth::user()->id))
           ];
         case 'aberturas':
           //nr de anos de um curso enviar aqui
