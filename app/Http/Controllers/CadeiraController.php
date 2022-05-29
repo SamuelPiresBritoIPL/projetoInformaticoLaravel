@@ -262,7 +262,7 @@ class CadeiraController extends Controller
     }
 
     public function getCadeira(Cadeira $cadeira, Anoletivo $anoletivo){
-        $tiposturnos = Turno::where('idCadeira', $cadeira->id)->select("tipo", DB::raw('count(*) as total'))->groupby("tipo")->pluck('tipo','total')->toArray();
+        $tiposturnos = Turno::where('idCadeira', $cadeira->id)->where('idAnoletivo',$anoletivo->id)->select("tipo", DB::raw('count(*) as total'))->groupby("tipo")->pluck('tipo','total')->toArray();
         $totalinscritos = Inscricaoucs::where('idCadeira', $cadeira->id)->where('estado', 1)->where('idAnoletivo', $anoletivo->id)->select(DB::raw('count(*) as total'))->get();
         $numAlunos = $totalinscritos[0]->total;
         $data=[];
