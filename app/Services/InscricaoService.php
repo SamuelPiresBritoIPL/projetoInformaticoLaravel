@@ -90,7 +90,7 @@ class InscricaoService
                     } 
                 }
             }
-            if (sizeOf($turnosRejeitados) == sizeOf($data->get('turnosIds'))) {
+            if (!empty($data->get('turnosIds')) && sizeOf($turnosRejeitados) == sizeOf($data->get('turnosIds'))) {
                 return ['response' => 0, 'erro' => 'Todos os turnos selecionados já se encontram com o total das vagas preenchido.'];
             }
             if (sizeOf($turnosRejeitados) > 0) {

@@ -29,7 +29,7 @@ class InscricaoPostRequest extends FormRequest
         if ($this->isMethod('post')) {
             $rules = [
                 'idUtilizador' => ['required', 'numeric', Rule::exists('utilizador', 'id')->where('id', $this->request->get('idUtilizador'))],
-                'turnosIds' => ['required', 'exists:turno,id']
+                'turnosIds' => ['exists:turno,id']
             ];
             
         }
