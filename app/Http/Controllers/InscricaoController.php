@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Utilizador;
-use App\Models\Inscricao;
 use App\Models\Turno;
-use App\Http\Requests\InscricaoPostRequest;
-use App\Http\Resources\InscricaoResource;
 use App\Models\Anoletivo;
+use App\Models\Inscricao;
+use App\Models\Utilizador;
 use App\Services\InscricaoService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\InscricaoResource;
+use App\Http\Requests\InscricaoPostRequest;
 
 
 class InscricaoController extends Controller
@@ -35,8 +36,8 @@ class InscricaoController extends Controller
             $idTurnosAceites = $data->get('turnosIds');
         } 
 
-        $inscricoesAtuais = Inscricao::join('turno', function ($join) use(&$data) {
-            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', $data->get('idUtilizador'));
+        $inscricoesAtuais = Inscricao::join('turno', function ($join) {
+            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id);
         })->select('inscricao.id', 'turno.id as turnoId','turno.idCadeira','turno.tipo')->get();
 
         //verificar se houve algum turno retirado, se foi entao apaga
@@ -62,10 +63,10 @@ class InscricaoController extends Controller
         $anoletivo = Anoletivo::where("ativo", 1)->first();
         $idsTurnos = DB::table('turno')->select('id','tipo','idCadeira')->whereIn('id', $idTurnosAceites)->get();
         foreach($idsTurnos as $turno){
-            $subquery = "select i.*, t.tipo, t.idCadeira as cadeiraId from inscricao i join turno t on t.id = i.idTurno where i.idUtilizador = " . $data->get('idUtilizador') . " and t.tipo = '" . $turno->tipo . "' and t.idCadeira = '" . $turno->idCadeira . "' and t.idAnoletivo = " . $anoletivo->id;
+            $subquery = "select i.*, t.tipo, t.idCadeira as cadeiraId from inscricao i join turno t on t.id = i.idTurno where i.idUtilizador = " . Auth::user()->id . " and t.tipo = '" . $turno->tipo . "' and t.idCadeira = '" . $turno->idCadeira . "' and t.idAnoletivo = " . $anoletivo->id;
             $inscricoes = DB::select(DB::raw($subquery));
             if (sizeof($inscricoes) == 0) {
-                $inscricao = (new InscricaoService)->save($data->get('idUtilizador'), $turno->id);
+                $inscricao = (new InscricaoService)->save(Auth::user()->id, $turno->id);
                 if($inscricao != null){
                     if(!in_array($turno->id,$idCadeiras)){
                         array_push($idCadeiras,$turno->id);
