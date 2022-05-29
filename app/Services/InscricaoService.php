@@ -9,20 +9,42 @@ class InscricaoService
 {
 
     public function save($idUtilizador, $idTurno){
-        $inscricao = new Inscricao();
-        $inscricao->idUtilizador = $idUtilizador;
-        $inscricao->idTurno = $idTurno;
-
-        $inscricao->save();
+        $inscricao = null;
+        DB::transaction(function () use ($idUtilizador, $idTurno) {
+            $turno = Turno::where('id', $idTurno)->first();
+            if($turno->vagastotal > $turno->vagasocupadas){
+                Turno::where('id', $idTurno)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
+            }else{
+                return null; // pensar no que dar return!
+            }
+            $inscricao = new Inscricao();
+            $inscricao->idUtilizador = $idUtilizador;
+            $inscricao->idTurno = $idTurno;
+            $inscricao->save();
+        }, 5);
         return $inscricao;
     }
 
     public function update($inscricao, $turnoId){
-        $inscricao->idTurno = $turnoId;
-
-        $inscricao->save();
-        
+        DB::transaction(function () use ($inscricao, $turnoId) {
+            $turno = Turno::where('id', $turnoId)->first();
+            if($turno->vagastotal > $turno->vagasocupadas){
+                Turno::where('id', $turnoId)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
+            }else{
+                return null; // pensar no que dar return!
+            }
+            Turno::where('id', $inscricao->idTurno)->update(['vagasocupadas' => DB::raw('vagasocupadas-1')]);
+            $inscricao->idTurno = $turnoId;
+            $inscricao->save();
+        }, 5);
         return $inscricao;
+    }
+
+    public function remove($inscricaoId, $turnoId){
+        DB::transaction(function () use ($inscricaoId, $turnoId) {
+            Turno::where('id', $turnoId)->update(['vagasocupadas' => DB::raw('vagasocupadas-1')]);
+            Inscricao::where('id',$inscricaoId)->delete();
+        }, 5);
     }
 
     public function checkData($data){
@@ -46,7 +68,8 @@ class InscricaoService
                 if(!in_array($turno->id, $idTurnosUtilizador)){
                     return ['response' => 0, 'erro' => 'Ocorreu um erro, dê refresh à página e tente novamente.'];
                 } else {
-                    $vagasocupadas = Inscricao::where('idTurno', $turno->id)->count();
+                    //$vagasocupadas = Inscricao::where('idTurno', $turno->id)->count();
+                    $vagasocupadas = $turno->vagasocupadas;
                     if ($turno->vagastotal == null or $turno->vagastotal <= $vagasocupadas) {
                         $turnoRejeitado = DB::table('turno')->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome as cadeira', 'curso.nome as curso','turno.idCadeira','turno.tipo')
                         ->join('inscricaoucs', function ($join) use(&$data, &$turno) {

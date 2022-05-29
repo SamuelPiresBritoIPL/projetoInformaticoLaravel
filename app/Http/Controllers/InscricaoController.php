@@ -49,8 +49,7 @@ class InscricaoController extends Controller
                     }
                 }
                 if($mudanca == 0){
-                    $inscricao = Inscricao::find($inscricaoAtual->id);
-                    $inscricao->delete();
+                    $inscricao = (new InscricaoService)->remove($inscricaoAtual->id, $inscricaoAtual->turnoId);
                     unset($idTurnosAceites[$inscricaoAtual->turnoId]);
                 }    
             }
@@ -100,10 +99,12 @@ class InscricaoController extends Controller
     }
 
     public function delete(Inscricao $inscricao){
+        $turnoId = $inscricao->idTurno;
         $del = $inscricao->delete();
         if(!$del){
             return response("Erro ao apagar a inscrição". 400);
         }
+        Turno::where('id', $turnoId)->update(['vagasocupadas' => DB::raw('vagasocupadas-1')]);
         return response("Inscrição apagada com sucesso". 200);
     }
 }

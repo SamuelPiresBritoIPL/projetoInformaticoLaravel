@@ -206,6 +206,7 @@ class WebserviceService
             if(!empty($data)){
                 $newInsc_new = Inscricao::insertOrIgnore($data);
                 $newInsc += $newInsc_new;
+                Turno::where('id', $turno->id)->update(['vagasocupadas' => DB::raw('vagasocupadas+'.$newInsc_new)]);
                 $failedIns = count($data) - $newInsc;
             }
         }

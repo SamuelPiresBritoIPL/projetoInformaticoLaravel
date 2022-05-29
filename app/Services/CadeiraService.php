@@ -94,7 +94,7 @@ class CadeiraService
 
         $inscricaouc = Inscricaoucs::where('idUtilizador',$utilizador->id)->where('idCadeira',$turno->cadeira->id)->where('idAnoletivo',$anoletivo->id)->where('estado',1)->first();
         if(empty($inscricaouc)){
-            return ['msg' => "O aluno não está inscrito nersta unidade curricular",'code' => 404];
+            return ['msg' => "O aluno não está inscrito nesta unidade curricular",'code' => 404];
         }
 
         $inscricao = Inscricao::where('idUtilizador',$utilizador->id)->where('idTurno',$turno->id)->first();
@@ -106,6 +106,7 @@ class CadeiraService
         $inscricao->idTurno = $turno->id;
         $inscricao->idUtilizador = $utilizador->id;
         $inscricao->save();
+        Turno::where('id', $turno->id)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
         return ['msg' => "Aluno adicionado ao turno com sucesso",'code' => 200];
     }
 

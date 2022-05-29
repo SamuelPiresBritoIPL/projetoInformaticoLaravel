@@ -23,7 +23,7 @@ class TurnoResource extends JsonResource
             'tipo' => $this->tipo,
             'numero' => $this->numero,
             'vagastotal' => $this->vagastotal,
-            'vagasocupadas' => count($this->inscricaosutilizadores),
+            'vagasocupadas' => $this->vagasocupadas, //count($this->inscricaosutilizadores),
           ];
         case 'paracadeiraturno':
           return [
@@ -31,7 +31,7 @@ class TurnoResource extends JsonResource
             'tipo' => $this->tipo,
             'numero' => $this->numero,
             'vagastotal' => $this->vagastotal,
-            'vagasocupadas' => count($this->inscricaosutilizadores)
+            'vagasocupadas' => $this->vagasocupadas, //count($this->inscricaosutilizadores)
           ];
         default:
         return [

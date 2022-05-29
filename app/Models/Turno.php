@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $nome
  * @property int $idCadeira
  * @property int $vagastotal
+ * @property int $vagasocupadas
  * @property integer $visivel
  * @property integer $repetentes
  * @property Cadeira $cadeira
@@ -27,7 +28,7 @@ class Turno extends Model
     /**
      * @var array
      */
-    protected $fillable = ['idCadeira', 'vagastotal', 'visivel', 'repetentes', 'tipo','numero','idanoletivo', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['idCadeira', 'vagastotal', 'vagasocupadas', 'visivel', 'repetentes', 'tipo','numero','idanoletivo', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

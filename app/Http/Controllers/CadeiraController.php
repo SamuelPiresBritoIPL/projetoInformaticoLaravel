@@ -28,8 +28,20 @@ class CadeiraController extends Controller
 {
     public function mudarTurno(CadeiraPostRequest $request, Turno $turno){
         $data = collect($request->validated());
-
-        $inscricao = Inscricao::whereIn('id',$data->get('inscricaoIds'))->update(['idTurno' => $turno->id]);;
+        $ids = [];
+        $turnosIds = Inscricao::whereIn('id',$data->get('inscricaoIds'))->select('idturno')->pluck('idturno')->toArray();
+        foreach ($turnosIds as $key => $value) {
+            
+            if(!array_key_exists($value,$ids)){
+                $ids[$value] = 0;
+            }
+            $ids[$value] += 1;
+        }
+        $inscricao = Inscricao::whereIn('id',$data->get('inscricaoIds'))->update(['idTurno' => $turno->id]);
+        foreach ($ids as $key => $value) {
+            Turno::where('id', $key)->update(['vagasocupadas' => DB::raw('vagasocupadas-'. $value)]);
+        }
+        Turno::where('id', $turno->id)->update(['vagasocupadas' => DB::raw('vagasocupadas+'.count($data->get('inscricaoIds')))]);
         return response("dados alterados com sucesso", 200);
     }
 
@@ -199,13 +211,13 @@ class CadeiraController extends Controller
         /*if(!(new CoordenadorService)->isProfessor($cadeira)){
             return response("Não tem permissão para aceder a esta unidade curricular",401);
         }*/
-        $subquery = "(select count(*) from inscricao where idTurno = turno.id) as vagas";
+        //$subquery = "(select count(*) from inscricao where idTurno = turno.id) as vagas";
         $idsCadeiras = Cadeira::join('turno','turno.idCadeira','=','cadeira.id')
                         ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)
                         ->where('aula.idProfessor',Auth::user()->id)->distinct('cadeira.id')->pluck('cadeira.id')->toArray();
         $turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
                         ->where('turno.idAnoletivo', $anoletivo->id)->whereIn('cadeira.id', $idsCadeiras)
-                        ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', DB::raw($subquery))
+                        ->select('cadeira.*','turno.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso', 'turno.vagasocupadas as vagas')
                         ->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC')->distinct('turno.id')->get();
         /*$turnos = Curso::join('cadeira', 'curso.id', '=', 'cadeira.idCurso')->join('turno','turno.idCadeira','=','cadeira.id')
             ->join('aula','aula.idTurno','=','turno.id')->where('turno.idAnoletivo', $anoletivo->id)->where('aula.idProfessor',Auth::user()->id)
