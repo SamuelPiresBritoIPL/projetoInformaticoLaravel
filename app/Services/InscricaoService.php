@@ -11,7 +11,7 @@ class InscricaoService
 
     public function save($idUtilizador, $idTurno){
         $inscricao = null;
-        DB::transaction(function () use ($idUtilizador, $idTurno) {
+        DB::transaction(function () use (&$idUtilizador, &$idTurno, &$inscricao) {
             $turno = Turno::where('id', $idTurno)->first();
             if($turno->vagastotal > $turno->vagasocupadas){
                 Turno::where('id', $idTurno)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
@@ -22,13 +22,12 @@ class InscricaoService
             $inscricao->idUtilizador = $idUtilizador;
             $inscricao->idTurno = $idTurno;
             $inscricao->save();
-            return $inscricao;
         }, 5);
         return $inscricao;
     }
 
     public function update($inscricao, $turnoId){
-        DB::transaction(function () use ($inscricao, $turnoId) {
+        DB::transaction(function () use (&$inscricao, &$turnoId) {
             $turno = Turno::where('id', $turnoId)->first();
             if($turno->vagastotal > $turno->vagasocupadas){
                 Turno::where('id', $turnoId)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
