@@ -22,6 +22,7 @@ class InscricaoService
             $inscricao->idUtilizador = $idUtilizador;
             $inscricao->idTurno = $idTurno;
             $inscricao->save();
+            return $inscricao;
         }, 5);
         return $inscricao;
     }
@@ -60,12 +61,13 @@ class InscricaoService
             $idTurnoUser = [];
             
             $idTurnosRequeridos = $data->get('turnosIds') ;
-            $idTurnoUser = Turno::select('turno.*')->join('inscricao', function ($join) use(&$idTurnosRequeridos){
+            $idTurnoUser = Turno::select('turno.*')->join('inscricao', function ($join) {
                 $join->on('turno.id', '=', 'inscricao.idTurno')->where('inscricao.idUtilizador', '=', Auth::user()->id);
             })->whereIn('turno.id', $idTurnosRequeridos)->pluck('id')->toArray();
-            $idTurnosRequeridos = array_diff($idTurnoUser,$idTurnosRequeridos );
-            $turnos = Turno::whereIn('id', $idTurnosRequeridos)->get();
             
+            $idTurnosRequeridos = array_diff($idTurnosRequeridos,$idTurnoUser);
+
+            $turnos = Turno::whereIn('id', $idTurnosRequeridos)->get();
             foreach($turnos as $turno){
                 if(!in_array($turno->id, $idTurnosUtilizador)){
                     return ['response' => 0, 'erro' => 'Ocorreu um erro, dê refresh à página e tente novamente.'];
@@ -94,7 +96,7 @@ class InscricaoService
                 return ['response' => 0, 'erro' => 'Todos os turnos selecionados já se encontram com o total das vagas preenchido.'];
             }
             if (sizeOf($turnosRejeitados) > 0) {
-                return ['response' => 2, 'rejeitados' => $turnosRejeitados , 'idTurnosAceites' =>  $idTurnosRequeridos];
+                return ['response' => 2, 'rejeitados' => $turnosRejeitados , 'idTurnosAceites' =>  array_merge($idTurnosRequeridos,$idTurnoUser)];
             }
             if (sizeOf($turnosRejeitados) == 0) {
                 return ['response' => 1];

@@ -21,6 +21,7 @@ class InscricaoController extends Controller
         $idTurnosAceites = [];
         $turnosRejeitados = [];
         $idCadeiras = [];
+        $idTurnosRemoved = ["removed" => [], "added" => []];
 
         $data = collect($request->validated());
         $canBeCreated = (new InscricaoService)->checkData($data);
@@ -35,10 +36,12 @@ class InscricaoController extends Controller
         } else if($canBeCreated['response'] == 1){
             $idTurnosAceites = $data->get('turnosIds');
         } 
-
+        
         $inscricoesAtuais = Inscricao::join('turno', function ($join) {
             $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id);
         })->select('inscricao.id', 'turno.id as turnoId','turno.idCadeira','turno.tipo')->get();
+
+        $turnosAceites = Turno::select('turno.*')->whereIn('turno.id', $idTurnosAceites)->get();
 
         //verificar se houve algum turno retirado, se foi entao apaga
         foreach ($inscricoesAtuais as $inscricaoAtual) {
@@ -51,12 +54,21 @@ class InscricaoController extends Controller
                     }
                 }
                 if($mudanca == 0){
-                    $inscricao = (new InscricaoService)->remove($inscricaoAtual->id, $inscricaoAtual->turnoId);
-                    unset($idTurnosAceites[$inscricaoAtual->turnoId]);
-                    array_push($idCadeiras,$inscricaoAtual->idCadeira);
+                    foreach ($turnosAceites as $key => $aceite) {
+                        if($aceite->idCadeira == $inscricaoAtual->idCadeira && $aceite->tipo == $inscricaoAtual->tipo){
+                            $mudanca = 1;
+                            break;
+                        }
+                    }
+                    if($mudanca == 0){
+                        $inscricao = (new InscricaoService)->remove($inscricaoAtual->id, $inscricaoAtual->turnoId);
+                        unset($idTurnosAceites[$inscricaoAtual->turnoId]);
+                        array_push($idCadeiras,$inscricaoAtual->idCadeira);
+                        array_push($idTurnosRemoved["removed"],$inscricaoAtual->turnoId);
+                    }
                 }    
             }else{
-                unset($idTurnosAceites[$inscricaoAtual->turnoId]);
+                unset($idTurnosAceites[array_search($inscricaoAtual->turnoId, $idTurnosAceites)]);
             }
         }
 
@@ -68,27 +80,27 @@ class InscricaoController extends Controller
             if (sizeof($inscricoes) == 0) {
                 $inscricao = (new InscricaoService)->save(Auth::user()->id, $turno->id);
                 if($inscricao != null){
-                    if(!in_array($turno->id,$idCadeiras)){
-                        array_push($idCadeiras,$turno->id);
-                    }
+                    array_push($idCadeiras,$turno->idCadeira);
+                    array_push($idTurnosRemoved["added"],$turno->id);
                 }
             }else{
                 $inscricao = Inscricao::find($inscricoes[0]->id);
                 if (!empty($inscricao)) {
+                    $oldTurnoid = $inscricao->idTurno;
                     $inscricao = (new InscricaoService)->update($inscricao, $turno->id);
                     if($inscricao != null){
-                        if(!in_array($turno->id,$idCadeiras)){
-                            array_push($idCadeiras,$turno->id);
-                        }
+                        array_push($idCadeiras,$turno->idCadeira);
+                        array_push($idTurnosRemoved["added"],$turno->id);
+                        array_push($idTurnosRemoved["removed"],$oldTurnoid);
                     }
                 }
             }            
         }
-
+        
         if ($canBeCreated['response'] == 2) {
-            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras], 201);
+            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved], 201);
         } else if($canBeCreated['response'] == 1){
-            return response(["idsCadeiras" => $idCadeiras],201);
+            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved],201);
         }
 
     }
