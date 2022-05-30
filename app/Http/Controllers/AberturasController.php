@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Curso;
 use App\Models\Aberturas;
+use App\Models\Anoletivo;
 use Illuminate\Http\Request;
 use App\Services\LogsService;
 use App\Services\AberturaService;
@@ -56,12 +57,28 @@ class AberturasController extends Controller
     
     public function getInfoPeriodos(Request $request){
         $now = Carbon::now();
+
+        $anoletivo = Anoletivo::where('ativo',1)->first();
+
         $aberturasAbertas = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
-        ->whereNull('deleted_at')->where('idCurso', Auth::user()->curso->id)->get();
+        ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
+                $query->from('inscricaoucs')
+                      ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
+                      ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
+                      ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
+                      ->select('curso.id')->distinct('curso.id')->pluck('curso.id')->toArray();
+            })->join('curso','idCurso','=','curso.id')
+            ->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura')->get();
 
         $aberturasAtivas = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
-        ->whereNull('deleted_at')->where('idCurso', Auth::user()->curso->id)
-        ->get();
+            ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
+                $query->from('inscricaoucs')
+                      ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
+                      ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
+                      ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
+                      ->select('curso.id')->distinct('curso.id')->pluck('curso.id')->toArray();
+            })->join('curso','idCurso','=','curso.id')
+            ->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura')->get();
 
         $pedidosAtivo = [];
         $inscricoesAtivos = [];
