@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aula;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\CursoResource;
 use App\Http\Resources\UtilizadorResource;
@@ -43,5 +44,29 @@ class UtilizadorController extends Controller
 
 	public function getInfoUtilizadorLogado(Request $request){
 		return new UtilizadorResource($request->user());
+	}
+
+	public function changePassword(Request $request){
+		if(!$request->has("password")){
+			return response([
+				'message' => 'Falta a password.'
+			], 401);
+		}
+		if(!$request->has("newpassword")){
+			return response([
+				'message' => 'Falta a newpassword'
+			], 401);
+		}
+		if (!Hash::check(($request->password), Auth::user()->password)) {
+			return response([
+				'message' => 'Password Incorrect'
+			], 401);
+		}
+
+		$admin = Utilizador::where('id',Auth::user()->id)->first();
+		$admin->password = $request->get("newpassword");
+		$admin->save();
+		
+		return response(201);
 	}
 }
