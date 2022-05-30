@@ -52,4 +52,91 @@ class AberturasController extends Controller
         //log
         return response($abertura, 200);
     }
+
+    
+    public function getInfoPeriodos(Request $request){
+        $now = Carbon::now();
+        $aberturasAbertas = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
+        ->whereNull('deleted_at')->where('idCurso', Auth::user()->curso->id)->get();
+
+        $aberturasAtivas = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
+        ->whereNull('deleted_at')->where('idCurso', Auth::user()->curso->id)
+        ->get();
+
+        $pedidosAtivo = [];
+        $inscricoesAtivos = [];
+
+        foreach ($aberturasAtivas as $key => $aberturaAtiva) {
+            if ($aberturaAtiva->tipoAbertura == 0) {
+                $pedidosAtivo = $aberturaAtiva;
+    
+                $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
+                $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
+    
+                $now = Carbon::now();
+                $dias = $dataAbertura->diffInDays($now);
+                $diasTermino = $dataEncerrar->diffInDays($now);
+    
+                if ($dias == 0) {
+                    $dias = "menos de 1 dia";
+                    $pedidosAtivo["menosdeumdia"] = true;
+                } else {
+                    $pedidosAtivo["menosdeumdia"] = false;
+                }
+    
+                if ($diasTermino == 0) {
+                    $diasTermino = "menos de 1 dia";
+                    $pedidosAtivo["menosdeumdiatermino"] = true;
+                } else {
+                    $pedidosAtivo["menosdeumdiatermino"] = false;
+                }
+    
+                $pedidosAtivo["diasAteAbertura"] = $dias;
+                $pedidosAtivo["diasAteTerminar"] = $diasTermino;
+            } else
+            if ($aberturaAtiva->tipoAbertura == 1) {
+                $inscricoesAtivo = $aberturaAtiva;
+    
+                $dataAbertura = Carbon::parse($inscricoesAtivo->dataAbertura);
+                $dataEncerrar = Carbon::parse($inscricoesAtivo->dataEncerar);
+    
+                $now = Carbon::now();
+                $dias = $dataAbertura->diffInDays($now);
+                $diasTermino = $dataEncerrar->diffInDays($now);
+    
+                if ($dias == 0) {
+                    $dias = "menos de 1 dia";
+                    $inscricoesAtivo["menosdeumdia"] = true;
+                } else {
+                    $inscricoesAtivo["menosdeumdia"] = false;
+                }
+    
+                if ($diasTermino == 0) {
+                    $diasTermino = "menos de 1 dia";
+                    $inscricoesAtivo["menosdeumdiatermino"] = true;
+                } else {
+                    $inscricoesAtivo["menosdeumdiatermino"] = false;
+                }
+    
+                $inscricoesAtivo["diasAteAbertura"] = $dias;
+                $inscricoesAtivo["diasAteTerminar"] = $diasTermino;
+
+                array_push($inscricoesAtivos, $inscricoesAtivo);
+            }
+        }
+
+        $isPedidosOpen = false;
+        $isInscricoesOpen = false;
+
+        foreach ($aberturasAbertas as $key => $abertura) {
+            if ($abertura->tipoAbertura == 0) {
+                $isPedidosOpen = true;
+            }
+            if ($abertura->tipoAbertura == 1) {
+                $isInscricoesOpen = true;
+            } 
+        }        
+        
+        return response(["infoPedidos" => $pedidosAtivo, "infoInscricoes" => $inscricoesAtivos, "isPedidosOpen" => $isPedidosOpen, "isInscricoesOpen" => $isInscricoesOpen], 200);
+    }
 }
