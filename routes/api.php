@@ -109,6 +109,11 @@ Route::group(['middleware' => ['auth:api','admin'],'prefix' => 'webservice'], fu
     Route::post('inscriverturnos', [WebserviceController::class, 'inscreverTurnos']);
 });
 
+//admin
+Route::group(['middleware' => ['auth:api','admin'],'prefix' => 'admin'], function () {
+    Route::put('changepassword', [UtilizadorController::class, 'changePassword']);
+});
+
 //admin/coordenador
 Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'estudante'], function () {
     Route::get('dados/{estudante}/{anoletivo}/{semestre}', [EstudanteController::class, 'getDados']);
