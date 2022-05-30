@@ -84,7 +84,7 @@ class CadeiraController extends Controller
             $ins = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
                                     )->join('cadeira','turno.idCadeira','=','cadeira.id')
                                     ->where('turno.idAnoletivo', '=', $anoletivo->id)->where('cadeira.semestre', $anoletivo->semestreativo)
-                                    ->where('turno.numero', '>', 0)->select('turno.id', 'turno.tipo', 'turno.idCadeira as idCadeira')->get();
+                                    ->where('turno.numero', '>', 0)->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome', 'cadeira.idCurso', 'turno.idCadeira as idCadeira')->get();
             $cursos = [];
             foreach ($inscricaoucs as $key => $inscricao) {
                 if(!array_key_exists($inscricao->idCurso,$cursos)){
