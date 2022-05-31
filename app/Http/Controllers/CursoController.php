@@ -96,7 +96,8 @@ class CursoController extends Controller
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->first();
 
-        $aberturas = Aberturas::withTrashed()->whereNotNull('deleted_at')->where('idCurso', '=', $curso->id)->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre)->get();
+        $aberturas = Aberturas::withTrashed()->whereNotNull('deleted_at')->where('idCurso', '=', $curso->id)
+                            ->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre)->orderBy('dataEncerar', 'DESC')->get();
         
         return response(["aberturasAtivas" => CursoResource::make($curso1)->anoletivo($anoletivo->id,$semestre), "aberturasDeleted" => $aberturas],200);
     }
