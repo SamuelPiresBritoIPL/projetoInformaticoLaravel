@@ -38,7 +38,7 @@ class InscricaoController extends Controller
         } 
         
         $inscricoesAtuais = Inscricao::join('turno', function ($join) {
-            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id);
+            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id)->where('numero', '>', 0);
         })->select('inscricao.id', 'turno.id as turnoId','turno.idCadeira','turno.tipo')->get();
 
         $turnosAceites = Turno::select('turno.*')->whereIn('turno.id', $idTurnosAceites)->get();
@@ -97,10 +97,26 @@ class InscricaoController extends Controller
             }            
         }
         
+        //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
+        $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
+                            )->join('cadeira','turno.idCadeira','=','cadeira.id')
+                            ->where('turno.idAnoletivo', '=', $anoletivo->id)->where('cadeira.semestre', $anoletivo->semestreativo)
+                            ->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome', 'cadeira.idCurso', 'turno.idCadeira as idCadeira', 'cadeira.ano')->get();
+        $insToSend = [];
+        foreach ($inscri as $key => $insc) {
+            if(!array_key_exists($insc->idCurso,$insToSend)){
+                $insToSend[$insc->idCurso] = [];
+            }
+            if(!array_key_exists($insc->idCadeira,$insToSend[$insc->idCurso])){
+                $insToSend[$insc->idCurso][$insc->idCadeira] = ["nome" => $insc->nome, "ano" => $insc->ano, "turnos" => []];
+            }
+            array_push($insToSend[$insc->idCurso][$insc->idCadeira]["turnos"], $insc);
+        }
+
         if ($canBeCreated['response'] == 2) {
-            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved], 201);
+            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend], 201);
         } else if($canBeCreated['response'] == 1){
-            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved],201);
+            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend],201);
         }
 
     }

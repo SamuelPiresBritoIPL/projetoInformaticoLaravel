@@ -133,7 +133,23 @@ class CadeiraController extends Controller
                 array_push($aberturasPorCurso[$aberturaAtiva->idCurso], $aberturaAtiva);
             }
 
-            return response(["cursos" => $cursos, "inscricoes" => $ins, "aberturas" => $aberturasPorCurso],200);
+            //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
+            $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
+                                    )->join('cadeira','turno.idCadeira','=','cadeira.id')
+                                    ->where('turno.idAnoletivo', '=', $anoletivo->id)->where('cadeira.semestre', $anoletivo->semestreativo)
+                                    ->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome', 'cadeira.idCurso', 'turno.idCadeira as idCadeira', 'cadeira.ano')->get();
+            $insToSend = [];
+            foreach ($inscri as $key => $insc) {
+                if(!array_key_exists($insc->idCurso,$insToSend)){
+                    $insToSend[$insc->idCurso] = [];
+                }
+                if(!array_key_exists($insc->idCadeira,$insToSend[$insc->idCurso])){
+                    $insToSend[$insc->idCurso][$insc->idCadeira] = ["nome" => $insc->nome, "ano" => $insc->ano, "turnos" => []];
+                }
+                array_push($insToSend[$insc->idCurso][$insc->idCadeira]["turnos"], $insc);
+            }
+
+            return response(["cursos" => $cursos, "inscricoes" => $ins, "aberturas" => $aberturasPorCurso, "inscricoesTurnosAtuais" => $insToSend],200);
         }
     }
 
