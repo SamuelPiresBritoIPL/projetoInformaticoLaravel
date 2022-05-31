@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
 use App\Http\Resources\CursoResourceCollection;
+use App\Models\Aberturas;
 
 class CursoController extends Controller
 {
@@ -94,8 +95,10 @@ class CursoController extends Controller
         $curso1 = Curso::where('id',$curso->id)->with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
             $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
         }])->first();
+
+        $aberturas = Aberturas::withTrashed()->whereNotNull('deleted_at')->where('idCurso', '=', $curso->id)->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre)->get();
         
-        return response(CursoResource::make($curso1)->anoletivo($anoletivo->id,$semestre),200);
+        return response(["aberturasAtivas" => CursoResource::make($curso1)->anoletivo($anoletivo->id,$semestre), "aberturasDeleted" => $aberturas],200);
     }
 
     public function getCoordenadoresAuth(){
