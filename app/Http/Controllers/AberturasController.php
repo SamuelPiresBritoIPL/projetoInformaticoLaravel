@@ -56,11 +56,11 @@ class AberturasController extends Controller
 
     
     public function getInfoPeriodos(Request $request){
-        $now = Carbon::now();
+        $now = Carbon::now('Europe/Lisbon');
 
         $anoletivo = Anoletivo::where('ativo',1)->first();
 
-        $aberturasAbertas = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
+        $aberturasAbertas = Aberturas::where('dataAbertura', '<=', $now)->where('dataEncerar', '>=', $now)
         ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                 $query->from('inscricaoucs')
                       ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
@@ -70,7 +70,7 @@ class AberturasController extends Controller
             })->join('curso','idCurso','=','curso.id')
             ->select('curso.id as idCurso', 'curso.nome', 'curso.codigo', 'dataAbertura', 'dataEncerar', 'ano', 'tipoAbertura')->get();
 
-        $aberturasAtivas = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
+        $aberturasAtivas = Aberturas::where('aberturas.dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                 $query->from('inscricaoucs')
                       ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
@@ -90,7 +90,7 @@ class AberturasController extends Controller
                 $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
                 $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
     
-                $now = Carbon::now();
+                $now = Carbon::now('Europe/Lisbon');
                 $dias = $dataAbertura->diffInDays($now);
                 $diasTermino = $dataEncerrar->diffInDays($now);
     
@@ -117,7 +117,7 @@ class AberturasController extends Controller
                 $dataAbertura = Carbon::parse($inscricoesAtivo->dataAbertura);
                 $dataEncerrar = Carbon::parse($inscricoesAtivo->dataEncerar);
     
-                $now = Carbon::now();
+                $now = Carbon::now('Europe/Lisbon');
                 $dias = $dataAbertura->diffInDays($now);
                 $diasTermino = $dataEncerrar->diffInDays($now);
     

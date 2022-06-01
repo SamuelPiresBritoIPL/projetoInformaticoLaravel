@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
-            $now = Carbon::now();
+            $now = Carbon::now('Europe/Lisbon');
             Aberturas::whereDate('aberturas.dataEncerar', '<', $now)->delete();
         })->dailyAt('00:01');
     }

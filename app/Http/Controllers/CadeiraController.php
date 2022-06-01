@@ -58,8 +58,8 @@ class CadeiraController extends Controller
                             ->where('estado',1)->join('cadeira','inscricaoucs.idCadeira','=','cadeira.id')
                             ->where('cadeira.semestre', $anoletivo->semestreativo)->join('curso', 'curso.id','=','cadeira.idCurso')
                             ->select('inscricaoucs.*','cadeira.*')->get();
-            $now = Carbon::now();
-            $aberturas = Aberturas::whereDate('aberturas.dataAbertura', '<=', $now)->whereDate('aberturas.dataEncerar', '>=', $now)
+            $now = Carbon::now('Europe/Lisbon');
+            $aberturas = Aberturas::where('aberturas.dataAbertura', '<=', $now)->where('aberturas.dataEncerar', '>=', $now)
                                 ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                                     $query->from('inscricaoucs')
                                           ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
@@ -93,7 +93,7 @@ class CadeiraController extends Controller
                 array_push($cursos[$inscricao->idCurso], $inscricao);
             }
 
-            $aberturaAtivas = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
+            $aberturaAtivas = Aberturas::where('aberturas.dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->whereIn('idCurso', function($query) use(&$request,&$anoletivo){
                 $query->from('inscricaoucs')
                       ->where('inscricaoucs.idUtilizador',($request->user())->id)->where('inscricaoucs.idAnoletivo',$anoletivo->id)
@@ -109,7 +109,7 @@ class CadeiraController extends Controller
                 }
                 $dataAbertura = Carbon::parse($aberturaAtiva->dataAbertura);
                 $dataEncerrar = Carbon::parse($aberturaAtiva->dataEncerar);
-                $now = Carbon::now();
+                $now = Carbon::now('Europe/Lisbon');
                 $dias = $dataAbertura->diffInDays($now);
                 $diasTermino = $dataEncerrar->diffInDays($now);
 
@@ -175,11 +175,11 @@ class CadeiraController extends Controller
             $user = Utilizador::where('id', ($request->user())->id)->first();
             $infoPedidos = [];
 
-            $now = Carbon::now();
-            $isOpen = Aberturas::whereDate('dataAbertura', '<=', $now)->whereDate('dataEncerar', '>=', $now)
+            $now = Carbon::now('Europe/Lisbon');
+            $isOpen = Aberturas::where('dataAbertura', '<=', $now)->where('dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)->get();
 
-            $pedidosAtivo = Aberturas::whereDate('aberturas.dataEncerar', '>=', $now)
+            $pedidosAtivo = Aberturas::where('aberturas.dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->where('tipoAbertura', 0)->where('idCurso', Auth::user()->curso->id)
             ->select('dataAbertura', 'dataEncerar')->get();
 
@@ -189,7 +189,7 @@ class CadeiraController extends Controller
                 $dataAbertura = Carbon::parse($pedidosAtivo->dataAbertura);
                 $dataEncerrar = Carbon::parse($pedidosAtivo->dataEncerar);
 
-                $now = Carbon::now();
+                $now = Carbon::now('Europe/Lisbon');
                 $dias = $dataAbertura->diffInDays($now);
                 $diasTermino = $dataEncerrar->diffInDays($now);
 

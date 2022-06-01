@@ -66,14 +66,14 @@ class CursoController extends Controller
         CursoResource::$format = 'aberturasDashboard';
 
         if (Auth::user()->isAdmin()) {
-            $now = Carbon::now();
+            $now = Carbon::now('Europe/Lisbon');
             $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
                 $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
-            }])->join('aberturas','curso.id','=','aberturas.idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)
+            }])->join('aberturas','curso.id','=','aberturas.idCurso')->where('aberturas.dataEncerar', '>=', $now)
             ->whereNull('deleted_at')->select('curso.*')->distinct('curso.id')->get();
         }
         if (Auth::user()->isCoordenador()) {
-            $now = Carbon::now();
+            $now = Carbon::now('Europe/Lisbon');
             $cursos = Curso::with(['aberturas' => function ($query) use (&$anoletivo,&$semestre) {
                 $query->where('idAnoLetivo', $anoletivo->id)->where('semestre',$semestre);
             }])->join('coordenador','curso.id','=','coordenador.idCurso')->where('coordenador.idUtilizador', Auth::user()->id)->select('curso.*')->distinct('curso.id')->get();

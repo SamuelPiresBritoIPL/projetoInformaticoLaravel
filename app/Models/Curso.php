@@ -44,8 +44,8 @@ class Curso extends Model
      */
     public function aberturasdefinidas()
     {
-        $now = Carbon::now();
-        return $this->hasMany(Aberturas::class, 'idCurso')->whereDate('aberturas.dataEncerar', '>=', $now)->orderBy('ano', 'ASC');
+        $now = Carbon::now('Europe/Lisbon');
+        return $this->hasMany(Aberturas::class, 'idCurso')->where('aberturas.dataEncerar', '>=', $now)->orderBy('ano', 'ASC');
     }
 
     /**
