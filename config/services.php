@@ -33,6 +33,7 @@ return [
     'webapiurls' => [
         'cursos' => 'http://www.dei.estg.ipleiria.pt/intranet/horarios/ws/inscricoes/turnos_json.php?',
         'turnos' => 'http://www.dei.estg.ipleiria.pt/intranet/horarios/ws/inscricoes/inscricoes_cursos_json.php?',
+        'aulas' => 'http://www.dei.estg.ipleiria.pt/intranet/horarios/ws/inscricoes/listagem_aulas_json.php?',
     ],
 
 ];

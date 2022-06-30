@@ -109,14 +109,15 @@ class WebserviceService
                 $newturno->save();
                 $newDataAdded += 1;
             }
-            $newaula = Aula::where('idTurno',$newturno->id)->where('idProfessor',$utilizador->id)->first();
+            //antiga maneira de adicionar aulas, agora existe uma api para consumir
+            /*$newaula = Aula::where('idTurno',$newturno->id)->where('idProfessor',$utilizador->id)->first();
             if(empty($newaula)){
                 $newaula = new Aula();
                 $newaula->idTurno = $newturno->id;
                 $newaula->idProfessor = $utilizador->id;
                 $newaula->save();
                 $newDataAdded += 1;
-            }
+            }*/
         }
         return $newDataAdded;
     }
@@ -140,15 +141,15 @@ class WebserviceService
                 continue;
             }
 
-            if($inscricao->LOGIN == null){
+            if($inscricao->CD_ALUNO == null){
                 $utilizador = Utilizador::where('nome', $inscricao->NM_ALUNO)->where('login', $inscricao->LOGIN)->first();
             }else{
-                $utilizador = Utilizador::where('login', $inscricao->LOGIN)->first();
+                $utilizador = Utilizador::where('login', $inscricao->CD_ALUNO)->first();
             }
             if(empty($utilizador)){
                 $utilizador = new Utilizador();
                 $utilizador->nome = $inscricao->NM_ALUNO;
-                $utilizador->login = $inscricao->LOGIN;
+                $utilizador->login = $inscricao->CD_ALUNO;
                 $utilizador->idCurso = $curso->id;
                 $utilizador->tipo = 0;
                 $utilizador->password = "teste123";
