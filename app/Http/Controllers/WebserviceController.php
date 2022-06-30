@@ -108,7 +108,6 @@ class WebserviceController extends Controller
     }
 
     public function getAulas(WebserviceaulasPostRequest $request){
-        //preciso das datas
         $data = collect($request->validated());
 
         $idcurso = 0;
@@ -135,12 +134,13 @@ class WebserviceController extends Controller
 
         $url = (new WebserviceService)->makeUrl($baseurl,['data_inicio' => $data->get('dataInicio'),'data_fim' => $data->get('dataFim')]);
         
+        //rever a partir daqui
         $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0,'dataChanged' => 0];
         if($idcurso == 0){
             $cursos = Curso::all();
             foreach ($cursos as $c) {
                 $url2 = $url . "cod_curso=" . $c->codigo;
-                $dataSing = (new WebserviceController)->makeFinalUrlAndData($url2);
+                $dataSing = (new WebserviceController)->makeFinalUrlGetAulas($url2);
                 if(!empty($dataSing)){
                     $data["cursonotfound"] += $dataSing["cursonotfound"];
                     $data["cadeiranotfound"] += $dataSing["cadeiranotfound"];
@@ -149,16 +149,16 @@ class WebserviceController extends Controller
                     $data["dataChanged"] += $dataSing["dataChanged"];
                 }
             }
-            (new LogsService)->save("Atualização das inscricoes de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+            (new LogsService)->save("Atualização das aulas de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }else{
             $url = $url . "dados=" . $idcurso;
             $json = (new WebserviceService)->callAPI("GET",$url);
             if(empty($json)){
                 return response("Não foi possivel aceder ao website", 401);
             }
-            $data = (new WebserviceService)->getInscricoesturnos($json);
+            $data = (new WebserviceService)->getAulasJson($json);
 
-            (new LogsService)->save("Atualização das inscricoes feita por: " . Auth::user()->login ." ao curso " . $curso->nome, "webservices",  Auth::user()->id);
+            (new LogsService)->save("Atualização das aulas feita por: " . Auth::user()->login ." ao curso " . $curso->nome, "webservices",  Auth::user()->id);
         }
 
         return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded'],"dataChanged" => $data['dataChanged']], 200);
@@ -170,6 +170,15 @@ class WebserviceController extends Controller
             return;
         }
         $data = (new WebserviceService)->getInscricoesturnos($json);
+        return $data;
+    }
+
+    public function makeFinalUrlGetAulas($url){
+        $json = (new WebserviceService)->callAPI("GET",$url);
+        if(empty($json)){
+            return;
+        }
+        $data = (new WebserviceService)->getAulasJson($json);
         return $data;
     }
 

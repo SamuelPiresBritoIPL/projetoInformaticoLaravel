@@ -187,6 +187,72 @@ class WebserviceService
         ];
     }
 
+    //fazer esta funcao!!
+    public function getAulasJson($json){
+        $newStudentAdded = 0;
+        $cursonotfound = 0;
+        $cadeiranotfound = 0;
+        $newDataAdded = 0;
+        $dataChanged = 0;
+        foreach ($json as $inscricao) {
+            $curso = Curso::where('codigo',$inscricao->CD_CURSO)->first();
+            if(empty($curso)){
+                $cursonotfound += 1;
+                continue;
+            }
+
+            $cadeira = Cadeira::where('codigo',$inscricao->CD_DISCIP)->first();
+            if(empty($cadeira)){
+                $cadeiranotfound += 1;
+                continue;
+            }
+
+            if($inscricao->CD_ALUNO == null){
+                $utilizador = Utilizador::where('nome', $inscricao->NM_ALUNO)->where('login', $inscricao->LOGIN)->first();
+            }else{
+                $utilizador = Utilizador::where('login', $inscricao->CD_ALUNO)->first();
+            }
+            if(empty($utilizador)){
+                $utilizador = new Utilizador();
+                $utilizador->nome = $inscricao->NM_ALUNO;
+                $utilizador->login = $inscricao->CD_ALUNO;
+                $utilizador->idCurso = $curso->id;
+                $utilizador->tipo = 0;
+                $utilizador->password = "teste123";
+                $utilizador->save();
+                $newStudentAdded += 1;
+            }
+
+            $anoletivo = Anoletivo::where('anoletivo',$inscricao->CD_LECTIVO)->first();
+            if(empty($anoletivo)){
+                $anoletivo = new Anoletivo();
+                $anoletivo->anoletivo = $inscricao->CD_LECTIVO;
+                $anoletivo->save();
+            }
+            
+            $inscricaoucs = Inscricaoucs::where('idCadeira', $cadeira->id)->where('idUtilizador', $utilizador->id)->where('idAnoletivo',$anoletivo->id)->first();
+            if(empty($inscricaoucs)){
+                $newDataAdded += 1;
+                $inscricaoucs = new Inscricaoucs();
+                $inscricaoucs->idCadeira = $cadeira->id;
+                $inscricaoucs->idUtilizador = $utilizador->id;
+                $inscricaoucs->idAnoletivo = $anoletivo->id;
+                $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
+            }
+            $inscricaoucs->estado = $inscricao->CD_STATUS;
+            $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
+            $inscricaoucs->save();
+            $dataChanged += 1;
+        }
+        return[
+            'newStudentAdded' => $newStudentAdded,
+            'cursonotfound' => $cursonotfound,
+            'cadeiranotfound' => $cadeiranotfound,
+            'newDataAdded' => $newDataAdded,
+            'dataChanged' => $dataChanged,
+        ];
+    }
+
     public function inscreverAlunosTurnosUnicos(Anoletivo $anoletivo, $semestre){
         $turnos = Turno::select('turno.*')->rightjoin('cadeira', function ($join) use(&$semestre) {
             $join->on('turno.idCadeira', '=', 'cadeira.id')->where('cadeira.semestre', '=', $semestre);

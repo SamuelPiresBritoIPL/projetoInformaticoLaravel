@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth:api','admin'],'prefix' => 'webservice'], fu
     Route::post('curso', [WebserviceController::class, 'getCursos']);
     Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
     Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);
+    Route::post('aulas', [WebserviceController::class, 'getAulas']);
     Route::put('url', [WebserviceController::class, 'changeurl']);
     Route::get('url', [WebserviceController::class, 'geturls']);
     Route::post('inscriverturnos', [WebserviceController::class, 'inscreverTurnos']);
