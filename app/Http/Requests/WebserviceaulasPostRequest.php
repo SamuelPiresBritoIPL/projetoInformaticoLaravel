@@ -27,7 +27,8 @@ class WebserviceaulasPostRequest extends FormRequest
     public function rules()
     {
         $rules = ['dataInicio' => ['required', 'date'],
-                  'dataFim' => ['required', 'date','after_or_equal:data_inicio']];
+                  'dataFim' => ['required', 'date','after_or_equal:data_inicio'],
+                  'idAnoletivo' => ['required', 'numeric', Rule::exists('anoletivo', 'id')->where('id', $this->request->get('idAnoletivo'))]];
         return $rules;
     }
 

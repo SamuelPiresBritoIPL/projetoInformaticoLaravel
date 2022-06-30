@@ -22,11 +22,11 @@ class Aula extends Model
     protected $table = 'aula';
 
     
-    protected $casts = [
+    /*protected $casts = [
         'data' => 'date',
         'horaInicio' => 'time',
         'horaFim' => 'time'
-    ];
+    ];*/
 
     /**
      * @var array

@@ -188,68 +188,73 @@ class WebserviceService
     }
 
     //fazer esta funcao!!
-    public function getAulasJson($json){
-        $newStudentAdded = 0;
-        $cursonotfound = 0;
+    public function getAulasJson($json, $idAnoLetivo){
+        $newProfessorAdded = 0;
+        $turnonotfound = 0;
         $cadeiranotfound = 0;
-        $newDataAdded = 0;
+        $newAula = 0;
+        $testes = 0;
         $dataChanged = 0;
-        foreach ($json as $inscricao) {
-            $curso = Curso::where('codigo',$inscricao->CD_CURSO)->first();
-            if(empty($curso)){
-                $cursonotfound += 1;
-                continue;
-            }
-
-            $cadeira = Cadeira::where('codigo',$inscricao->CD_DISCIP)->first();
+        
+        foreach ($json as $aula) {
+            $cadeira = Cadeira::where('codigo',$aula->cod_uc)->first();
             if(empty($cadeira)){
                 $cadeiranotfound += 1;
                 continue;
             }
 
-            if($inscricao->CD_ALUNO == null){
-                $utilizador = Utilizador::where('nome', $inscricao->NM_ALUNO)->where('login', $inscricao->LOGIN)->first();
+            if($aula->login == null){
+                 continue;
             }else{
-                $utilizador = Utilizador::where('login', $inscricao->CD_ALUNO)->first();
+                $utilizador = Utilizador::where('login', $aula->login)->first();
             }
             if(empty($utilizador)){
                 $utilizador = new Utilizador();
-                $utilizador->nome = $inscricao->NM_ALUNO;
-                $utilizador->login = $inscricao->CD_ALUNO;
-                $utilizador->idCurso = $curso->id;
-                $utilizador->tipo = 0;
+                $utilizador->nome = $aula->nome_docente;
+                $utilizador->login = $aula->login;
+                $utilizador->idCurso = $cadeira->idCurso;
+                $utilizador->tipo = 1;
                 $utilizador->password = "teste123";
                 $utilizador->save();
-                $newStudentAdded += 1;
-            }
-
-            $anoletivo = Anoletivo::where('anoletivo',$inscricao->CD_LECTIVO)->first();
-            if(empty($anoletivo)){
-                $anoletivo = new Anoletivo();
-                $anoletivo->anoletivo = $inscricao->CD_LECTIVO;
-                $anoletivo->save();
+                $newProfessorAdded += 1;
             }
             
-            $inscricaoucs = Inscricaoucs::where('idCadeira', $cadeira->id)->where('idUtilizador', $utilizador->id)->where('idAnoletivo',$anoletivo->id)->first();
-            if(empty($inscricaoucs)){
-                $newDataAdded += 1;
-                $inscricaoucs = new Inscricaoucs();
-                $inscricaoucs->idCadeira = $cadeira->id;
-                $inscricaoucs->idUtilizador = $utilizador->id;
-                $inscricaoucs->idAnoletivo = $anoletivo->id;
-                $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
+            //estamos presentes num teste
+            if($aula->componente == null){
+                $testes += 1;
+                continue;
             }
-            $inscricaoucs->estado = $inscricao->CD_STATUS;
-            $inscricaoucs->nrinscricoes = $inscricao->NR_INSCRICOES;
-            $inscricaoucs->save();
+
+            $turnoNr = $aula->turno == "Sem Turno" ? 0 : $aula->turno;
+            $turno = Turno::where('tipo', $aula->componente)->where('numero', $turnoNr)->where('idAnoletivo', $idAnoLetivo)->where('idCadeira',$cadeira->id)->first();
+            //o turno n existe, sair ou um erro ou n inserir? pensar
+            if(empty($turno)){
+                $turnonotfound += 1;
+                continue;
+            }
+
+            $newaula = Aula::where('idAntigo',$aula->id_aulas)->first();
+            if(empty($newaula)){
+                //nova aula
+                $newAula += 1;
+                $newaula = new Aula();
+                $newaula->idAntigo = $aula->id_aulas;
+            }
+            $newaula->data =  date('Y-m-d',strtotime($aula->data));
+            $newaula->horaInicio = date('H:i',strtotime($aula->data_inicio));
+            $newaula->horaFim = date('H:i',strtotime($aula->data_fim));
+            $newaula->idTurno = $turno->id;
+            $newaula->idProfessor = $utilizador->id;
+            $newaula->save();
             $dataChanged += 1;
         }
         return[
-            'newStudentAdded' => $newStudentAdded,
-            'cursonotfound' => $cursonotfound,
+            'newProfessorAdded' => $newProfessorAdded,
+            'turnonotfound' => $turnonotfound,
             'cadeiranotfound' => $cadeiranotfound,
-            'newDataAdded' => $newDataAdded,
             'dataChanged' => $dataChanged,
+            'newAula' => $newAula,
+            'testes' => $testes,
         ];
     }
 
