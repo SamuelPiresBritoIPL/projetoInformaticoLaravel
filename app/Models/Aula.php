@@ -21,10 +21,17 @@ class Aula extends Model
      */
     protected $table = 'aula';
 
+    
+    protected $casts = [
+        'data' => 'date',
+        'horaInicio' => 'time',
+        'horaFim' => 'time'
+    ];
+
     /**
      * @var array
      */
-    protected $fillable = ['diaSemana', 'horaInicio', 'horaFim', 'idTurno', 'idProfessor',];
+    protected $fillable = ['idAntigo','data', 'horaInicio', 'horaFim', 'idTurno', 'idProfessor',];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

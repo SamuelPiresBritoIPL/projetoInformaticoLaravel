@@ -14,6 +14,7 @@ use App\Services\WebserviceService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\WebservicePostRequest;
+use App\Http\Requests\WebserviceaulasPostRequest;
 
 class WebserviceController extends Controller
 {
@@ -106,7 +107,8 @@ class WebserviceController extends Controller
         return response(["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded'],"dataChanged" => $data['dataChanged']], 200);
     }
 
-    public function getAulas(WebservicePostRequest $request, $estado=1){
+    public function getAulas(WebserviceaulasPostRequest $request){
+        //preciso das datas
         $data = collect($request->validated());
 
         $idcurso = 0;
@@ -131,7 +133,7 @@ class WebserviceController extends Controller
             $baseurl = Storage::disk('local')->get('urlaulas.txt');
         }
 
-        $url = (new WebserviceService)->makeUrl($baseurl,['anoletivo' => $data->get('anoletivo'),'estado' => $estado]); //cod_curso=9119
+        $url = (new WebserviceService)->makeUrl($baseurl,['data_inicio' => $data->get('dataInicio'),'data_fim' => $data->get('dataFim')]);
         
         $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0,'dataChanged' => 0];
         if($idcurso == 0){
@@ -149,7 +151,7 @@ class WebserviceController extends Controller
             }
             (new LogsService)->save("Atualização das inscricoes de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }else{
-            $url = $url . "cod_curso=" . $idcurso;
+            $url = $url . "dados=" . $idcurso;
             $json = (new WebserviceService)->callAPI("GET",$url);
             if(empty($json)){
                 return response("Não foi possivel aceder ao website", 401);

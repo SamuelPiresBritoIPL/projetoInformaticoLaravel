@@ -16,7 +16,8 @@ class CreateAulaTable extends Migration {
 		Schema::create('aula', function(Blueprint $table)
 		{
 			$table->unsignedInteger('id',true);
-			$table->smallInteger('diaSemana')->nullable();
+			$table->string('idAntigo', 15)->nullable();
+			$table->date('data');
 			$table->time('horaInicio')->nullable();
 			$table->time('horaFim')->nullable();
 			$table->integer('idTurno')->unsigned()->index('idTurno_idx');
