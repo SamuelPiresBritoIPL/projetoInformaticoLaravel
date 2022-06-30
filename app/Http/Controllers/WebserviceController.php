@@ -132,7 +132,7 @@ class WebserviceController extends Controller
             $baseurl = Storage::disk('local')->get('urlaulas.txt');
         }
 
-        $url = (new WebserviceService)->makeUrl($baseurl,['data_inicio' => $data->get('dataInicio'),'data_fim' => $data->get('dataFim')]);
+        $url = (new WebserviceService)->makeUrl($baseurl,['data_inicio' => date('d-m-Y',strtotime($data->get('dataInicio'))),'data_fim' => date('d-m-Y',strtotime($data->get('dataFim')))]);
         
         //rever a partir daqui
         $idAnoLetivo = $data->get('idAnoletivo');
