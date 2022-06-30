@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Aula;
 use App\Models\Turno;
 use App\Models\Anoletivo;
 use App\Models\Inscricao;
@@ -96,6 +97,18 @@ class InscricaoController extends Controller
                 }
             }            
         }
+
+        //verificacao se existem turnos que coincidem
+        $idTurnos = Inscricao::where('idUtilizador',Auth::user()->id)->pluck('inscricao.idTurno')->toArray();
+        $aulas = Aula::whereIn('idTurno',$idTurnos)->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->get();
+        $coincidem = [];
+
+        for($i = 0; $i < count($aulas)-1; $i++){
+            if($aulas[$i]->data == $aulas[$i+1]->data && $aulas[$i]->horaFim >= $aulas[$i+1]->horaInicio){
+                //array_push($coincidem, "(" . $aulas[$i]->idTurno ." no dia " . $aulas[$i]->data ." = " . $aulas[$i]->horaInicio . " - " . $aulas[$i]->horaFim . ") com (" . $aulas[$i+1]->idTurno ." no dia " . $aulas[$i+1]->data ." = " . $aulas[$i+1]->horaInicio . " - " . $aulas[$i+1]->horaFim . ")");
+                array_push($coincidem,$aulas[$i]->turno->cadeira->nome . " (". $aulas[$i]->turno->tipo . ($aulas[$i]->turno->numero == 0 ? "" : $aulas[$i]->turno->numero).") no dia ". $aulas[$i]->data ."(" . $aulas[$i]->horaInicio . "-" . $aulas[$i]->horaFim . ") coincide com ". $aulas[$i+1]->turno->cadeira->nome . " (". $aulas[$i+1]->turno->tipo . ($aulas[$i+1]->turno->numero == 0 ? "" : $aulas[$i+1]->turno->numero).") no dia ". $aulas[$i+1]->data ."(" . $aulas[$i+1]->horaInicio . "-" . $aulas[$i+1]->horaFim .")");
+            }
+        }
         
         //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
         $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
@@ -114,9 +127,9 @@ class InscricaoController extends Controller
         }
 
         if ($canBeCreated['response'] == 2) {
-            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend], 201);
+            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem], 201);
         } else if($canBeCreated['response'] == 1){
-            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend],201);
+            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem],201);
         }
 
     }

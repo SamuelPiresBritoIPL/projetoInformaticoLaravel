@@ -3,11 +3,14 @@
 namespace App\Services;
 
 use App\Models\Logs;
+use App\Models\Turno;
 use App\Models\Pedidos;
 use App\Models\Aberturas;
 use App\Models\Anoletivo;
+use App\Models\Inscricao;
 use App\Models\Pedidosucs;
 use App\Models\Inscricaoucs;
+use Illuminate\Support\Facades\DB;
 
 class PedidosService
 {
@@ -68,7 +71,17 @@ class PedidosService
             }
             $inscricaoucs->estado = 1;
             $inscricaoucs->save();
-            //inscrever alunos na cadeira
+
+            //inscrever nos turnos que apenas sao 1 turno (ex turnos teoricos) desta uc
+            $turnos = Turno::select('turno.*')->where('turno.idCadeira', $inscricaoucs->idCadeira)
+            ->where('turno.idAnoletivo','=',$idAnoletivo)->where('turno.numero','=',0)->get();
+            foreach($turnos as $t){
+                $ins = Inscricao::where('idUtilizador', $inscricaoucs->idUtilizador)->where('idTurno', $t->id)->first();
+                if(empty($ins)){
+                    $newInsc_new = Inscricao::insertOrIgnore(['idUtilizador' => $inscricaoucs->idUtilizador, 'idTurno' => $t->id]);
+                    Turno::where('id', $t->id)->update(['vagasocupadas' => DB::raw('vagasocupadas+1')]);
+                }
+            }
         }
         foreach($data->get('pedidosucsReprovadasIds') as $id){
             //inscrever alunos na cadeira
