@@ -228,6 +228,8 @@ class WebserviceService
             $turnoNr = $aula->turno == "Sem Turno" ? 0 : $aula->turno;
             $turno = Turno::where('tipo', $aula->componente)->where('numero', $turnoNr)->where('idAnoletivo', $idAnoLetivo)->where('idCadeira',$cadeira->id)->first();
             //o turno n existe, sair ou um erro ou n inserir? pensar
+            //isto pode ser aulas?!
+            //verificar
             if(empty($turno)){
                 $turnonotfound += 1;
                 continue;

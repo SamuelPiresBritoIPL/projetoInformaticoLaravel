@@ -100,15 +100,7 @@ class InscricaoController extends Controller
 
         //verificacao se existem turnos que coincidem
         $idTurnos = Inscricao::where('idUtilizador',Auth::user()->id)->pluck('inscricao.idTurno')->toArray();
-        $aulas = Aula::whereIn('idTurno',$idTurnos)->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->get();
-        $coincidem = [];
-
-        for($i = 0; $i < count($aulas)-1; $i++){
-            if($aulas[$i]->data == $aulas[$i+1]->data && $aulas[$i]->horaFim >= $aulas[$i+1]->horaInicio){
-                //array_push($coincidem, "(" . $aulas[$i]->idTurno ." no dia " . $aulas[$i]->data ." = " . $aulas[$i]->horaInicio . " - " . $aulas[$i]->horaFim . ") com (" . $aulas[$i+1]->idTurno ." no dia " . $aulas[$i+1]->data ." = " . $aulas[$i+1]->horaInicio . " - " . $aulas[$i+1]->horaFim . ")");
-                array_push($coincidem,$aulas[$i]->turno->cadeira->nome . " (". $aulas[$i]->turno->tipo . ($aulas[$i]->turno->numero == 0 ? "" : $aulas[$i]->turno->numero).") no dia ". $aulas[$i]->data ."(" . $aulas[$i]->horaInicio . "-" . $aulas[$i]->horaFim . ") coincide com ". $aulas[$i+1]->turno->cadeira->nome . " (". $aulas[$i+1]->turno->tipo . ($aulas[$i+1]->turno->numero == 0 ? "" : $aulas[$i+1]->turno->numero).") no dia ". $aulas[$i+1]->data ."(" . $aulas[$i+1]->horaInicio . "-" . $aulas[$i+1]->horaFim .")");
-            }
-        }
+        $coincidem = $this->getCoincidencias($idTurnos);
         
         //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
         $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
@@ -132,6 +124,37 @@ class InscricaoController extends Controller
             return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem],201);
         }
 
+    }
+
+    public function getCoincidencias($idTurnos){
+        $aulas = Aula::whereIn('idTurno',$idTurnos)->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->get();
+        $nrVezes = [];
+        $coincidem = [];
+        $week = [0 => "Domingo",1 => "Segunda-feira",2 => "Terca-feira",3 => "Quarta-feira",4 => "Quinta-feira",5 => "Sexta-feira",6 => "Sabado"];
+        for($i = 0; $i < count($aulas)-1; $i++){
+            if($aulas[$i]->data == $aulas[$i+1]->data && $aulas[$i]->horaFim >= $aulas[$i+1]->horaInicio){
+                if(!array_key_exists($aulas[$i]->idTurno.$aulas[$i+1]->idTurno,$nrVezes)){
+                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][0] = 1;
+                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][1] = $aulas[$i];
+                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][2] = $aulas[$i+1];
+                }
+                $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][0] += 1;
+                //array_push($cadeirasAprovadas[$cadeira->idCurso]["cadeiras"], $cadeira);
+                //array_push($coincidem,$aulas[$i]->turno->cadeira->nome . " (". $aulas[$i]->turno->tipo . ($aulas[$i]->turno->numero == 0 ? "" : $aulas[$i]->turno->numero).") no dia ". $aulas[$i]->data ."(" . $aulas[$i]->horaInicio . "-" . $aulas[$i]->horaFim . ") coincide com ". $aulas[$i+1]->turno->cadeira->nome . " (". $aulas[$i+1]->turno->tipo . ($aulas[$i+1]->turno->numero == 0 ? "" : $aulas[$i+1]->turno->numero).") no dia ". $aulas[$i+1]->data ."(" . $aulas[$i+1]->horaInicio . "-" . $aulas[$i+1]->horaFim .")");
+            }
+        }
+        //array_push($coincidem, $aula[0]." ".$week[$dayofweek] ." ". $aula[1]->turno->cadeira->nome . " (". $aula[1]->turno->tipo . ($aula[1]->turno->numero == 0 ? "" : $aula[1]->turno->numero).") coincide com ". $aula[2]->turno->cadeira->nome . " (". $aula[2]->turno->tipo . ($aula[2]->turno->numero == 0 ? "" : $aula[2]->turno->numero).")");
+        
+        foreach ($nrVezes as $key => $aula) {
+            $dayofweek = date('w', strtotime($aula[1]->data));
+            array_push($coincidem, [0 =>  $aula[0], 1 => $week[$dayofweek], 2 => $aula[1]->turno->cadeira->nome . " (". $aula[1]->turno->tipo . ($aula[1]->turno->numero == 0 ? "" : $aula[1]->turno->numero) .")", 3 => $aula[2]->turno->cadeira->nome . " (". $aula[2]->turno->tipo . ($aula[2]->turno->numero == 0 ? "" : $aula[2]->turno->numero) .")"]);
+        }
+        return $coincidem;
+    }
+
+    public function checkCoincidencias(InscricaoPostRequest $request){
+        $data = collect($request->validated());
+        return response($this->getCoincidencias($data["turnosIds"]),200);
     }
 
     public function store2(InscricaoPostRequest $request){

@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasalun
     Route::get('naoaprovadas/{utilizador}',[CadeiraController::class, 'getCadeirasNaoAprovadasUtilizador']);
     Route::post('pedidos',[PedidosController::class, 'store']);
     Route::post('inscricao',[InscricaoController::class, 'store']);
+    Route::post('sobreposicoes',[InscricaoController::class, 'checkCoincidencias']);
     Route::delete('inscricao/{inscricao}',[InscricaoController::class, 'delete']);
 });
 
