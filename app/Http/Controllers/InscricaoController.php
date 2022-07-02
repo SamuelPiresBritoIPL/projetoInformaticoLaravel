@@ -154,8 +154,8 @@ class InscricaoController extends Controller
 
     public function checkCoincidencias(InscricaoPostRequest $request){
         $data = collect($request->validated());
-        return response($this->getCoincidencias($data["turnosIds"]),200);
-    }
+        return response(["coicidem" => $this->getCoincidencias($data["turnosIds"])],200);
+    } 
 
     public function store2(InscricaoPostRequest $request){
         //fazer inscricao

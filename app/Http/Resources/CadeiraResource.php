@@ -61,6 +61,15 @@ class CadeiraResource extends JsonResource
             ->where('cadeira.idCurso', '=', $this->curso->id)
             ->where('cadeira.id', '=', $this->id);
           })->orderBy('tipo', 'DESC')->orderBy('numero', 'ASC')->select('turno.*')->get();
+          $inscricaoucs = Inscricaoucs::where('idUtilizador',$request->user()->id)->where('idAnoletivo',$anoletivo->id)->where('nrinscricoes','>',1)->where('idCadeira',$this->id)->first();
+          if(isset($inscricaoucs)){
+            for ($i = 0; $i < count($turnos) ; $i++) {
+              if($turnos[$i]->repetentes == 0){
+                //dd($turnos);
+                $turnos->forget($i);
+              }
+            }
+          }
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
