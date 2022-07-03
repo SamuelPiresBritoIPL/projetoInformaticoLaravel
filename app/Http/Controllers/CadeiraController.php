@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Aula;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
@@ -23,6 +24,7 @@ use App\Http\Resources\PedidosResource;
 use App\Http\Requests\CadeiraPostRequest;
 use Doctrine\DBAL\Schema\Visitor\Visitor;
 use App\Http\Resources\InscricaoucsResource;
+use App\Http\Controllers\InscricaoController;
 
 class CadeiraController extends Controller
 {
@@ -149,8 +151,35 @@ class CadeiraController extends Controller
                 array_push($insToSend[$insc->idCurso][$insc->idCadeira]["turnos"], $insc);
             }
 
-            return response(["cursos" => $cursos, "inscricoes" => $ins, "aberturas" => $aberturasPorCurso, "inscricoesTurnosAtuais" => $insToSend],200);
+            $idTurnos = Inscricao::where('idUtilizador',Auth::user()->id)->
+                                join('turno','turno.id','=','inscricao.idTurno')->where('turno.idAnoletivo', $anoletivo->id)
+                                ->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+                                ->pluck('inscricao.idTurno')->toArray();
+
+            $horario = $this->getHorariosTodasAsAulas();
+            $horariopessoal = (new InscricaoController)->getHorarioPessoal($idTurnos);
+
+            return response(["cursos" => $cursos, "inscricoes" => $ins, "aberturas" => $aberturasPorCurso, "inscricoesTurnosAtuais" => $insToSend, 'horario' => $horario,'horariopessoal' => $horariopessoal],200);
         }
+    }
+
+    public function getHorariosTodasAsAulas(){
+        $anoletivo = Anoletivo::where('ativo',1)->first();
+        $idTurnos = Turno::join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+        ->join('inscricaoucs','cadeira.id', '=', 'inscricaoucs.idCadeira')
+        ->where('inscricaoucs.idUtilizador',Auth::user()->id)->where('inscricaoucs.idAnoletivo', $anoletivo->id)
+        ->pluck('turno.id')->toArray();
+
+        $query = DB::raw("(CASE WHEN numero='0' THEN '' ELSE numero END) as content");
+        $aulas = Aula::whereIn('idTurno',$idTurnos)->join('turno','turno.id','=','aula.idTurno')->join('cadeira','turno.idCadeira','=','cadeira.id')
+        ->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->orderby('horaInicio')
+        ->select(DB::raw("CONCAT(aula.data,' ',horaInicio) AS start"),DB::raw("CONCAT(data,' ',horaFim) AS end"),"cadeira.nome as title",DB::raw("CONCAT(tipo,(CASE WHEN numero='0' THEN '' ELSE numero END)) as content"))->get();
+        
+        $data = Aula::whereIn('idTurno',$idTurnos)->join('turno','turno.id','=','aula.idTurno')->join('cadeira','turno.idCadeira','=','cadeira.id')
+        ->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->orderby('horaInicio')
+        ->select('data')->first();
+        
+        return ["data" => empty($data) ? null : $data->data, "horario"=> $aulas];
     }
 
     public function getCadeirasUtilizadorConfirmar(Request $request){

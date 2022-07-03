@@ -99,9 +99,13 @@ class InscricaoController extends Controller
         }
 
         //verificacao se existem turnos que coincidem
-        $idTurnos = Inscricao::where('idUtilizador',Auth::user()->id)->pluck('inscricao.idTurno')->toArray();
+        $idTurnos = Inscricao::where('idUtilizador',Auth::user()->id)->
+                                join('turno','turno.id','=','inscricao.idTurno')->where('turno.idAnoletivo', $anoletivo->id)
+                                ->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+                                ->pluck('inscricao.idTurno')->toArray();
         $coincidem = $this->getCoincidencias($idTurnos);
-        
+        $horariopessoal = $this->getHorarioPessoal($idTurnos);
+
         //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
         $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
                             )->join('cadeira','turno.idCadeira','=','cadeira.id')
@@ -121,7 +125,7 @@ class InscricaoController extends Controller
         if ($canBeCreated['response'] == 2) {
             return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem], 201);
         } else if($canBeCreated['response'] == 1){
-            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem],201);
+            return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem,"horariopessoal" => $horariopessoal],201);
         }
 
     }
@@ -154,8 +158,21 @@ class InscricaoController extends Controller
 
     public function checkCoincidencias(InscricaoPostRequest $request){
         $data = collect($request->validated());
-        return response(["coicidem" => $this->getCoincidencias($data["turnosIds"])],200);
-    } 
+        return response(["coicidem" => $this->getCoincidencias($data["turnosIds"]),"horariopessoal" => $this->getHorarioPessoal($data["turnosIds"])],200);
+    }
+
+    public function getHorarioPessoal($idTurnos){
+        $query = DB::raw("(CASE WHEN numero='0' THEN '' ELSE numero END) as content");
+        $aulas = Aula::whereIn('idTurno',$idTurnos)->join('turno','turno.id','=','aula.idTurno')->join('cadeira','turno.idCadeira','=','cadeira.id')
+        ->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->orderby('horaInicio')
+        ->select(DB::raw("CONCAT(aula.data,' ',horaInicio) AS start"),DB::raw("CONCAT(data,' ',horaFim) AS end"),"cadeira.nome as title",DB::raw("CONCAT(tipo,(CASE WHEN numero='0' THEN '' ELSE numero END)) as content"))->get();
+        
+        $data = Aula::whereIn('idTurno',$idTurnos)->join('turno','turno.id','=','aula.idTurno')->join('cadeira','turno.idCadeira','=','cadeira.id')
+        ->whereNotNull('horaInicio')->orderby('data')->orderby('horaInicio')->orderby('horaInicio')
+        ->select('data')->first();
+        
+        return ["data" => empty($data) ? null : $data->data, "horario"=> $aulas];
+    }
 
     public function store2(InscricaoPostRequest $request){
         //fazer inscricao
