@@ -37,10 +37,11 @@ class InscricaoController extends Controller
         } else if($canBeCreated['response'] == 1){
             $idTurnosAceites = $data->get('turnosIds');
         } 
-        
+        $anoletivo = Anoletivo::where("ativo", 1)->first();
         $inscricoesAtuais = Inscricao::join('turno', function ($join) {
             $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id)->where('numero', '>', 0);
-        })->select('inscricao.id', 'turno.id as turnoId','turno.idCadeira','turno.tipo')->get();
+        })->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+        ->where('turno.idAnoletivo', $anoletivo->id)->select('inscricao.id', 'turno.id as turnoId','turno.idCadeira','turno.tipo')->get();
 
         $turnosAceites = Turno::select('turno.*')->whereIn('turno.id', $idTurnosAceites)->get();
 
@@ -73,7 +74,6 @@ class InscricaoController extends Controller
             }
         }
 
-        $anoletivo = Anoletivo::where("ativo", 1)->first();
         $idsTurnos = DB::table('turno')->select('id','tipo','idCadeira')->whereIn('id', $idTurnosAceites)->get();
         foreach($idsTurnos as $turno){
             $subquery = "select i.*, t.tipo, t.idCadeira as cadeiraId from inscricao i join turno t on t.id = i.idTurno where i.idUtilizador = " . Auth::user()->id . " and t.tipo = '" . $turno->tipo . "' and t.idCadeira = '" . $turno->idCadeira . "' and t.idAnoletivo = " . $anoletivo->id;
@@ -123,7 +123,7 @@ class InscricaoController extends Controller
         }
 
         if ($canBeCreated['response'] == 2) {
-            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem], 201);
+            return response(["rejeitados" => $canBeCreated['rejeitados'], "idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem, "horariopessoal" => $horariopessoal], 201);
         } else if($canBeCreated['response'] == 1){
             return response(["idsCadeiras" => $idCadeiras, "updatedTurnos" => $idTurnosRemoved, "inscricoesTurnosAtuais" => $insToSend, "coicidem" => $coincidem,"horariopessoal" => $horariopessoal],201);
         }

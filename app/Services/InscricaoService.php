@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Models\Turno;
+use App\Models\Anoletivo;
 use App\Models\Inscricao;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -49,9 +50,11 @@ class InscricaoService
     }
 
     public function checkData($data){
-        $idTurnosUtilizador = Turno::select('turno.*')->join('inscricaoucs', function ($join) {
+        $anoletivo = Anoletivo::where("ativo", 1)->first();
+        $idTurnosUtilizador = Turno::select('turno.*')->join('inscricaoucs', function ($join)use(&$anoletivo) {
             $join->on('turno.idCadeira', '=', 'inscricaoucs.idCadeira')->where('inscricaoucs.idUtilizador', '=', Auth::user()->id);
-        })->pluck('turno.id')->toArray();
+        })->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+        ->where('turno.idAnoletivo', $anoletivo->id)->pluck('turno.id')->toArray();
         if (empty($idTurnosUtilizador)) {
             return ['response' => 0, 'erro' => 'Você não tem turnos disponíveis para se inscrever.'];
         } else {
@@ -62,7 +65,9 @@ class InscricaoService
             $idTurnosRequeridos = $data->get('turnosIds') ;
             $idTurnoUser = Turno::select('turno.*')->join('inscricao', function ($join) {
                 $join->on('turno.id', '=', 'inscricao.idTurno')->where('inscricao.idUtilizador', '=', Auth::user()->id);
-            })->whereIn('turno.id', $idTurnosRequeridos)->pluck('id')->toArray();
+            })->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+            ->where('turno.idAnoletivo', $anoletivo->id)
+            ->whereIn('turno.id', $idTurnosRequeridos)->pluck('id')->toArray();
             
             $idTurnosRequeridos = array_diff($idTurnosRequeridos,$idTurnoUser);
 
