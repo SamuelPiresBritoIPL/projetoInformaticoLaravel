@@ -37,7 +37,8 @@ class WebserviceController extends Controller
         
     	$json = (new WebserviceService)->callAPI("GET",$url);
         if(empty($json)){
-            return response("Não foi possivel aceder ao website", 401);
+            (new LogsService)->save("Tentativa de atualização de turnos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+            return response("Não foi possivel aceder ao website. Verificar se os parametros estão bem!", 401);
         }else{
             (new LogsService)->save("Atualização dos turnos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
         }
@@ -97,7 +98,8 @@ class WebserviceController extends Controller
             $url = $url . "cod_curso=" . $idcurso;
             $json = (new WebserviceService)->callAPI("GET",$url);
             if(empty($json)){
-                return response("Não foi possivel aceder ao website", 401);
+                (new LogsService)->save("Tentativa de atualização das inscrições feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+                return response("Não foi possivel aceder ao website. Verificar se os parametros estão bem!", 401);
             }
             $data = (new WebserviceService)->getInscricoesturnos($json);
 
@@ -156,7 +158,8 @@ class WebserviceController extends Controller
             $url = $url . "dados=" . $idcurso;
             $json = (new WebserviceService)->callAPI("GET",$url);
             if(empty($json)){
-                return response("Não foi possivel aceder ao website", 401);
+                (new LogsService)->save("Tentativa de atualização das aulas feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+                return response("Não foi possivel aceder ao website. Verificar se os parametros estão bem!", 401);
             }
             $data = (new WebserviceService)->getAulasJson($json, $idAnoLetivo);
 

@@ -302,11 +302,18 @@ class CadeiraController extends Controller
     public function getCadeirasNaoAprovadasUtilizador(Utilizador $utilizador){
         if($utilizador->tipo == 0){ //estudante
             InscricaoucsResource::$format = 'cadeiras';
-
+            $anoletivo = Anoletivo::where('ativo',1)->first();
             $dados = Cadeira::where('idCurso', $utilizador->idCurso)->leftJoin('inscricaoucs', function ($join) use(&$utilizador) {
                 $join->on('cadeira.id', '=', 'inscricaoucs.idCadeira')
-                     ->where('inscricaoucs.idUtilizador','=',$utilizador->id)->where('inscricaoucs.estado','1');
-            })->select('inscricaoucs.*', 'cadeira.*' )->get();
+                     ->where('inscricaoucs.idUtilizador','=',$utilizador->id);//->where('inscricaoucs.estado','1');
+            })->where('cadeira.semestre',$anoletivo->semestreativo)
+            ->select('inscricaoucs.*', 'cadeira.*' )->get();
+            $copy =  $dados;
+            foreach ($copy as $key => $value) {
+                if($value->estado == 2){
+                    unset($dados[$key]);
+                }
+            }
             CadeiraResource::$format = 'inscricaoucsuser';
             return response(CadeiraResource::collection($dados),200);
         }

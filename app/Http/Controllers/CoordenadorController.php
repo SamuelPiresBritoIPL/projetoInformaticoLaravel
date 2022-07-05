@@ -50,13 +50,14 @@ class CoordenadorController extends Controller
         $coordenador->tipo = $data->get('tipo');
         $coordenador->save();
 
-        (new LogsService)->save("Coordenador " . $utilizador->login . " adicionado por " . Auth::user()->login . " para a uc " . $coordenador->curso->nome, "coordenador",  Auth::user()->id);
+        (new LogsService)->save("Coordenador " . $utilizador->login . " adicionado por " . Auth::user()->login . " para o curso " . $coordenador->curso->nome, "coordenador",  Auth::user()->id);
 
         return response(201);
     }
 
     public function remove(Coordenador $coordenador){
         $coordenador->delete();
+        (new LogsService)->save("Coordenador " . $coordenador->login . " removido por " . Auth::user()->login . " para o curso " . $coordenador->curso->nome, "coordenador",  Auth::user()->id);
         return response(202);
     }
 }

@@ -137,17 +137,20 @@ class InscricaoController extends Controller
         $week = [0 => "Domingo",1 => "Segunda-feira",2 => "Terca-feira",3 => "Quarta-feira",4 => "Quinta-feira",5 => "Sexta-feira",6 => "Sabado"];
         for($i = 0; $i < count($aulas)-1; $i++){
             if($aulas[$i]->data == $aulas[$i+1]->data && $aulas[$i]->horaFim >= $aulas[$i+1]->horaInicio){
-                if(!array_key_exists($aulas[$i]->idTurno.$aulas[$i+1]->idTurno,$nrVezes)){
-                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][0] = 1;
-                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][1] = $aulas[$i];
-                    $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][2] = $aulas[$i+1];
+                $pos = $aulas[$i]->idTurno.$aulas[$i+1]->idTurno;
+                if(array_key_exists($aulas[$i+1]->idTurno.$aulas[$i]->idTurno,$nrVezes)){
+                    $pos = $aulas[$i+1]->idTurno.$aulas[$i]->idTurno;
                 }
-                $nrVezes[$aulas[$i]->idTurno.$aulas[$i+1]->idTurno][0] += 1;
-                //array_push($cadeirasAprovadas[$cadeira->idCurso]["cadeiras"], $cadeira);
-                //array_push($coincidem,$aulas[$i]->turno->cadeira->nome . " (". $aulas[$i]->turno->tipo . ($aulas[$i]->turno->numero == 0 ? "" : $aulas[$i]->turno->numero).") no dia ". $aulas[$i]->data ."(" . $aulas[$i]->horaInicio . "-" . $aulas[$i]->horaFim . ") coincide com ". $aulas[$i+1]->turno->cadeira->nome . " (". $aulas[$i+1]->turno->tipo . ($aulas[$i+1]->turno->numero == 0 ? "" : $aulas[$i+1]->turno->numero).") no dia ". $aulas[$i+1]->data ."(" . $aulas[$i+1]->horaInicio . "-" . $aulas[$i+1]->horaFim .")");
+                $weekNumber = date("W", strtotime($aulas[$i]->data));
+                if(!array_key_exists($pos,$nrVezes)){
+                    $nrVezes[$pos][0] = $weekNumber;
+                    $nrVezes[$pos][1] = $aulas[$i];
+                    $nrVezes[$pos][2] = $aulas[$i+1];
+                    continue;
+                }
+                $nrVezes[$pos][0] .= " | ". $weekNumber;
             }
         }
-        //array_push($coincidem, $aula[0]." ".$week[$dayofweek] ." ". $aula[1]->turno->cadeira->nome . " (". $aula[1]->turno->tipo . ($aula[1]->turno->numero == 0 ? "" : $aula[1]->turno->numero).") coincide com ". $aula[2]->turno->cadeira->nome . " (". $aula[2]->turno->tipo . ($aula[2]->turno->numero == 0 ? "" : $aula[2]->turno->numero).")");
         
         foreach ($nrVezes as $key => $aula) {
             $dayofweek = date('w', strtotime($aula[1]->data));
