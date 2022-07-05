@@ -69,6 +69,7 @@ class WebserviceService
             $cadeira = Cadeira::where('codigo',$turno->CD_Discip)->first();
             if(empty($cadeira)){
                 $cadeira = new Cadeira();
+                $cadeira->ano = $turno->AnoCurricular;
                 $cadeira->codigo = $turno->CD_Discip;
                 $cadeira->semestre = str_split($turno->Periodo)[1];
                 if($turno->CodDiscipTipo == "TP" || $turno->CodDiscipTipo == "PL"){
@@ -228,10 +229,13 @@ class WebserviceService
             $turnoNr = $aula->turno == "Sem Turno" ? 0 : $aula->turno;
             $turno = Turno::where('tipo', $aula->componente)->where('numero', $turnoNr)->where('idAnoletivo', $idAnoLetivo)->where('idCadeira',$cadeira->id)->first();
             //o turno n existe, sair ou um erro ou n inserir? pensar
-            //isto pode ser aulas?!
-            //verificar
             if(empty($turno)){
                 $turnonotfound += 1;
+                continue;
+            }
+
+            //motivo de falta ou algo do genero, comfirmar se e suposto ficar assim!
+            if($aula->motivo_falta != null){
                 continue;
             }
 
