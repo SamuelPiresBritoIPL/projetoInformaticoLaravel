@@ -243,6 +243,9 @@ class WebserviceService
             if(empty($newaula)){
                 $newaula = Aula::where('data',date('Y-m-d',strtotime($aula->data)))->where('horaInicio',date('H:i',strtotime($aula->data_inicio)))
                 ->where('horaFim',date('H:i',strtotime($aula->data_fim)))->where('idTurno',$turno->id)->where('idProfessor',$utilizador->id)->first();
+                if(!empty($newaula)){
+                    continue;
+                }
             }
             if(empty($newaula)){
                 //nova aula
