@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Carbon\Carbon;
+use App\Models\Aula;
 use App\Services\CursoService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CoordenadorResource;
@@ -31,12 +32,15 @@ class CursoResource extends JsonResource
     {
       switch (CursoResource::$format) {
         case 'cadeira':
+          $aula = Aula::join('turno', 'turno.id','=','aula.idTurno')->join('cadeira', 'cadeira.id','=','turno.idCadeira')
+          ->join('curso', 'curso.id','=','cadeira.idCurso')->where('curso.id',$this->id)->orderby('aula.updated_at', 'DESC')->select('aula.*')->first();
           CadeiraResource::$format = 'paracurso';
           return [
             'id' => $this->id,
             'codigo' => $this->codigo,
             'nome' => $this->nome,
             'abreviatura' => $this->abreviatura,
+            'ultimoupdateaula' => (isset($aula->updated_at) ? "(".date('d-m-Y',strtotime($aula->updated_at)).")" : "(Sem horário)"),
             'cadeiras' => CadeiraResourceCollection::make($this->cadeiras->where('semestre', $this->semestre))->anoletivo($this->anoletivo, $this->semestre)
           ];
         case 'coordenador':
@@ -74,11 +78,14 @@ class CursoResource extends JsonResource
             'aberturas' => AberturaResource::collection($this->aberturasdefinidas->where('semestre', $this->semestre)->where('idAnoletivo', $this->anoletivo))
           ];
         default:
+        $aula = Aula::join('turno', 'turno.id','=','aula.idTurno')->join('cadeira', 'cadeira.id','=','turno.idCadeira')
+        ->join('curso', 'curso.id','=','cadeira.idCurso')->where('curso.id',$this->id)->orderby('aula.updated_at', 'DESC')->select('aula.*')->first();
         return [
           'id' => $this->id,
           'codigo' => $this->codigo,
           'nome' => $this->nome,
-          'abreviatura' => $this->abreviatura
+          'abreviatura' => $this->abreviatura,
+          'ultimoupdateaula' => isset($aula->updated_at) ? "(".date('d-m-Y',strtotime($aula->updated_at)).")" : "(Sem horário)"
         ];
       }  
     }
