@@ -10,7 +10,7 @@ use App\Http\Resources\LogsResource;
 class LogsController extends Controller
 {
     public function index(){
-        $logs = Logs::all();
+        $logs = Logs::orderBy('created_at','DESC')->get();
         return response(LogsResource::collection($logs),200);
     }
 }
