@@ -22,15 +22,16 @@ class AberturasController extends Controller
      */
     public function create(AberturaPostRequest $request, Curso $curso){
         $data = collect($request->validated());
-        //apagar aberturas antigas
+        //apagar aberturas que já tenham expirado (verficação extra ao "cronjob")
         (new AberturaService)->checkForOldAberturas($curso);
 
+        //verifica se pode criar a abertura
         $canCreate = (new AberturaService)->checkIfAberturaCanBeCreated($curso, $data);
         if($canCreate["codigo"] == 0){
             return response(["erros" => $canCreate["error"]],401);
         }
 
-        //fazer a validacao se se abre primeiro o periodo de confirmacao e apenas depois se abre a inscricao de turnos
+        //Guardar abertura e escrever nos logs
         $abertura = (new AberturaService)->save($curso,$data);
         (new LogsService)->save("Abertura criada do tipo ".$data->get('tipoAbertura')." do curso ".$abertura->curso->nome,"Aberturas",Auth::user()->id);
         return response($abertura, 201);

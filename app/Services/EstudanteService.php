@@ -6,8 +6,10 @@ use App\Models\Turno;
 use App\Models\Cadeira;
 use App\Models\Pedidos;
 use App\Models\Anoletivo;
+use App\Models\Inscricao;
 use App\Models\Utilizador;
 use App\Http\Resources\PedidosResource;
+use App\Http\Controllers\InscricaoController;
 
 class EstudanteService
 {
@@ -86,8 +88,14 @@ class EstudanteService
         }
         */
 
+        $idTurnos = Inscricao::where('idUtilizador',$estudante->id)->
+                                join('turno','turno.id','=','inscricao.idTurno')->where('turno.idAnoletivo', $anoletivo->id)
+                                ->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+                                ->pluck('inscricao.idTurno')->toArray();
+        $horario = (new InscricaoController)->getHorarioPessoal($idTurnos);
+
         $pedidos = PedidosResource::collection($estudante->pedidos);
 
-        return ["msg" => ["cadeirasAprovadas" => $cadeirasAprovadas, "cadeirasInscritas" => $cadeirasInscritas, "pedidos" => $pedidos, "aluno" => $infoAluno], "code" => 200];
+        return ["msg" => ["cadeirasAprovadas" => $cadeirasAprovadas, "cadeirasInscritas" => $cadeirasInscritas, "pedidos" => $pedidos, "aluno" => $infoAluno, 'horario' =>$horario], "code" => 200];
     }
 }

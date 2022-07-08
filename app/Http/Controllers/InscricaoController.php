@@ -161,7 +161,14 @@ class InscricaoController extends Controller
 
     public function checkCoincidencias(InscricaoPostRequest $request){
         $data = collect($request->validated());
-        return response(["coicidem" => $this->getCoincidencias($data["turnosIds"]),"horariopessoal" => $this->getHorarioPessoal($data["turnosIds"])],200);
+        //ir buscar inscricoes de turnos unicos
+        $anoletivo = Anoletivo::where("ativo", 1)->first();
+        $inscricoesAtuaisTurnosUnicos = Inscricao::join('turno', function ($join) {
+            $join->on('turno.id', '=', 'idTurno')->where('idUtilizador', '=', Auth::user()->id)->where('numero', 0);
+        })->join('cadeira','turno.idCadeira','=','cadeira.id')->where('cadeira.semestre', $anoletivo->semestreativo)
+        ->where('turno.idAnoletivo', $anoletivo->id)->pluck('idturno')->toArray();
+
+        return response(["coicidem" => $this->getCoincidencias(array_merge($data["turnosIds"],$inscricoesAtuaisTurnosUnicos)),"horariopessoal" => $this->getHorarioPessoal(array_merge($data["turnosIds"],$inscricoesAtuaisTurnosUnicos))],200);
     }
 
     public function getHorarioPessoal($idTurnos){

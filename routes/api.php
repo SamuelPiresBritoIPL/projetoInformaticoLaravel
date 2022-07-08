@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth:api','coordenador'], 'prefix' => 'curso'], 
     Route::put('/turnosvagas/{curso}/{anoletivo}/{semestre}',[CursoController::class, 'editVagasTurnos']);
 });
 
-//admin / coordenador
+//admin / coordenador ABERTURAS
 Route::group(['middleware' => ['auth:api','coordenador'],'prefix' => 'abertura'], function () {
     Route::post('/{curso}',[AberturasController::class, 'create']);
     Route::delete('/{abertura}',[AberturasController::class, 'remove']);
