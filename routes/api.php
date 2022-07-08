@@ -36,7 +36,10 @@ Route::group(['middleware' => ['auth:api'],'prefix' => 'utilizadorlogado'], func
 
 //admin
 Route::put('anoletivo/{anoletivo}', [AnoletivoController::class, 'switchAnoletivo']);
-Route::get('logs', [LogsController::class, 'index']); //sim ja esta
+
+Route::group(['middleware' => ['auth:api','admin'], 'prefix' => 'logs'], function () {
+	Route::get('/', [LogsController::class, 'index']);
+});
 
 Route::group(['middleware' => ['auth:api','estudante'], 'prefix' => 'cursoauth'], function () {
 	Route::get('/', [CursoController::class, 'index']);
