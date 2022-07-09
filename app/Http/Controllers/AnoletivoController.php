@@ -8,7 +8,7 @@ use App\Models\Anoletivo;
 class AnoletivoController extends Controller
 {
     public function index(){
-        return response(Anoletivo::all(),200);
+        return response(Anoletivo::orderby('anoletivo','DESC')->get(),200);
     }
 
     public function switchAnoletivo(AnoletivoPostRequest $request, Anoletivo $anoletivo){
