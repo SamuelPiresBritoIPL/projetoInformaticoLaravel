@@ -48,7 +48,79 @@ class WebserviceController extends Controller
         return response($newDataAdded, 200);
     }
 
+    public function getInscricoesturnosRemakeAll(WebservicePostRequest $request){
+        $result = $this->getInscricoesturnosRemake($request, 1);
+        if(array_key_exists("erro", $result)){
+            return response($result["erro"],$result["codigo"]);
+        }
+        $result2 = $this->getInscricoesturnosRemake($request, 2);
+        if(array_key_exists("erro", $result2)){
+            return response("Inscricoes feitas, apenas problemas nas ucs já feitas.  " . $result["erro"],$result["codigo"]);
+        }
+        return response(["cursonotfound" => $result['cursonotfound']+$result2['cursonotfound'], "cadeiranotfound" => $result['cadeiranotfound'] + $result2['cadeiranotfound'], "newStudentAdded" => $result['newStudentAdded'] + $result2['newStudentAdded'], "novasinscricoes" => $result['novasinscricoes']+$result2['novasinscricoes'],"dataChanged" => $result['dataChanged']+$result2['dataChanged']],200);
+    
+    }
+
+    //endpoint refeito para fazer com os ^^
+    public function getInscricoesturnosRemake(WebservicePostRequest $request, $estado=1){
+        $data = collect($request->validated());
+
+        $idcurso = 0;
+        $curso = Curso::find($idcurso);
+        if($request->has('idcurso')){
+            $idcurso = $request->get('idcurso');
+            if($idcurso != 0){
+                $curso = Curso::find($idcurso);
+                if(empty($curso)){
+                    return ["erro" =>"O curso não foi encontrado", "codigo" => 400];
+                }
+                $idcurso = $curso->codigo;
+            }
+        }
+
+        set_time_limit(750);
+        $baseurl = "";
+        if (Storage::disk('local')->exists('urlinscricoes.txt')) {
+            $baseurl = Storage::disk('local')->get('urlinscricoes.txt');
+        }else{
+            Storage::disk('local')->put("urlinscricoes.txt", config('services.webapiurls.turnos'));
+            $baseurl = Storage::disk('local')->get('urlinscricoes.txt');
+        }
+
+        $url = (new WebserviceService)->makeUrl($baseurl,['anoletivo' => $data->get('anoletivo'),'estado' => $estado]); //cod_curso=9119
+        
+        $data = ["cursonotfound" => 0,"cadeiranotfound" => 0,"newStudentAdded" => 0,"newDataAdded" => 0,'dataChanged' => 0];
+        if($idcurso == 0){
+            $cursos = Curso::all();
+            foreach ($cursos as $c) {
+                $url2 = $url . "cod_curso=" . $c->codigo;
+                $dataSing = (new WebserviceController)->makeFinalUrlAndData($url2);
+                if(!empty($dataSing)){
+                    $data["cursonotfound"] += $dataSing["cursonotfound"];
+                    $data["cadeiranotfound"] += $dataSing["cadeiranotfound"];
+                    $data["newStudentAdded"] += $dataSing["newStudentAdded"];
+                    $data["newDataAdded"] += $dataSing["newDataAdded"];
+                    $data["dataChanged"] += $dataSing["dataChanged"];
+                }
+            }
+            (new LogsService)->save("Atualização das inscricoes de todos os cursos feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+        }else{
+            $url = $url . "cod_curso=" . $idcurso;
+            $json = (new WebserviceService)->callAPI("GET",$url);
+            if(empty($json)){
+                (new LogsService)->save("Tentativa de atualização das inscrições feita por: " . Auth::user()->login, "webservices",  Auth::user()->id);
+                return ["erro" =>"Não foi possivel aceder ao website. Verificar se os parametros estão bem!", "codigo" => 401];
+            }
+            $data = (new WebserviceService)->getInscricoesturnos($json);
+
+            (new LogsService)->save("Atualização das inscricoes feita por: " . Auth::user()->login ." ao curso " . $curso->nome, "webservices",  Auth::user()->id);
+        }
+
+        return ["cursonotfound" => $data['cursonotfound'], "cadeiranotfound" => $data['cadeiranotfound'], "newStudentAdded" => $data['newStudentAdded'], "novasinscricoes" => $data['newDataAdded'],"dataChanged" => $data['dataChanged']];
+    }
+
     public function getInscricoesturnos2(WebservicePostRequest $request){
+        //endpoint sem ser usado neste momento pois passou tudo para o getInscricoesturnos1e2
         return $this->getInscricoesturnos($request, 2);
     }
 

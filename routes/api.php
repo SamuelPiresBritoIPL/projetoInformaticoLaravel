@@ -107,8 +107,9 @@ Route::group(['middleware' => ['auth:api','estudante'],'prefix' => 'cadeirasalun
 //admin
 Route::group(['middleware' => ['auth:api','admin'],'prefix' => 'webservice'], function () {
     Route::post('curso', [WebserviceController::class, 'getCursos']);
-    Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);
-    Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);
+    Route::post('inscricaotodas', [WebserviceController::class, 'getInscricoesturnosRemakeAll']);//substituir a inscricao e inscricaoaprovados
+    Route::post('inscricao', [WebserviceController::class, 'getInscricoesturnos']);//fora de uso mas fica aqui just in case
+    Route::post('inscricaoaprovados', [WebserviceController::class, 'getInscricoesturnos2']);//fora de uso mas fica aqui just in case
     Route::post('aulas', [WebserviceController::class, 'getAulas']);
     Route::put('url', [WebserviceController::class, 'changeurl']);
     Route::get('url', [WebserviceController::class, 'geturls']);
