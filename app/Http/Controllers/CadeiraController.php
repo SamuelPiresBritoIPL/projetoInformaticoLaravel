@@ -136,9 +136,12 @@ class CadeiraController extends Controller
             }
 
             //turnos para mostrar na pagina de inscricao, tem de ir assim formatados...
-            $inscri = Inscricao::where('idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
+            $inscri = Inscricao::where('inscricao.idUtilizador', ($request->user())->id)->join('turno','turno.id','=','inscricao.idTurno'
                                     )->join('cadeira','turno.idCadeira','=','cadeira.id')
                                     ->where('turno.idAnoletivo', '=', $anoletivo->id)->where('cadeira.semestre', $anoletivo->semestreativo)
+                                    //adicionada estas 2 linhsa abaixo senao quando a pessoa ja estava aprovada (fim do semestre) mostrava a uc e n faz sentido msotrar
+                                    ->join('inscricaoucs','cadeira.id', '=', 'inscricaoucs.idCadeira')
+                                    ->where('inscricaoucs.idUtilizador',$request->user()->id)->where('inscricaoucs.estado', 1)
                                     ->select('turno.id', 'turno.tipo', 'turno.numero', 'cadeira.nome', 'cadeira.idCurso', 'turno.idCadeira as idCadeira', 'cadeira.ano')->get();
             $insToSend = [];
             foreach ($inscri as $key => $insc) {
