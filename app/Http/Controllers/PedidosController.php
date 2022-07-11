@@ -68,7 +68,7 @@ class PedidosController extends Controller
 
     public function getPedidosByCurso(Curso $curso, Anoletivo $anoletivo,$semestre){
         $pedidos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->where('estado', 1)->where('idCurso', $curso->id)->get();
-        $pedidosAntigos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->whereIn('estado', [2,3,4])->where('idCurso', $curso->id)->get();
+        $pedidosAntigos = Pedidos::where('idAnoletivo', $anoletivo->id)->where('semestre',$semestre)->whereIn('estado', [2,3,4])->where('idCurso', $curso->id)->orderby('pedidos.updated_at','DESC')->get();
         return response(["pedidos"=>PedidosResource::collection($pedidos), "pedidosntigos"=>PedidosResource::collection($pedidosAntigos)],200);
     }
 
