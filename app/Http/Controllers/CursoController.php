@@ -105,7 +105,7 @@ class CursoController extends Controller
     public function getCoordenadoresAuth(){
         CursoResource::$format = 'coordenador';
         if(Auth::user()->isCoordenador() || Auth::user()->isProfessor()){
-            $idsCursos = Coordenador::where('idUtilizador', Auth::user()->id)->pluck('idCurso')->toArray();
+            $idsCursos = Coordenador::where('idUtilizador', Auth::user()->id)->where('tipo', 1)->pluck('idCurso')->toArray();
             $cursos = Curso::whereIn('id', $idsCursos)->get();
             return response(CursoResource::collection($cursos),200);
         }
