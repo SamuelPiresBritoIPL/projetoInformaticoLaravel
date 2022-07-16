@@ -31,14 +31,14 @@ class UtilizadorController extends Controller
 		$utilizador->tokens()->delete();
 		$token = $utilizador->createToken('authToken')->accessToken;
 		$aulas = Aula::where('idProfessor', $utilizador->id)->first();
-		$idsCursos = Coordenador::where('idUtilizador', $utilizador->id)->where('tipo', 1)->pluck('idCurso')->toArray();
+		$idsCursos = Coordenador::where('idUtilizador', $utilizador->id)->where('tipo', 0)->pluck('idCurso')->toArray();
         CursoResource::$format = 'default';
 		return response([
 			'login' => $utilizador->login,
             'nome' => $utilizador->nome,
 			'tipo' => $utilizador->tipo,
 			'isCoordenador' => $utilizador->isCoordenador() ? 1 : 0,
-			'isCoordenadorPrincipal' => $utilizador->isCoordenador() ? (count($idsCursos) > 0 ? 1 : 0): 0,
+			'isCoordenadorPrincipal' => ($utilizador->isCoordenador() ? (count($idsCursos) > 0 ? 1 : 0): 0),
 			'isProfessor' => empty($aulas) ? 0 : 1,
 			'access_token' => $token,
 			'curso' => (!empty($utilizador->curso)) ? new CursoResource($utilizador->curso) : ""
