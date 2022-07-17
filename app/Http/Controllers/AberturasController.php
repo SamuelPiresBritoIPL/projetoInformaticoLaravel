@@ -111,6 +111,18 @@ class AberturasController extends Controller
     
                 $pedidosAtivo["diasAteAbertura"] = $dias;
                 $pedidosAtivo["diasAteTerminar"] = $diasTermino;
+
+                $agora = $now->format('Y-m-d H:m:s');
+
+                $dataInicio = ($pedidosAtivo->dataAbertura)->format('Y-m-d H:m:s');
+                $dataFim = ($pedidosAtivo->dataEncerar)->format('Y-m-d H:m:s');
+
+                if ($agora >= $dataInicio && $agora < $dataFim) {
+                    $pedidosAtivo["isAberto"] = true;
+                } else {
+                    $pedidosAtivo["isAberto"] = false;
+                }
+
             } else
             if ($aberturaAtiva->tipoAbertura == 1) {
                 $inscricoesAtivo = $aberturaAtiva;
@@ -138,6 +150,17 @@ class AberturasController extends Controller
     
                 $inscricoesAtivo["diasAteAbertura"] = $dias;
                 $inscricoesAtivo["diasAteTerminar"] = $diasTermino;
+
+                $agora = $now->format('Y-m-d H:m:s');
+
+                $dataInicio = ($inscricoesAtivo->dataAbertura)->format('Y-m-d H:m:s');
+                $dataFim = ($inscricoesAtivo->dataEncerar)->format('Y-m-d H:m:s');
+
+                if ($agora >= $dataInicio && $agora < $dataFim) {
+                    $inscricoesAtivo["isAberto"] = true;
+                } else {
+                    $inscricoesAtivo["isAberto"] = false;
+                }
 
                 array_push($inscricoesAtivos, $inscricoesAtivo);
             }
