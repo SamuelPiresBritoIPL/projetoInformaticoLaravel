@@ -132,6 +132,17 @@ class CadeiraController extends Controller
                 $aberturaAtiva["diasAteAbertura"] = $dias;
                 $aberturaAtiva["diasAteTerminar"] = $diasTermino;
 
+                $agora = $now->format('Y-m-d H:m:s');
+
+                $dataInicio = ($aberturaAtiva->dataAbertura)->format('Y-m-d H:m:s');
+                $dataFim = ($aberturaAtiva->dataEncerar)->format('Y-m-d H:m:s');
+
+                if ($agora >= $dataInicio && $agora < $dataFim) {
+                    $aberturaAtiva["isAberto"] = true;
+                } else {
+                    $aberturaAtiva["isAberto"] = false;
+                }
+
                 array_push($aberturasPorCurso[$aberturaAtiva->idCurso], $aberturaAtiva);
             }
 
