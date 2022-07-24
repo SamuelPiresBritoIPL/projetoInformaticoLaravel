@@ -208,9 +208,9 @@ class InscricaoController extends Controller
         $turnoId = $inscricao->idTurno;
         $del = $inscricao->delete();
         if(!$del){
-            return response("Erro ao apagar a inscrição". 400);
+            return response("Erro ao apagar a inscrição", 400);
         }
         Turno::where('id', $turnoId)->update(['vagasocupadas' => DB::raw('vagasocupadas-1')]);
-        return response("Inscrição apagada com sucesso". 200);
+        return response("Inscrição apagada com sucesso", 200);
     }
 }
