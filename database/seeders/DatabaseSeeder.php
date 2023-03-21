@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'nome' => 'admin',
             'login' => 'admin',
             'tipo' => 3,
-            'password' => Hash::make('teste123'),
+            'password' => Hash::make('123'),
         ]);
     }
 }
