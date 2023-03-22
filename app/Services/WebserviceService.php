@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Exception;
 use App\Models\Aula;
-use App\Models\Logs;
 use App\Models\Curso;
 use App\Models\Turno;
 use App\Models\Cadeira;
@@ -61,11 +60,11 @@ class WebserviceService
                 $utilizador->login = $turno->LOGIN;
                 $utilizador->idCurso = $curso->id;
                 $utilizador->tipo = 1;
-                $utilizador->password = "teste123";
+                $utilizador->password = "123";
                 $utilizador->save();
                 $newDataAdded += 1;
             }
-            
+
             $cadeira = Cadeira::where('codigo',$turno->CD_Discip)->first();
             if(empty($cadeira)){
                 $cadeira = new Cadeira();
@@ -92,7 +91,7 @@ class WebserviceService
                 $cadeira->save();
                 $newDataAdded += 1;
             }
-            
+
             $anoletivo = Anoletivo::where('anoletivo',$turno->CD_Lectivo)->first();
             if(empty($anoletivo)){
                 $anoletivo = new Anoletivo();
@@ -164,7 +163,7 @@ class WebserviceService
                 $anoletivo->anoletivo = $inscricao->CD_LECTIVO;
                 $anoletivo->save();
             }
-            
+
             $inscricaoucs = Inscricaoucs::where('idCadeira', $cadeira->id)->where('idUtilizador', $utilizador->id)->where('idAnoletivo',$anoletivo->id)->first();
             if(empty($inscricaoucs)){
                 $newDataAdded += 1;
@@ -196,7 +195,7 @@ class WebserviceService
         $newAula = 0;
         $testes = 0;
         $dataChanged = 0;
-        
+
         foreach ($json as $aula) {
             $cadeira = Cadeira::where('codigo',$aula->cod_uc)->first();
             if(empty($cadeira)){
@@ -219,7 +218,7 @@ class WebserviceService
                 $utilizador->save();
                 $newProfessorAdded += 1;
             }
-            
+
             //estamos presentes num teste
             if($aula->componente == null){
                 $testes += 1;
@@ -235,9 +234,9 @@ class WebserviceService
             }
 
             //motivo de falta ou algo do genero, comfirmar se e suposto ficar assim!
-            if($aula->motivo_falta != null){
-                continue;
-            }
+//            if($aula->motivo_falta != null && $aula->motivo_falta != '&nbsp;'){
+//                continue;
+//            }
 
             $newaula = Aula::where('idAntigo',$aula->id_aulas)->first();
             if(empty($newaula)){
@@ -268,6 +267,7 @@ class WebserviceService
             'dataChanged' => $dataChanged,
             'newAula' => $newAula,
             'testes' => $testes,
+            'json' => $json
         ];
     }
 
@@ -279,14 +279,14 @@ class WebserviceService
         $failedIns = 0;
         foreach ($turnos as $turno) {
             $ids = Inscricao::where('idTurno',$turno->id)->pluck('idUtilizador')->toArray();
-            
+
             $inscIds = Inscricaoucs::where('inscricaoucs.idCadeira','=',$turno->idCadeira)
                         ->where('inscricaoucs.estado','=',1)->where('inscricaoucs.idAnoletivo','=',$anoletivo->id)
                         ->whereNotIn('inscricaoucs.idUtilizador',$ids)->pluck('idUtilizador')->toArray();
             $data = [];
             foreach($inscIds as $inscId) {
                 array_push($data,['idUtilizador' => $inscId, 'idTurno' => $turno->id]);
-                
+
             }
             if(!empty($data)){
                 $newInsc_new = Inscricao::insertOrIgnore($data);
