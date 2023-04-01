@@ -152,7 +152,7 @@ class WebserviceService
                 $utilizador->login = $inscricao->CD_ALUNO;
                 $utilizador->idCurso = $curso->id;
                 $utilizador->tipo = 0;
-                $utilizador->password = "teste123";
+                $utilizador->password = "123";
                 $utilizador->save();
                 $newStudentAdded += 1;
             }
