@@ -214,7 +214,7 @@ class WebserviceService
                 $utilizador->login = $aula->login;
                 $utilizador->idCurso = $cadeira->idCurso;
                 $utilizador->tipo = 1;
-                $utilizador->password = "teste123";
+                $utilizador->password = "123";
                 $utilizador->save();
                 $newProfessorAdded += 1;
             }
@@ -234,9 +234,9 @@ class WebserviceService
             }
 
             //motivo de falta ou algo do genero, comfirmar se e suposto ficar assim!
-//            if($aula->motivo_falta != null && $aula->motivo_falta != '&nbsp;'){
-//                continue;
-//            }
+/*            if($aula->motivo_falta != null && $aula->motivo_falta != '&nbsp;'){
+                continue;
+            }*/
 
             $newaula = Aula::where('idAntigo',$aula->id_aulas)->first();
             if(empty($newaula)){
