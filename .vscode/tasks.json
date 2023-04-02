@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "php artisan serve",
+			"type": "shell",
+			"command": "php artisan serve",
+			"detail": "laravel",
+			"windows": {
+				"command": "php artisan serve"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			}
+		}
+	]
+}
