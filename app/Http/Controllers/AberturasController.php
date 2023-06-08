@@ -151,7 +151,8 @@ class AberturasController extends Controller
                 $inscricoesAtivo["diasAteAbertura"] = $dias;
                 $inscricoesAtivo["diasAteTerminar"] = $diasTermino;
 
-                $agora = $now->format('Y-m-d H:m:s');
+                //$agora = $now->format('Y-m-d H:m:s');
+                $agora = $now->subHour()->format('Y-m-d H:m:s');
 
                 $dataInicio = ($inscricoesAtivo->dataAbertura)->format('Y-m-d H:m:s');
                 $dataFim = ($inscricoesAtivo->dataEncerar)->format('Y-m-d H:m:s');
