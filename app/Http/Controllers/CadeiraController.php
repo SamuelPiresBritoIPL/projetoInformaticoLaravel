@@ -407,4 +407,46 @@ class CadeiraController extends Controller
 
         return response($result["msg"],$result["code"]);
     }
+
+    public function getAlunosFromCadeira($cadeiraID){
+       
+        try {
+            $cadeira = Cadeira::where('codigo', $cadeiraID)->first();
+            $anoletivo = Anoletivo::where('ativo',1)->first();
+
+            if($cadeira == null){
+                return response("Não existe nenhuma cadeira com esse código",401);
+            }
+
+            if($anoletivo == null){
+                return response("Não existe nenhum ano letivo ativo",401);
+            }
+
+            $inscricoes = Inscricaoucs::where('idCadeira', $cadeira->id)->where('estado','1')->where('idAnoLetivo', $anoletivo->id)->get();
+
+            if($inscricoes == null){
+                return response("Não existem inscrições para esta cadeira",401);
+            }
+
+            //get the users from the inscricoes
+            $users = [];
+            foreach ($inscricoes as $key => $value) {
+                $user = Utilizador::select('login','nome')->where('id', $value->idUtilizador)->first();
+                // $user->inscricaoucs = $value;
+                array_push($users, $user);
+            }
+
+            //order users by name
+            usort($users, function($a, $b) {
+                return $a->nome <=> $b->nome;
+            });
+
+            return response($users,200);
+        
+        } catch (\Throwable $th) {
+            return response($th->getMessage(),500);
+        }
+
+
+    }
 }

@@ -29,6 +29,11 @@ Route::post('login', [UtilizadorController::class, 'login'])->name('login');
 
 Route::get('anoletivo', [AnoletivoController::class, 'index']);
 
+Route::get('alunosByCurso/{cursoID}', [CursoController::class, 'getAlunosByCurso']);
+Route::get('alunosFromCadeira/{idCadeira}', [CadeiraController::class, 'getAlunosFromCadeira']);
+Route::get('cadeirasFromAluno/{numeroAluno}', [EstudanteController::class, 'getUcs']);
+
+
 //utilizador logado
 Route::group(['middleware' => ['auth:api'],'prefix' => 'utilizadorlogado'], function () {
 	Route::get('/', [UtilizadorController::class, 'getInfoUtilizadorLogado']);

@@ -15,6 +15,7 @@ use App\Http\Resources\CursoResource;
 use App\Http\Requests\CursoPostRequest;
 use App\Http\Resources\CursoResourceCollection;
 use App\Models\Aberturas;
+use App\Models\Utilizador;
 
 class CursoController extends Controller
 {
@@ -138,6 +139,24 @@ class CursoController extends Controller
             }
         }
         return response("Atualizações efetuadas com sucesso!", 200);
+    }
+
+    //public get alunos by curso
+    public function getAlunosByCurso($cursoID){
+        try {
+            $DBCursoID = Curso::where('codigo',$cursoID)->first();
+
+            if ($DBCursoID == null) {
+                return response("Curso não encontrado", 404);
+            }
+            $alunos = Utilizador::select('login','nome')->where('idCurso',$DBCursoID->id)->where('tipo','0')->orderBy('nome')->get();
+
+            return response($alunos ,200);
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+
+        
     }
     
 }

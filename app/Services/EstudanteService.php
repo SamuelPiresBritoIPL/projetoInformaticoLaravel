@@ -98,4 +98,28 @@ class EstudanteService
 
         return ["msg" => ["cadeirasAprovadas" => $cadeirasAprovadas, "cadeirasInscritas" => $cadeirasInscritas, "pedidos" => $pedidos, "aluno" => $infoAluno, 'horario' =>$horario], "code" => 200];
     }
+
+    public function getUcsEstudante(Utilizador $estudante){
+
+        $cadeirasInscritas = [];
+        $cadeiras = Cadeira::leftjoin('inscricaoucs', function($join) use(&$estudante){
+            $join->on('inscricaoucs.idCadeira','=','cadeira.id');
+            $join->where('inscricaoucs.idUtilizador', '=', $estudante->id);
+            $join->where('inscricaoucs.estado','=',1);
+        })->leftjoin('curso', function($join){
+            $join->on('curso.id','=','cadeira.idCurso');
+        })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('cadeira.codigo','cadeira.ano','cadeira.semestre','cadeira.nome','curso.nome as nomeCurso', 'curso.codigo as codigoCurso')->get();
+        // })->where('inscricaoucs.idUtilizador', '=', $estudante->id)->select('inscricaoucs.*','cadeira.*','curso.nome as nomeCurso', 'curso.codigo as codigoCurso')->get();
+
+
+        // foreach ($cadeiras as $key => $cadeira) {
+        //     if(!array_key_exists($cadeira->idCurso,$cadeirasInscritas)){
+        //         $cadeirasInscritas[$cadeira->idCurso] = ["nome" => $cadeira->nomeCurso, "codigo" => $cadeira->codigoCurso, "cadeiras" => []];
+        //     }
+        //     array_push($cadeirasInscritas[$cadeira->idCurso]["cadeiras"],  ["uc" => $cadeira , "turnos" => [] ]);
+        // }
+
+
+        return ["msg" => ["cadeirasInscritas" => $cadeiras], "code" => 200];
+    }
 }

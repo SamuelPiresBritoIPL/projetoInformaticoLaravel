@@ -25,4 +25,18 @@ class EstudanteController extends Controller
         return response($result["msg"],$result["code"]);
     }
 
+    public function getUcs($estudante){
+        $estudante = Utilizador::where('login', $estudante)->first();
+        if(empty($estudante)){
+            return response("O login não foi encontrado",400);
+        } 
+        if (!$estudante->isEstudante()) {
+            return response("Este utilizador não é um aluno.",400);
+        }
+
+        $result = (new EstudanteService)->getUcsEstudante($estudante);
+
+        return response($result["msg"],$result["code"]);
+    }
+
 }
