@@ -1,4 +1,5 @@
 {
     "nuxt.isNuxtApp": false,
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "prettier.printWidth": 120
 }
